@@ -1046,6 +1046,8 @@ class AppDelegate(NSObject):
                 decision = "raise1"
             elif pot_height < 18.0:
                 decision = "3raise3"
+            else:
+                decision = "call"
         elif set_1_1 > 0.73:
             if to_call <= 5:
                 if pot_height <= 8.0:
