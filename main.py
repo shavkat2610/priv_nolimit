@@ -1105,7 +1105,7 @@ class AppDelegate(NSObject):
             decision = "raise1"                    
         elif set_1_1 > 0.45 and pot_height >= 10 and to_call <= 3.5:
             decision = "call"                 
-        elif set_1_1 > 0.37 and pot_height < 4 and to_call < 1.0:
+        elif set_1_1 > 0.37 and pot_height < 4 and to_call <= 2.1:
             decision = "call"   # used to raise1 here and it worked until like 20 hands and they found out ... .
         return decision   
 
