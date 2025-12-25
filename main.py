@@ -228,7 +228,7 @@ class AppDelegate(NSObject):
         # print("setting own money ...")
         try:
             own_money_current = read_own_money(im=current_im)
-
+            print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None:
                 # print("\nown money read: "+str(own_money_current))
                 with self.lock:
