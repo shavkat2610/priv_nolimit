@@ -1967,14 +1967,14 @@ class AppDelegate(NSObject):
                         self.average_pot_50 = (self.average_pot_50 * 49/50) + (pot_rescaled * 1/50)        
                         self.last_pot = self.potheight           
                         # print("pot_rescaled set to: "+str(pot_rescaled)) # check if its printing after update with our take in it 
-            time.sleep(0.59)
+            time.sleep(0.79)
             with self.valset_lock:
                 need_set = False
                 if not self.values_set: # own money value not set after it changed 
                     need_set = True
             if need_set:
                 if not self.updateOwnMoney_(current_im=None):
-                    time.sleep(0.5)
+                    time.sleep(0.25)
                     self.updateOwnMoney_(current_im=None)
                     # print("\nread own money failed gss ... \n")              
 
