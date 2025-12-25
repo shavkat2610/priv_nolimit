@@ -572,7 +572,13 @@ def read_own_money(im = None):
     #todo: check if value maybe sus, re-read if so ... if still sus, save image maybe ...
     
     try:
-        return float(data)
+        data = float(data)
+        if data > 100.0:
+            print("read_own_money data: "+str(data))
+            print("maybe sus value read, re-reading ...")
+            time.sleep(0.25)
+            return read_own_money(im=None)
+        return data
     except Exception as e:
         if " " in data:
             data = data.split(" ")[1]
@@ -589,7 +595,13 @@ def read_own_money(im = None):
                     print("! could not read own money 69 - raw_data: "+str(raw_data))
                     return -10                    
             try:
-                return float(data)
+                data = float(data)
+                if data > 100.0:
+                    print("read_own_money data: "+str(data))
+                    print("maybe sus value read, re-reading ...")
+                    time.sleep(0.25)
+                    return read_own_money(im=None)
+                return data
             except Exception as e:
                 print("reading own money failed")
                 print(e)
