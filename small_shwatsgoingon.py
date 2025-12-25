@@ -548,6 +548,7 @@ def read_own_money(im = None):
     data = data.replace("A", "4")
     data = data.replace("S", "5")
     data = data.replace("?", "2")
+    data = data.replace("G", "6")
     data = data.strip()
     if len(data)<1:
         print("COULD NOT READ OWN MONEY 28 - raw_data :"+str(raw_data))
