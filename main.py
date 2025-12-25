@@ -486,14 +486,15 @@ class AppDelegate(NSObject):
         flop_model_inputs = []
         with self.potheight_lock:
             with self.to_call_lock:
-                for decision_temp in decs:
-                    print("self.equity_flop at model-input formation: "+str(self.equity_flop))
-                    flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
-                                            self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                            self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                            self.to_call, decision_temp, self.difference_tocall_n_potheight]
-                    flop_model_inputs.append(flop_model_input)
-            return flop_model_inputs
+                with self.mk_comte_carlo_decision_lock:
+                    for decision_temp in decs:
+                        print("self.equity_flop at model-input formation: "+str(self.equity_flop))
+                        flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
+                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
+                                                self.to_call, decision_temp, self.difference_tocall_n_potheight]
+                        flop_model_inputs.append(flop_model_input)
+                    return flop_model_inputs
 
 
 
@@ -1001,9 +1002,8 @@ class AppDelegate(NSObject):
                         decision = "call"                                                                                
         return decision
     
-    def makeDecisionFlop(self):
-        with self.to_call_lock:
-            to_call = self.to_call      
+
+    def calculatePreflopEquity(self):
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right    
@@ -1017,23 +1017,25 @@ class AppDelegate(NSObject):
             self.flop_features = extract_flop_features([own_card_left, own_card_right], [deck_card_1, deck_card_2, deck_card_3])
             set_1_1 = flop_equity_model_predict(self.flop_features)
             print("flop equity model prediction (set_1_1): "+str(set_1_1))
-            self.equity_flop = set_1_1
-            if to_call > 0.0:
-                print("set_1_1: "+str(set_1_1)+" | to_call: "+str(to_call)+" => someone bet before me")
-                temp_Inputs = self.mkFlopModelInputs_([1.0, 2.0])
-                # print("debug - flop model inputs: "+str(temp_Inputs))
-                outputs = flop_model_predict_multiple(temp_Inputs)
-            else:
-                print("set_1_1: "+str(set_1_1)+" | to_call: "+str(to_call)+" => check was possible")
-                temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0])
-                # print("debug - flop model inputs: "+str(temp_Inputs))
-                outputs = flop_model_predict_multiple(temp_Inputs)
-            # print("makeDecisionFlop probability_1_1: "+str(set_1_1))
-            decision = self.makeAIDecision_(outputs)
-            # if decision != "fold" and decision != "call" and to_call > 0.0:
-            #     with self.confidence_lock:
-            #         self.confidence += 1
-            return decision
+            self.equity_flop = set_1_1        
+
+
+    def makeDecisionFlop(self):
+        with self.to_call_lock:
+            to_call = self.to_call      
+        if to_call > 0.0:
+            temp_Inputs = self.mkFlopModelInputs_([1.0, 2.0])
+            # print("debug - flop model inputs: "+str(temp_Inputs))
+            outputs = flop_model_predict_multiple(temp_Inputs)
+        else:
+            temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0])
+            # print("debug - flop model inputs: "+str(temp_Inputs))
+            outputs = flop_model_predict_multiple(temp_Inputs)
+        decision = self.makeAIDecision_(outputs)
+        # if decision != "fold" and decision != "call" and to_call > 0.0:
+        #     with self.confidence_lock:
+        #         self.confidence += 1
+        return decision
         # decision = "fold"
         # if set_1_1 > 0.89:
         #     if pot_height <= 8.0:
@@ -1466,7 +1468,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False                                                                                                 
                             return
                 with self.game_stage_lock:
-                    self.game_stage_current = "flop"   
+                    self.game_stage_current = "flop"
                 secs = time.time()
                 current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
                 try:
@@ -1492,7 +1494,8 @@ class AppDelegate(NSObject):
                         self.game_stage_current = "no_decision_to_be_made" 
                     with self.acting_lock:
                         self.time_to_act = False                                                                             
-                        return                     
+                        return   
+                self.calculatePreflopEquity()                  
 
                 
 
