@@ -1035,7 +1035,7 @@ class AppDelegate(NSObject):
             outputs = flop_model_predict_multiple(temp_Inputs)
         decision = self.makeAIDecision_(outputs)
         with self.mk_comte_carlo_decision_lock:
-            set_1_1 = self.probability_1_1
+            set_1_1 = self.equity_flop
         with self.potheight_lock:
             pot_height = self.potheight
         # if decision != "fold" and decision != "call" and to_call > 0.0:
