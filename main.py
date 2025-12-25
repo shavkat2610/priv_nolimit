@@ -472,7 +472,7 @@ class AppDelegate(NSObject):
                             decision_temp = 0.75
                         elif decision == "4raise4":
                             decision_temp = 1.0           
-                        print("self.equity_flop at model-input formation: "+str(self.equity_flop))                        
+                        # print("self.equity_flop at model-input formation: "+str(self.equity_flop))                        
                         flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
@@ -488,7 +488,7 @@ class AppDelegate(NSObject):
             with self.to_call_lock:
                 with self.mk_comte_carlo_decision_lock:
                     for decision_temp in decs:
-                        print("self.equity_flop at model-input formation: "+str(self.equity_flop))
+                        # print("self.equity_flop at model-input formation: "+str(self.equity_flop))
                         flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
