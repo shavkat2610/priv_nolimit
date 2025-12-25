@@ -191,7 +191,7 @@ def how_much(im = None):
             if pixels[i, j][1] >= 180:
                 pixels[i, j] = (10, 10, 10, 255)
             else:
-                pixels[i,j] = (185, 185, 185, 255)
+                pixels[i,j] = (255, 255, 255, 255)
     # secs = time.time()
     
     raw_data = pytesseract.image_to_string(im2)
@@ -389,7 +389,7 @@ def read_total_pot_money(im = None):
                 if pixels[i, j][1] >= 180:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
-                    pixels[i,j] = (185, 185, 185, 255)
+                    pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
     raw_data = pytesseract.image_to_string(im1)
     data = raw_data.strip()
@@ -464,7 +464,7 @@ def read_old_pot_money(im = None):
                 if pixels[i, j][1] >= 180:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
-                    pixels[i,j] = (185, 185, 185, 255)
+                    pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
     data = pytesseract.image_to_string(im1)
     # position = data.find("Pot")
@@ -525,7 +525,7 @@ def read_own_money(im = None):
                 if pixels[i,j][0] >= 150:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
-                    pixels[i,j] = (185, 185, 185, 255)
+                    pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
     raw_data = pytesseract.image_to_string(im1)
     # print("own_money raw_data: "+raw_data)
@@ -567,9 +567,10 @@ def read_own_money(im = None):
         except:
             print("! could not read own money 56 - raw_data: "+str(raw_data))
             return -10
-    # print("own money data: "+str(data))
-        
     # print("read own money data: "+data)
+
+    #todo: check if value maybe sus, re-read if so ... if still sus, save image maybe ...
+    
     try:
         return float(data)
     except Exception as e:

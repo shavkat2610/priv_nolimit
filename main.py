@@ -1967,7 +1967,7 @@ class AppDelegate(NSObject):
                         self.average_pot_50 = (self.average_pot_50 * 49/50) + (pot_rescaled * 1/50)        
                         self.last_pot = self.potheight           
                         # print("pot_rescaled set to: "+str(pot_rescaled)) # check if its printing after update with our take in it 
-            time.sleep(0.14)
+            time.sleep(0.59)
             with self.valset_lock:
                 need_set = False
                 if not self.values_set: # own money value not set after it changed 
