@@ -1032,74 +1032,78 @@ class AppDelegate(NSObject):
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         decision = self.makeAIDecision_(outputs)
+        with self.mk_comte_carlo_decision_lock:
+            set_1_1 = self.probability_1_1
+        with self.potheight_lock:
+            pot_height = self.potheight
         # if decision != "fold" and decision != "call" and to_call > 0.0:
         #     with self.confidence_lock:
         #         self.confidence += 1
-        return decision
-        # decision = "fold"
-        # if set_1_1 > 0.89:
-        #     if pot_height <= 8.0:
-        #         decision = "raise1"
-        #     elif pot_height < 18.0:
-        #         decision = "3raise3"
-        # elif set_1_1 > 0.73:
-        #     if to_call <= 5:
-        #         if pot_height <= 8.0:
-        #             decision = "raise1"
-        #         elif pot_height < 18.0 :
-        #             decision = "2raise2"
-        #         else:
-        #             decision = "call"
-        #     else:
-        #         if pot_height < 20.0:
-        #             decision = "call"
-        #         # else:
-        #         #     decision = "fold"
-        # elif set_1_1 > 0.7:   
-        #     if to_call <= 4:
-        #         if pot_height <= 9.0:
-        #             decision = "raise1"
-        #         elif pot_height < 18.0 :
-        #             decision = "2raise2"
-        #         else:
-        #             decision = "call"
-        #     else:
-        #         if pot_height < 20.0:
-        #             decision = "call"   
-        #         elif pot_height >= 17 and num_active_players >= 2: #
-        #             decision = "call"                                   
-        # elif set_1_1 > 0.65:
-        #     if to_call <= 3.5:
-        #         if pot_height <= 8.0:
-        #             decision = "raise1"
-        #         elif pot_height < 24.0 :
-        #             decision = "call"
+        # return decision
+        decision = "fold"
+        if set_1_1 > 0.89:
+            if pot_height <= 8.0:
+                decision = "raise1"
+            elif pot_height < 18.0:
+                decision = "3raise3"
+        elif set_1_1 > 0.73:
+            if to_call <= 5:
+                if pot_height <= 8.0:
+                    decision = "raise1"
+                elif pot_height < 18.0 :
+                    decision = "2raise2"
+                else:
+                    decision = "call"
+            else:
+                if pot_height < 20.0:
+                    decision = "call"
+                # else:
+                #     decision = "fold"
+        elif set_1_1 > 0.7:   
+            if to_call <= 4:
+                if pot_height <= 9.0:
+                    decision = "raise1"
+                elif pot_height < 18.0 :
+                    decision = "2raise2"
+                else:
+                    decision = "call"
+            else:
+                if pot_height < 20.0:
+                    decision = "call"   
+                elif pot_height >= 17 and to_call < 10.0: #
+                    decision = "call"                                   
+        elif set_1_1 > 0.65:
+            if to_call <= 3.5:
+                if pot_height <= 8.0:
+                    decision = "raise1"
+                elif pot_height < 24.0 :
+                    decision = "call"
                     
-        #         else:
-        #             decision = "fold"
-        #     else:
-        #         if pot_height < 18.0:
-        #             decision = "call"   
-        #         elif pot_height >= 6 and num_active_players >= 2: #
-        #             decision = "call"                       
-        # elif set_1_1 > 0.61:
-        #     if to_call <= 3.7:
-        #         if pot_height < 8.5:
-        #             decision = "raise1"
-        #         elif pot_height >= 6 and num_active_players >= 2: #
-        #             decision = "call"   
-        # elif set_1_1 > 0.57:
-        #     if pot_height < 6.0 and to_call <= 2.0:
-        #         decision = "raise1"
-        #     elif pot_height < 14.5 and to_call <= 6.0:
-        #         decision = "call"        
-        # elif set_1_1 > 0.47 and pot_height < 7 and to_call < 1.0:
-        #     decision = "raise1"                    
-        # elif set_1_1 > 0.45 and pot_height >= 10 and to_call <= 3.5:
-        #     decision = "call"                 
-        # elif set_1_1 > 0.37 and pot_height < 4 and to_call < 1.0:
-        #     decision = "raise1"  
-        # return decision   
+                else:
+                    decision = "fold"
+            else:
+                if pot_height < 18.0:
+                    decision = "call"   
+                elif pot_height >= 6: #
+                    decision = "call"                       
+        elif set_1_1 > 0.61:
+            if to_call <= 3.7:
+                if pot_height < 8.5:
+                    decision = "raise1"
+                elif pot_height >= 6: #
+                    decision = "call"   
+        elif set_1_1 > 0.57:
+            if pot_height < 6.0 and to_call <= 2.0:
+                decision = "raise1"
+            elif pot_height < 14.5 and to_call <= 6.0:
+                decision = "call"        
+        elif set_1_1 > 0.47 and pot_height < 7 and to_call < 1.0:
+            decision = "raise1"                    
+        elif set_1_1 > 0.45 and pot_height >= 10 and to_call <= 3.5:
+            decision = "call"                 
+        elif set_1_1 > 0.37 and pot_height < 4 and to_call < 1.0:
+            decision = "raise1"  
+        return decision   
 
     def makeDecisionRiver(self):
         with self.mk_comte_carlo_decision_lock:
