@@ -1789,7 +1789,7 @@ class AppDelegate(NSObject):
                     if self.potheight > 2.0:
                         with self.mod_writing_lock:
                             self.made_model_output = True
-                            self.model_output = -0.05 # -0.15
+                            self.model_output = -0.025 # -0.15
                     with self.cards_lock:
                         self.cards_open = False
                     with self.to_call_lock:
