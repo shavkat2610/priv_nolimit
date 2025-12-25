@@ -622,11 +622,11 @@ class AppDelegate(NSObject):
             self.made_model_output = True
             with self.lock:    
                 diff = self.own_money - self.own_money_before_last_preflop
-                if diff >= 90 :
+                if diff >= 90.0 :
                     print("\nI think we just won extremely hard\n")
                     self.model_output = 3
                     return            
-                elif diff <= -90 :
+                elif diff <= -90.0 :
                     print("\nI think we just lost extremely hard\n")
                     self.model_output = -3
                     return  
