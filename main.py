@@ -662,12 +662,12 @@ class AppDelegate(NSObject):
                 #     self.model_output = 0
                 #     return
                 
-    def mkModelOutPutAllInHandled(self): #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
+    def mkModelOutputAllInHandled(self): #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
         print("I think we just lost")
         with self.mod_writing_lock:
             self.made_model_output   = True
             with self.lock:
-                self.model_output = -self.own_money_before_last_preflop
+                self.model_output = -self.own_money_before_last_preflop/30.0
                 return
 
     def write_csv_s(self): # todo: update
@@ -1422,7 +1422,7 @@ class AppDelegate(NSObject):
                 self.values_set = False
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
-                self.mkModelOutPutAllInHandled()
+                self.mkModelOutputAllInHandled()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.cards_lock:
@@ -1735,7 +1735,7 @@ class AppDelegate(NSObject):
             time.sleep(1)
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
-                self.mkModelOutPutAllInHandled()
+                self.mkModelOutputAllInHandled()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.acting_lock:
