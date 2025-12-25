@@ -1028,12 +1028,12 @@ class AppDelegate(NSObject):
                 temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0])
                 # print("debug - flop model inputs: "+str(temp_Inputs))
                 outputs = flop_model_predict_multiple(temp_Inputs)
-        # print("makeDecisionFlop probability_1_1: "+str(set_1_1))
-        decision = self.makeAIDecision_(outputs)
-        # if decision != "fold" and decision != "call" and to_call > 0.0:
-        #     with self.confidence_lock:
-        #         self.confidence += 1
-        return decision
+            # print("makeDecisionFlop probability_1_1: "+str(set_1_1))
+            decision = self.makeAIDecision_(outputs)
+            # if decision != "fold" and decision != "call" and to_call > 0.0:
+            #     with self.confidence_lock:
+            #         self.confidence += 1
+            return decision
         # decision = "fold"
         # if set_1_1 > 0.89:
         #     if pot_height <= 8.0:
