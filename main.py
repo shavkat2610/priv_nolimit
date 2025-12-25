@@ -859,14 +859,16 @@ class AppDelegate(NSObject):
                         decision = "raise1" # funny move   
                     elif to_call<=4.75:
                         decision = "call"
-                    elif to_call<=6.75 and pot_height>=12.0:
+                    elif to_call<=5.5 and pot_height>=8.5:
+                        decision = "call"                      
+                    elif to_call<=7.5 and pot_height>=18.5:
                         decision = "call"                               
                     if own_card_left.startswith("K") or own_card_right.startswith("K"): # ace,  king
                         print("debug : ace and king")
                         if to_call < 1.0:
                             print("funny lil raise here 3")
                             decision = "raise1"     
-                        elif to_call < 25.0:
+                        elif to_call < 7.5:
                             decision = "call"                                     
                     else:                                   #                              
                         if own_card_left.startswith("Q") or own_card_right.startswith("Q"): #  ace # queen
