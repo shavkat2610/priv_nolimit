@@ -1020,10 +1020,12 @@ class AppDelegate(NSObject):
             print("flop equity model prediction (set_1_1): "+str(set_1_1))
             self.equity_flop = set_1_1
         if to_call > 0.0:
+            print("set_1_1: "+str(set_1_1)+" | to_call: "+str(to_call)+" => someone bet before me")
             temp_Inputs = self.mkFlopModelInputs_([1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         else:
+            print("set_1_1: "+str(set_1_1)+" | to_call: "+str(to_call)+" => check was possible")
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
