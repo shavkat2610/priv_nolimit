@@ -756,7 +756,7 @@ class AppDelegate(NSObject):
             else:
                 if call_equity - bet_equity > 0.075:
                     print("bet equity lower than call equity")
-                    if call_equity < 0.25:
+                    if call_equity < -0.25:
                         return "fold"
                     else:
                         return "call"
