@@ -206,6 +206,7 @@ def how_much(im = None):
     data = data.replace("A", "4")
     data = data.replace("S", "5")
     data = data.replace(",", ".")
+    data = data.replace("a", "8")
     # im2.save("debug_to_call_"+data+"_"+str(secs).split(".")[0]+".png")
     if data != "":
         try:
