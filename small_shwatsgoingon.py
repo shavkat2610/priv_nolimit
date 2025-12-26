@@ -184,6 +184,7 @@ def how_much(im = None):
     im2 = crop_wh(im, 640, 508, 74, 22) #check_button
     if check_if_check(im=im, debug=True):
         return 0.0
+    im1 = im2
     pixels = im2.load() # create the pixel map
     for i in range(im2.size[0]): # for every pixel:
         for j in range(im2.size[1]):
@@ -217,7 +218,11 @@ def how_much(im = None):
                 return 9.0
             else:
                 print("raw_data: "+raw_data)
-                im2.save("new_check_button_probbaly.png")
+                im1.save("new_check_button_probbaly.png")
+                im2.save("new_check_button_probbaly_edited.png")
+                raw_data = raw_data.strip()
+                if raw_data == "Check":
+                    return 0.0
                 print("NON STRING FOUND IN how_much , please help")
                 exit()
     else:
