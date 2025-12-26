@@ -1063,7 +1063,7 @@ class AppDelegate(NSObject):
                 else:
                     decision = "call"
             else:
-                if pot_height < 20.0:
+                if to_call <= 15.0: #
                     decision = "call"
                 # else:
                 #     decision = "fold"
@@ -1076,9 +1076,10 @@ class AppDelegate(NSObject):
                 else:
                     decision = "call"
             else:
+
                 if pot_height < 20.0:
                     decision = "call"   
-                elif pot_height >= 17 and to_call < 10.0: #
+                elif to_call <= 14.0: #
                     decision = "call"                                   
         elif set_1_1 > 0.65:
             if to_call <= 3.5:
@@ -1090,20 +1091,18 @@ class AppDelegate(NSObject):
                 else:
                     decision = "fold"
             else:
-                if pot_height < 18.0:
-                    decision = "call"   
-                elif pot_height >= 6: #
-                    decision = "call"                       
+                if to_call < 12.5:
+                    decision = "call"                 
         elif set_1_1 > 0.61:
-            if to_call <= 3.7:
+            if to_call <= 6.7:
                 if pot_height < 8.5:
                     decision = "raise1"
                 elif pot_height >= 6: #
                     decision = "call"   
         elif set_1_1 > 0.57:
-            if pot_height < 6.0 and to_call <= 2.0:
+            if to_call <= 2.0:
                 decision = "raise1"
-            elif pot_height < 14.5 and to_call <= 6.0:
+            elif to_call <= 6.0:
                 decision = "call"        
         elif set_1_1 > 0.47 and pot_height < 7 and to_call < 1.0:
             decision = "raise1"                    
