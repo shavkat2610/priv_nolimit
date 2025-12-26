@@ -731,7 +731,7 @@ class AppDelegate(NSObject):
         print(f"Confidence: {confidence}")
         for output in outputs:
             # print(f"Model output: {output}")
-            output = output + (0.025 * confidence) 
+            output = output + (0.015 * confidence) 
             # print(f"Adjusted Model output: {output}")
         if len(outputs) == 2:
             print("someone bet ... no check possible")
