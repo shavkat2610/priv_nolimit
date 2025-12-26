@@ -1790,6 +1790,12 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(540, 610, duration=0.2)
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
+                    if self.own_money > 99.0:
+                        close_game()
+                        time.sleep(2)
+                        print("exiting program bc own money > 99.0")
+                        # open_game()
+                        exit()                    
                     if self.potheight > 2.0:
                         with self.mod_writing_lock:
                             self.made_model_output = True
