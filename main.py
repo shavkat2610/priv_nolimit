@@ -723,9 +723,12 @@ class AppDelegate(NSObject):
 
 
 
+
+
+
+
     def makeAIDecision_(self, outputs):
         # outputs from model prediction
-        # print("makeAIDecision outputs: "+str(outputs))
         with self.confidence_lock:
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
@@ -792,6 +795,7 @@ class AppDelegate(NSObject):
                     if raise2_equity - raise1_equity > 0.17:
                         return "2raise2"
                     else:
+                        print("else ...")
                         if raise4_equity> 0.25:
                             return "4raise4"                           
                         elif raise3_equity> 0.15:
