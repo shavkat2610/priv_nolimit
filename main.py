@@ -723,9 +723,12 @@ class AppDelegate(NSObject):
 
 
 
+
+
+
+
     def makeAIDecision_(self, outputs):
         # outputs from model prediction
-        # print("makeAIDecision outputs: "+str(outputs))
         with self.confidence_lock:
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
@@ -750,20 +753,26 @@ class AppDelegate(NSObject):
                         return "raise1"
                     else:
                         if call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
+                            print("call equity decent enough to call")
                             return "call"
                         else:
+                            print("call equity too low to call")
                             return "fold"
             else:
                 if call_equity - bet_equity > 0.075:
                     print("bet equity lower than call equity")
                     if call_equity < -0.25:
+                        print("call equity too low to call")
                         return "fold"
                     else:
+                        print("call equity decent enough to call")
                         return "call"
                 else:
+                    print("call equity and bet equity similar")
                     if call_equity > -0.265:
                         return "call"
                     else:
+                        print("call equity too low to call")
                         return "fold"
         else:
             print("check was possible")
@@ -786,6 +795,7 @@ class AppDelegate(NSObject):
                     if raise2_equity - raise1_equity > 0.17:
                         return "2raise2"
                     else:
+                        print("else ...")
                         if raise4_equity> 0.25:
                             return "4raise4"                           
                         elif raise3_equity> 0.15:
@@ -1721,12 +1731,20 @@ class AppDelegate(NSObject):
                 if not self.updateOwnMoney_(current_im=None):
                     time.sleep(0.35)
                     if not self.updateOwnMoney_(current_im=None):
-                        time.sleep(0.35)
+                        time.sleep(0.75)
+                        print("retrying reading own money at preflop")
                         if not self.updateOwnMoney_(current_im=None):
                             time.sleep(0.35)
+                            print("retrying reading own money at preflop")
                             if not self.updateOwnMoney_(current_im=None):
-                                print("\nread own money failed at preflop - bad ! - !!!\n")  
-                                exit()
+                                time.sleep(0.75)
+                                print("retrying reading own money at preflop")
+                                if not self.updateOwnMoney_(current_im=None):
+                                    time.sleep(0.35)
+                                    print("retrying reading own money at preflop")
+                                    if not self.updateOwnMoney_(current_im=None):
+                                        print("\nread own money failed at preflop - bad ! - !!!\n")                                  
+                                        exit()
 
                 # model training
                 with self.mod_writing_lock:
