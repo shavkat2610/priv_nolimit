@@ -781,10 +781,10 @@ class AppDelegate(NSObject):
             print("raise2 equity: "+str(raise2_equity))
             print("raise3 equity: "+str(raise3_equity))
             print("raise4 equity: "+str(raise4_equity))          
-            if raise4_equity - raise1_equity > 0.37 :
+            if raise4_equity - raise1_equity > 0.57 :
                 return "4raise4"
             else:
-                if raise3_equity - raise1_equity > 0.23:
+                if raise3_equity - raise1_equity > 0.35:
                     return "3raise3"
                 else:
                     if raise2_equity - raise1_equity > 0.17:
