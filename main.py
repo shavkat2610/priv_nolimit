@@ -723,8 +723,84 @@ class AppDelegate(NSObject):
 
 
 
-
-
+    def makeAIDecisionFlop_(self, outputs):
+        with self.confidence_lock:
+            confidence = self.confidence    
+        print(f"Confidence: {confidence}")      
+        for output in outputs:
+            # print(f"Model output: {output}")
+            output = output + (0.015 * confidence) 
+            # print(f"Adjusted Model output: {output}")          
+        if len(outputs) == 2:
+            print("someone bet ... no check possible")
+            call_equity = outputs[0]
+            bet_equity = outputs[1]
+            print("call equity: "+str(call_equity))
+            print("bet equity: "+str(bet_equity))
+            if bet_equity - call_equity > 0.0765:
+                print("bet equity significantly higher than call equity")
+                if call_equity > 0.115:
+                    print("call equity good enough to raise")
+                    return "raise1" # actual raise to double of what's to-call
+                else:
+                    if bet_equity > 0.25:
+                        print("this scenario is very unlikely but ok")
+                        return "raise1"
+                    else:
+                        if call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
+                            print("call equity decent enough to call")
+                            return "call"
+                        else:
+                            print("call equity too low to call")
+                            return "fold"
+            else:
+                if call_equity - bet_equity > 0.075:
+                    print("bet equity lower than call equity")
+                    if call_equity < -0.75: # low value set for flop
+                        print("call equity too low to call")
+                        return "fold"
+                    else:
+                        print("call equity decent enough to call")
+                        return "call"
+                else:
+                    print("call equity and bet equity similar")
+                    if call_equity > -0.65: # low value set for flop
+                        return "call"
+                    else:
+                        print("call equity too low to call")
+                        return "fold"
+        else:
+            print("check was possible")
+            check_equity = outputs[0]
+            raise1_equity = outputs[1]
+            raise2_equity = outputs[2]
+            raise3_equity = outputs[3]
+            raise4_equity = outputs[4]
+            print("check equity: "+str(check_equity))
+            print("raise1 equity: "+str(raise1_equity))
+            print("raise2 equity: "+str(raise2_equity))
+            print("raise3 equity: "+str(raise3_equity))
+            print("raise4 equity: "+str(raise4_equity))          
+            if raise4_equity - raise1_equity > 0.37 :
+                return "4raise4"
+            else:
+                if raise3_equity - raise1_equity > 0.23:
+                    return "3raise3"
+                else:
+                    if raise2_equity - raise1_equity > 0.17:
+                        return "2raise2"
+                    else:
+                        print("else ...")
+                        if raise4_equity> 0.25:
+                            return "4raise4"                           
+                        elif raise3_equity> 0.15:
+                            return "3raise3"                           
+                        elif raise2_equity> 0.11:
+                            return "2raise2"                        
+                        elif raise1_equity> 0.0015:
+                            return "raise1"
+                        else:
+                            return "fold"
 
 
     def makeAIDecision_(self, outputs):
