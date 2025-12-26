@@ -520,6 +520,7 @@ def read_own_money(im = None):
     if im == None:
         im = game_screenshot()
     im1 = crop_wh(im, 378, 495, 95, 25) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im2 = im1
     # im1.show()
     # exit()
     pixels = im1.load() # create the pixel map
@@ -541,6 +542,7 @@ def read_own_money(im = None):
         return -1.0
     if len(data)<=2:
         print("COULD NOT READ OWN MONEY 24 - data :"+str(data))
+        im2.save(f"sus_own_money_reading{time.time()}.png")
         return -10
     if len(data)<=3:
         # print("!!!!!!!!!!!!!!!!   SUS READ OWN MONEY 24 - data :"+str(data))
