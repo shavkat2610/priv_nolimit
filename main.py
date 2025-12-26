@@ -1027,7 +1027,6 @@ class AppDelegate(NSObject):
 
 
     def makeDecisionFlop(self):
-        # test comment , remove later
         with self.to_call_lock:
             to_call = self.to_call      
         if to_call > 0.0:
