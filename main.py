@@ -750,20 +750,26 @@ class AppDelegate(NSObject):
                         return "raise1"
                     else:
                         if call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
+                            print("call equity decent enough to call")
                             return "call"
                         else:
+                            print("call equity too low to call")
                             return "fold"
             else:
                 if call_equity - bet_equity > 0.075:
                     print("bet equity lower than call equity")
                     if call_equity < -0.25:
+                        print("call equity too low to call")
                         return "fold"
                     else:
+                        print("call equity decent enough to call")
                         return "call"
                 else:
+                    print("call equity and bet equity similar")
                     if call_equity > -0.265:
                         return "call"
                     else:
+                        print("call equity too low to call")
                         return "fold"
         else:
             print("check was possible")
