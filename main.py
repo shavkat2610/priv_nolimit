@@ -975,7 +975,7 @@ class AppDelegate(NSObject):
                     decision = "call"
                 elif own_card_left.startswith("A") or own_card_right.startswith("A"):
                     # decision = "call"
-                    if to_call <= 3.5:
+                    if to_call <= 4.6:
                         decision = "call"
                 else: 
                     if own_card_left.startswith("K") or own_card_right.startswith("K"):
