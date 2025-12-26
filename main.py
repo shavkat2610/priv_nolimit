@@ -981,13 +981,13 @@ class AppDelegate(NSObject):
                     if own_card_left.startswith("K") or own_card_right.startswith("K"):
                         if to_call <= 4.0 and pot_height > 7.6: 
                             decision = "call"             
-                        elif to_call <= 3.0: 
+                        elif to_call <= 3.5: 
                             decision = "call"                                                      
                     elif own_card_left.startswith("Q") or own_card_right.startswith("Q"):
-                        if to_call <= 2.5: 
+                        if to_call <= 3.0: 
                             decision = "call"
                     elif own_card_left.startswith("J") or own_card_right.startswith("J"):
-                        if to_call <= 1.5: 
+                        if to_call <= 2.5: 
                             decision = "call"
             else:
                 print("both cards six or under")
