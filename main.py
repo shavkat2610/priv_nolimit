@@ -1737,7 +1737,7 @@ class AppDelegate(NSObject):
                             time.sleep(0.35)
                             print("retrying reading own money at preflop")
                             if not self.updateOwnMoney_(current_im=None):
-                                time.sleep(0.35)
+                                time.sleep(0.75)
                                 print("retrying reading own money at preflop")
                                 if not self.updateOwnMoney_(current_im=None):
                                     time.sleep(0.35)
