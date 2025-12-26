@@ -46,7 +46,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 # todo:
-
 # fifth raise button, by 16x big blind
 # keep track of money, check if everything read corrrectly ...
 
