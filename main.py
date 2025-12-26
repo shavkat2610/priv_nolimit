@@ -829,7 +829,9 @@ class AppDelegate(NSObject):
                             print("debug : both K")
                             decision = "3raise3"          
                         elif to_call <= 20.0: 
-                            decision = "raise1"                    
+                            decision = "raise1"  
+                        elif to_call <= 35.0:
+                            decision = "call"                  
                     elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
                         if to_call <= 1.5:
                             decision = "3raise3"
@@ -845,8 +847,10 @@ class AppDelegate(NSObject):
                     elif own_card_left.startswith("T") and own_card_right.startswith("T"):
                         if to_call <= 3.67:
                             decision = "raise1" 
+                        elif to_call <= 12.0:
+                            decision = "call"
                     elif own_card_left.startswith("9") and own_card_right.startswith("9"):
-                        if to_call <= 9:
+                        if to_call <= 11:
                             decision = "call" 
                     elif own_card_left.startswith("8") and own_card_right.startswith("8"):
                         if to_call <= 8:
@@ -994,13 +998,13 @@ class AppDelegate(NSObject):
                     if to_call <= 5.5:
                         decision = "call"
                 elif own_card_left.startswith("4") and own_card_right.startswith("4"):
-                    if to_call <= 5.0:
+                    if to_call <= 6.0:
                         decision = "call"
                 elif own_card_left.startswith("3") and own_card_right.startswith("3"):
-                    if to_call <= 4.5:
+                    if to_call <= 5.5:
                         decision = "call"
                 elif own_card_left.startswith("2") and own_card_right.startswith("2"):
-                    if to_call <= 3.5:
+                    if to_call <= 4.5:
                         decision = "call"                                                                                
         return decision
     
