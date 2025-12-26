@@ -1731,12 +1731,20 @@ class AppDelegate(NSObject):
                 if not self.updateOwnMoney_(current_im=None):
                     time.sleep(0.35)
                     if not self.updateOwnMoney_(current_im=None):
-                        time.sleep(0.35)
+                        time.sleep(0.75)
+                        print("retrying reading own money at preflop")
                         if not self.updateOwnMoney_(current_im=None):
                             time.sleep(0.35)
+                            print("retrying reading own money at preflop")
                             if not self.updateOwnMoney_(current_im=None):
-                                print("\nread own money failed at preflop - bad ! - !!!\n")  
-                                exit()
+                                time.sleep(0.35)
+                                print("retrying reading own money at preflop")
+                                if not self.updateOwnMoney_(current_im=None):
+                                    time.sleep(0.35)
+                                    print("retrying reading own money at preflop")
+                                    if not self.updateOwnMoney_(current_im=None):
+                                        print("\nread own money failed at preflop - bad ! - !!!\n")                                  
+                                        exit()
 
                 # model training
                 with self.mod_writing_lock:
