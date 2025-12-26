@@ -47,7 +47,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # todo:
 
-# fifth raise button, by 16x big blind
+# fifth raise button, by 16x big blind - may be done , needs testing 
 # keep track of money, check if everything read corrrectly ...
 
 
@@ -151,17 +151,17 @@ class AppDelegate(NSObject):
     
     potheight_lock = Lock()
     potheight = 0.1
-    average_pot_2 = 3.0
-    average_pot_3 = 3.0
-    average_pot_5 = 3.0
-    average_pot_7 = 3.0
-    average_pot_9 = 3.0
-    average_pot_11 = 3.0
-    average_pot_13 = 3.0
-    average_pot_16 = 3.0
-    average_pot_20 = 3.0
-    average_pot_30 = 3.0
-    average_pot_50 = 3.0
+    average_pot_2 = 13.0
+    average_pot_3 = 13.0
+    average_pot_5 = 13.0
+    average_pot_7 = 13.0
+    average_pot_9 = 13.0
+    average_pot_11 = 13.0
+    average_pot_13 = 13.0
+    average_pot_16 = 13.0
+    average_pot_20 = 13.0
+    average_pot_30 = 13.0
+    average_pot_50 = 13.0
     last_pot = potheight
 
     to_call_lock = Lock()
@@ -327,6 +327,7 @@ class AppDelegate(NSObject):
         self.raiseB2.setHidden_(False)
         self.raiseB3.setHidden_(False)
         self.raiseB4.setHidden_(False)
+        self.raiseB5.setHidden_(False)
 
 
         # start poker client and game
@@ -389,7 +390,9 @@ class AppDelegate(NSObject):
         with self.dec_lock:
             self.decision = "4raise4"
 
-
+    def raise5_(self, userInfo):
+        with self.dec_lock:
+            self.decision = "5raise5"
 
 
     def startCalculationsOtherThread_(self, boardCards):
@@ -446,47 +449,58 @@ class AppDelegate(NSObject):
 
 
 
-    def mkFlopModelInput(self): # needs to be in dec_lock
-        # print("\n making flop model input \n")
+    def mkFlopModelInput(self):
         with self.dec_lock:
             decision = self.decision
+        with self.to_call_lock:     
+            to_call = self.to_call   
+        if decision == "fold":
+            if to_call > 0.0:
+                return # no need to write to table, when folding.  
+            else:
+                decision_temp = 0.0 # checking when there is nothing to call                                
+        elif decision == "call":
+            if to_call >= 1.0:
+                decision_temp = 1.0    
+            else:
+                decision_temp = 0.0                            
+        elif decision == "raise1":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.25
+        elif decision == "2raise2":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.5
+        elif decision == "3raise3":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.75
+        elif decision == "4raise4":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 1.0       
+        elif decision == "5raise5":
+            decision_temp = 2.0                        
         with self.mod_writing_lock:
             if not self.made_flop_model_input:
                 self.made_flop_model_input = True
-            # print("\nshould save something for flop model data now ... \n")
-            # own cards two-hot # 4-flush-one-hot # deck 4-hot
-
             with self.mk_comte_carlo_decision_lock:
-                with self.potheight_lock:
-                    with self.to_call_lock:
-                        if decision == "fold":
-                            if self.to_call > 0.0:
-                                decision_temp = -0.5        
-                            else:
-                                decision_temp = 0.0 # checking when there is nothing to call                                
-                        elif decision == "call":
-                            decision_temp = 0.0
-                        elif self.to_call >= 1.0:
-                            decision_temp = 2.0                                
-                        elif decision == "raise1":
-                            decision_temp = 0.25
-                        elif decision == "2raise2":
-                            decision_temp = 0.5
-                        elif decision == "3raise3":
-                            decision_temp = 0.75
-                        elif decision == "4raise4":
-                            decision_temp = 1.0           
-                        # print("self.equity_flop at model-input formation: "+str(self.equity_flop))                        
-                        flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
-                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, decision_temp, self.difference_tocall_n_potheight]
-                        self.flop_model_inputs.append(flop_model_input)
+                with self.potheight_lock:                      
+                    flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                                            self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
+                                            self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
+                                            self.to_call, decision_temp, self.difference_tocall_n_potheight]
+                    self.flop_model_inputs.append(flop_model_input)
 
 
 
 
-    def mkFlopModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
+    def mkFlopModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         flop_model_inputs = []
         with self.potheight_lock:
             with self.to_call_lock:
@@ -503,32 +517,49 @@ class AppDelegate(NSObject):
 
 
 
-    def mkRiverModelInput(self): # needs to be in dec_lock
-        # print("\n making river model input \n")
+    def mkRiverModelInput(self):
+        with self.dec_lock:
+            decision = self.decision
+        with self.to_call_lock:     
+            to_call = self.to_call   
+        if decision == "fold":
+            if to_call > 0.0:
+                return # no need to write to table, when folding.  
+            else:
+                decision_temp = 0.0 # checking when there is nothing to call                                
+        elif decision == "call":
+            if to_call >= 1.0:
+                decision_temp = 1.0    
+            else:
+                decision_temp = 0.0                            
+        elif decision == "raise1":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.25
+        elif decision == "2raise2":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.5
+        elif decision == "3raise3":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.75
+        elif decision == "4raise4":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 1.0       
+        elif decision == "5raise5":
+            decision_temp = 2.0  
         with self.mod_writing_lock:
             if not self.made_river_model_input:
                 self.made_river_model_input = True
             # print("\nshould save something for river model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
-                with self.potheight_lock:
-                    with self.to_call_lock:
-                        if self.decision == "fold":
-                            if self.to_call > 0.0:
-                                decision_temp = -0.5        
-                            else:
-                                decision_temp = 0.0 # checking when there is nothing to call                                
-                        elif self.decision == "call":
-                            decision_temp = 0.0
-                        elif self.to_call >= 1.0:
-                            decision_temp = 2.0                                
-                        elif self.decision == "raise1":
-                            decision_temp = 0.25
-                        elif self.decision == "2raise2":
-                            decision_temp = 0.5
-                        elif self.decision == "3raise3": # check this exactly with the button, if up and functioning correctly
-                            decision_temp = 0.75
-                        elif self.decision == "4raise4": # check this exactly with the button, if up and functioning correctly
-                            decision_temp = 1.0                                   
+                with self.potheight_lock:                                
                         river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
@@ -538,7 +569,7 @@ class AppDelegate(NSObject):
     
 
 
-    def mkRiverModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
+    def mkRiverModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         river_model_inputs = []
         with self.mk_comte_carlo_decision_lock:
             with self.potheight_lock:
@@ -554,56 +585,60 @@ class AppDelegate(NSObject):
 
 
 
-    def mkTurnModelInput(self): # needs to be in dec_lock
-        # print("\n making turn model input \n")
+    def mkTurnModelInput(self):
+        with self.dec_lock:
+            decision = self.decision
+        with self.to_call_lock:     
+            to_call = self.to_call   
+        if decision == "fold":
+            if to_call > 0.0:
+                return # no need to write to table, when folding.  
+            else:
+                decision_temp = 0.0 # checking when there is nothing to call                                
+        elif decision == "call":
+            if to_call >= 1.0:
+                decision_temp = 1.0    
+            else:
+                decision_temp = 0.0                            
+        elif decision == "raise1":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.25
+        elif decision == "2raise2":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.5
+        elif decision == "3raise3":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 0.75
+        elif decision == "4raise4":
+            if to_call >= 1.0:
+                decision_temp = 2.0    
+            else:
+                decision_temp = 1.0       
+        elif decision == "5raise5":
+            decision_temp = 2.0  
         with self.mod_writing_lock:
             if not self.made_turn_model_input:
                 self.made_turn_model_input = True
             # print("\nshould save something for turn model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
-                with self.potheight_lock:
-                    with self.to_call_lock:
-                        if self.decision == "fold":
-                            if self.to_call > 0.0:
-                                decision_temp = -0.5        
-                            else:
-                                decision_temp = 0.0 # checking when there is nothing to call                      
-                        elif self.decision == "call":
-                            decision_temp = 0.0
-                        elif self.to_call >= 1.0:
-                            decision_temp = 2.0
-                        elif self.decision == "raise1":
-                            if self.to_call > 0.0:
-                                decision_temp = 2.0
-                            else:                                 
-                                decision_temp = 0.25
-                        elif self.decision == "2raise2":
-                            if self.to_call > 0.0:
-                                decision_temp = 2.0
-                            else:                      
-                                decision_temp = 0.5
-                        elif self.decision == "3raise3": 
-                            if self.to_call > 0.0:
-                                decision_temp = 2.0
-                            else:                      
-                                decision_temp = 0.75
-                        elif self.decision == "4raise4": 
-                            if self.to_call > 0.0:
-                                decision_temp = 2.0
-                            else:                      
-                                decision_temp = 1.0   
-                                                        
-                        turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
-                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, self.equity_flop, self.equity_river, decision_temp, 
-                                                self.difference_tocall_n_potheight]
-                        self.turn_model_inputs.append(turn_model_input)
+                with self.potheight_lock:                
+                    turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                                            self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
+                                            self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
+                                            self.to_call, self.equity_flop, self.equity_river, decision_temp, 
+                                            self.difference_tocall_n_potheight]
+                    self.turn_model_inputs.append(turn_model_input)
 
 
 
 
-    def mkTurnModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
+    def mkTurnModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         turn_model_inputs = []
         with self.mod_writing_lock:
             with self.mk_comte_carlo_decision_lock:
@@ -1099,7 +1134,7 @@ class AppDelegate(NSObject):
         return decision
     
 
-    def calculatePreflopEquity(self):
+    def calculateFlopEquity(self):
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right    
@@ -1124,7 +1159,7 @@ class AppDelegate(NSObject):
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         else:
-            temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0])
+            temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         decision = self.makeAIDecisionFlop_(outputs)
@@ -1216,7 +1251,7 @@ class AppDelegate(NSObject):
         if to_call > 0.0:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([1.0, 2.0]))
         else:
-            outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0]))        
+            outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))        
         return self.makeAIDecision_(outputs)
         # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
         #     decision = "raise1"        
@@ -1261,7 +1296,7 @@ class AppDelegate(NSObject):
         if to_call > 0.0:
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([1.0, 2.0]))
         else:
-            outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0]))
+            outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))
         return self.makeAIDecision_(outputs)
     
 
@@ -1597,7 +1632,7 @@ class AppDelegate(NSObject):
                     with self.acting_lock:
                         self.time_to_act = False                                                                             
                         return   
-                self.calculatePreflopEquity()                  
+                self.calculateFlopEquity()                  
 
                 
 
@@ -2050,7 +2085,41 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         self.decision = "None_yet"
                     with self.valset_lock:
-                        self.values_set = False # own money value only in this                             
+                        self.values_set = False # own money value only in this            
+            elif self_dec.startswith("5"):
+                if to_call < 8:
+                    print("raise5 was clicked")
+                    # click text field, type 4, hit (800, 610)
+                    pyautogui.moveTo(730, 557, duration=0.2)
+                    time.sleep(0.1)              
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("15")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)              
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)             
+                    pyautogui.click(670, 610) # call click
+                    with self.to_call_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this     
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.2)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.to_call_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this                               
+                              
                 # time.sleep(1.4)
                 # if not self.updateOwnMoney_(current_im=None):
                 #     time.sleep(0.45)
@@ -2124,7 +2193,7 @@ class AppDelegate(NSObject):
 def GUI():
 
     win = NSWindow.alloc()
-    w = 350 # width for the gui123
+    w = 500 # width for the gui123
     h = 350 # height for the gui
     sw = NSScreen.mainScreen().frame().size.width
     frame = ((sw-w, 0), (w, h))
@@ -2257,7 +2326,7 @@ def GUI():
     raiseB3.setHidden_(True)
     delegate.raiseB3 = raiseB3
 
-    raiseB4 = NSButton.alloc().initWithFrame_(((310.0, 270.0), (30.0, 30.0)))
+    raiseB4 = NSButton.alloc().initWithFrame_(((310.0, 260.0), (50.0, 50.0)))
     win.contentView().addSubview_(raiseB4)
     raiseB4.setBezelStyle_(4)
     raiseB4.setTitle_("8")
@@ -2265,6 +2334,16 @@ def GUI():
     raiseB4.setAction_("raise4:")
     raiseB4.setHidden_(True)
     delegate.raiseB4 = raiseB4
+
+
+    raiseB5 = NSButton.alloc().initWithFrame_(((370.0, 260.0), (50.0, 50.0)))
+    win.contentView().addSubview_(raiseB5)
+    raiseB5.setBezelStyle_(4)
+    raiseB5.setTitle_("16")
+    raiseB5.setTarget_(app.delegate())
+    raiseB5.setAction_("raise5:")
+    raiseB5.setHidden_(True)
+    delegate.raiseB5 = raiseB5
 
     # Erstelle einen Slider
     slider = NSSlider.alloc().initWithFrame_(((10, 100), (280, 30)))
