@@ -40,24 +40,28 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # read pot money -done
 # read deck cards -done
 # read old pot money -done
-# read own money (for who_won and to know when it's all-in)
+# read own money (for who_won and to know when it's all-in) - done
+# general, small whats-going-on-model to see if there is maybe a dancing man, connectivity-issues or something to click ", for added excitement" -done
+# writo to csv - done
 
 
 # todo:
-# fill values
-# handle all-in situations ...
-# play it three times ... 
-# open last card ...
-# all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ...
+
+# fifth raise button, by 16x big blind
+# keep track of money, check if everything read corrrectly ...
+
+
+# handle all-in situations ... - in works or maybe done ?
+# run it three times ... # not always done yet ...
+# open last card ... - not yet done completely
+# all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 # write to app: info on win probability 1 v 1 (at flop, river and turn)
 # write to app: info on win probability 1 v number called (at flop, river and turn) ( probability ^ number )
 # write to app: info on win probability 1 v (number called + everyone after me , (before and including dealer , who is holding cards (who might call after me))) (at flop, river and turn) ( probability ^ number )
-# writo to csv and folders for images
 # make decisions based off of collected values
 # after bigger win -> sit out, collect new player info if possible
 # when folding early -> update player data ?
 
-# general, small whats-going-on-model to see if there is maybe a dancing man, connectivity-issues or something to click ", for added excitement" 
 # close_game-button 
 # run it back up button (with possibly another big blind)
 
