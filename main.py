@@ -29,7 +29,7 @@ from monte_carlo_0 import exact_win_probability
 from treys import Card
 from treys import Evaluator
 from PIL import Image
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # import subprocess
 
 

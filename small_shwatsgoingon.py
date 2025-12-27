@@ -516,6 +516,22 @@ def read_old_pot_money(im = None):
 
 
 
+
+def read_own_money_valid(im = None, should_be = 0.0):
+    if im == None:
+        im = game_screenshot()
+    value = read_own_money(im=im)
+    if value < should_be - 2.0 or value > should_be + 2.0:
+        return False
+    if value == -10:
+        return False
+    return True
+
+
+
+
+
+
 def read_own_money(im = None):
     if im == None:
         im = game_screenshot()
@@ -625,7 +641,6 @@ def read_own_money(im = None):
                 print("reading own money failed")
                 print(e)
                 exit            
-
 
         try:
             return float(data)
