@@ -43,13 +43,12 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # read own money (for who_won and to know when it's all-in) - done
 # general, small whats-going-on-model to see if there is maybe a dancing man, connectivity-issues or something to click ", for added excitement" -done
 # writo to csv - done
+# fifth raise button, by 16x big blind - done
 
 
 # todo:
 
-# fifth raise button, by 16x big blind - may be done , needs testing 
 # keep track of money, check if everything read corrrectly ...
-
 
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
@@ -404,8 +403,6 @@ class AppDelegate(NSObject):
         return True
 
 
-
-
     def doCalculation_(self, boardCards): # check in decision, if probability_1_1 is set, or use this function on main thread ...
 
 
@@ -445,8 +442,6 @@ class AppDelegate(NSObject):
         with self.mk_comte_carlo_decision_lock:
             self.setting_monte_caro = False 
             return True
-
-
 
 
     def mkFlopModelInput(self):
@@ -498,8 +493,6 @@ class AppDelegate(NSObject):
                     self.flop_model_inputs.append(flop_model_input)
 
 
-
-
     def mkFlopModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         flop_model_inputs = []
         with self.potheight_lock:
@@ -513,8 +506,6 @@ class AppDelegate(NSObject):
                                                 self.to_call, decision_temp, self.difference_tocall_n_potheight]
                         flop_model_inputs.append(flop_model_input)
                     return flop_model_inputs
-
-
 
 
     def mkRiverModelInput(self):
@@ -567,8 +558,6 @@ class AppDelegate(NSObject):
                         self.river_model_inputs.append(river_model_input)
 
     
-
-
     def mkRiverModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         river_model_inputs = []
         with self.mk_comte_carlo_decision_lock:
@@ -581,8 +570,6 @@ class AppDelegate(NSObject):
                                                 self.to_call, self.equity_flop, decision_temp, self.difference_tocall_n_potheight]
                         river_model_inputs.append(river_model_input)
                     return river_model_inputs
-
-
 
 
     def mkTurnModelInput(self):
@@ -636,8 +623,6 @@ class AppDelegate(NSObject):
                     self.turn_model_inputs.append(turn_model_input)
 
 
-
-
     def mkTurnModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         turn_model_inputs = []
         with self.mod_writing_lock:
@@ -652,8 +637,6 @@ class AppDelegate(NSObject):
                                                     self.difference_tocall_n_potheight]
                             turn_model_inputs.append(turn_model_input)
                         return turn_model_inputs
-
-
 
 
     def mkModelOutput(self): # #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
@@ -701,6 +684,7 @@ class AppDelegate(NSObject):
                 #     self.model_output = 0
                 #     return
                 
+
     def mkModelOutputAllInHandled(self): #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
         print("I think we just lost")
         with self.mod_writing_lock:
@@ -708,6 +692,7 @@ class AppDelegate(NSObject):
             with self.lock:
                 self.model_output = -self.own_money_before_last_preflop/30.0
                 return
+
 
     def write_csv_s(self): # todo: update
         print("writing to csv's ...")
@@ -730,6 +715,7 @@ class AppDelegate(NSObject):
                         writer = csv.writer(fd, delimiter=";")
                         # print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
                         writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), self.model_output])                 
+
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
         with self.mk_comte_carlo_decision_lock:
@@ -759,8 +745,6 @@ class AppDelegate(NSObject):
         with self.confidence_lock:
             self.confidence = self.slider.doubleValue()
         
-
-
 
     def makeAIDecisionFlop_(self, outputs):
         with self.confidence_lock:
@@ -946,7 +930,7 @@ class AppDelegate(NSObject):
             if random.randrange(2) == 0:
                 print("random decision made")
                 if random.randrange(2) == 0:
-                    if raise1_equity > 0.0:
+                    if raise3_equity > 0.0:
                         return "raise1"
                     else:
                         return "fold"
@@ -958,18 +942,18 @@ class AppDelegate(NSObject):
                             return "fold"
                     else:
                         if random.randrange(2) == 0:
-                            if raise3_equity > 0.0:
+                            if raise4_equity > 0.0:
                                 return "3raise3"
                             else:
                                 return "fold"
                         else:
                             if random.randrange(2) == 0:
-                                if raise4_equity > 0.0:
+                                if raise5_equity > 0.0:
                                     return "4raise4"
                                 else:
                                     return "fold"
                             else:
-                                if raise5_equity > 0.0:
+                                if raise1_equity > 0.0:
                                     return "5raise5"
                                 else:
                                     return "fold"           
@@ -999,9 +983,6 @@ class AppDelegate(NSObject):
                                     return "raise1"
                                 else:
                                     return "fold"
-
-
-
 
 
     def makeDecisionPreflop(self):
@@ -1316,6 +1297,7 @@ class AppDelegate(NSObject):
             decision = "call"   # used to raise1 here and it worked until like 20 hands and they found out ... .
         return decision   
 
+
     def makeDecisionRiver(self):
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
@@ -1364,6 +1346,7 @@ class AppDelegate(NSObject):
             #     else:
             #         decision = "fold"
     
+
     def makeDecisionTurn(self):
         with self.to_call_lock:
             to_call = self.to_call
