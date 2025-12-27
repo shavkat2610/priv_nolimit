@@ -815,31 +815,70 @@ class AppDelegate(NSObject):
             raise2_equity = outputs[2]
             raise3_equity = outputs[3]
             raise4_equity = outputs[4]
+            raise5_equity = outputs[5]
             print("check equity: "+str(check_equity))
             print("raise1 equity: "+str(raise1_equity))
             print("raise2 equity: "+str(raise2_equity))
             print("raise3 equity: "+str(raise3_equity))
-            print("raise4 equity: "+str(raise4_equity))          
-            if raise4_equity - raise1_equity > 0.57 :
-                return "4raise4"
-            else:
-                if raise3_equity - raise1_equity > 0.35:
-                    return "3raise3"
-                else:
-                    if raise2_equity - raise1_equity > 0.17:
-                        return "2raise2"
+            print("raise4 equity: "+str(raise4_equity))   
+            print("raise5 equity: "+str(raise5_equity))
+
+            if random.randrange(2) == 0:
+                print("random decision made")
+                if random.randrange(2) == 0:
+                    if raise1_equity > 0.0:
+                        return "raise1"
                     else:
-                        print("else ...")
-                        if raise4_equity> 0.25:
-                            return "4raise4"                           
-                        elif raise3_equity> 0.15:
-                            return "3raise3"                           
-                        elif raise2_equity> 0.11:
-                            return "2raise2"                        
-                        elif raise1_equity> 0.0015:
-                            return "raise1"
+                        return "fold"
+                else:
+                    if random.randrange(2) == 0:
+                        if raise2_equity > 0.0:
+                            return "2raise2"
                         else:
                             return "fold"
+                    else:
+                        if random.randrange(2) == 0:
+                            if raise3_equity > 0.0:
+                                return "3raise3"
+                            else:
+                                return "fold"
+                        else:
+                            if random.randrange(2) == 0:
+                                if raise4_equity > 0.0:
+                                    return "4raise4"
+                                else:
+                                    return "fold"
+                            else:
+                                if raise5_equity > 0.0:
+                                    return "5raise5"
+                                else:
+                                    return "fold"           
+            else:
+                if raise5_equity - raise1_equity > 0.76 :
+                    return "5raise5"
+                else:
+                    if raise4_equity - raise1_equity > 0.57 :
+                        return "4raise4"
+                    else:
+                        if raise3_equity - raise1_equity > 0.35:
+                            return "3raise3"
+                        else:
+                            if raise2_equity - raise1_equity > 0.17:
+                                return "2raise2"
+                            else:
+                                print("else ...")
+                                if raise5_equity> 0.35:
+                                    return "5raise5"
+                                elif raise4_equity> 0.25:
+                                    return "4raise4"                           
+                                elif raise3_equity> 0.15:
+                                    return "3raise3"                           
+                                elif raise2_equity> 0.11:
+                                    return "2raise2"                        
+                                elif raise1_equity> 0.0015:
+                                    return "raise1"
+                                else:
+                                    return "fold"
 
 
     def makeAIDecision_(self, outputs):
@@ -896,31 +935,70 @@ class AppDelegate(NSObject):
             raise2_equity = outputs[2]
             raise3_equity = outputs[3]
             raise4_equity = outputs[4]
+            raise5_equity = outputs[5]
             print("check equity: "+str(check_equity))
             print("raise1 equity: "+str(raise1_equity))
             print("raise2 equity: "+str(raise2_equity))
             print("raise3 equity: "+str(raise3_equity))
-            print("raise4 equity: "+str(raise4_equity))          
-            if raise4_equity - raise1_equity > 0.37 :
-                return "4raise4"
-            else:
-                if raise3_equity - raise1_equity > 0.23:
-                    return "3raise3"
-                else:
-                    if raise2_equity - raise1_equity > 0.17:
-                        return "2raise2"
+            print("raise4 equity: "+str(raise4_equity))   
+            print("raise5 equity: "+str(raise5_equity))
+
+            if random.randrange(2) == 0:
+                print("random decision made")
+                if random.randrange(2) == 0:
+                    if raise1_equity > 0.0:
+                        return "raise1"
                     else:
-                        print("else ...")
-                        if raise4_equity> 0.25:
-                            return "4raise4"                           
-                        elif raise3_equity> 0.15:
-                            return "3raise3"                           
-                        elif raise2_equity> 0.11:
-                            return "2raise2"                        
-                        elif raise1_equity> 0.0015:
-                            return "raise1"
+                        return "fold"
+                else:
+                    if random.randrange(2) == 0:
+                        if raise2_equity > 0.0:
+                            return "2raise2"
                         else:
                             return "fold"
+                    else:
+                        if random.randrange(2) == 0:
+                            if raise3_equity > 0.0:
+                                return "3raise3"
+                            else:
+                                return "fold"
+                        else:
+                            if random.randrange(2) == 0:
+                                if raise4_equity > 0.0:
+                                    return "4raise4"
+                                else:
+                                    return "fold"
+                            else:
+                                if raise5_equity > 0.0:
+                                    return "5raise5"
+                                else:
+                                    return "fold"           
+            else:
+                if raise5_equity - raise1_equity > 0.76 :
+                    return "5raise5"
+                else:
+                    if raise4_equity - raise1_equity > 0.57 :
+                        return "4raise4"
+                    else:
+                        if raise3_equity - raise1_equity > 0.35:
+                            return "3raise3"
+                        else:
+                            if raise2_equity - raise1_equity > 0.17:
+                                return "2raise2"
+                            else:
+                                print("else ...")
+                                if raise5_equity> 0.35:
+                                    return "5raise5"
+                                elif raise4_equity> 0.25:
+                                    return "4raise4"                           
+                                elif raise3_equity> 0.15:
+                                    return "3raise3"                           
+                                elif raise2_equity> 0.11:
+                                    return "2raise2"                        
+                                elif raise1_equity> 0.0015:
+                                    return "raise1"
+                                else:
+                                    return "fold"
 
 
 
