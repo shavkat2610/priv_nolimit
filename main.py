@@ -2093,7 +2093,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(730, 557, duration=0.2)
                     time.sleep(0.1)              
                     pyautogui.click(730, 557)
-                    pyautogui.typewrite("15")
+                    pyautogui.typewrite("16")
                     pyautogui.moveTo(800, 610)
                     time.sleep(0.1)              
                     pyautogui.click(800, 610)
