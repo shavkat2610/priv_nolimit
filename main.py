@@ -169,6 +169,7 @@ class AppDelegate(NSObject):
 
     lock = Lock() #
     own_money = 0.0
+    own_money_2 = 0.0
     own_money_before_last_preflop = 25.0
 
     d_lock = Lock() # for setting dealer position
@@ -342,7 +343,7 @@ class AppDelegate(NSObject):
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
         start_time = NSDate.date() #todo: every 2 secs switch between 1. make screenshot 2. use existing screenshot to evaluate
-        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 2.7, self, 'gSSOtherThread:', None, True)
+        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 2.7, self, 'gameScreenshot:', None, True)
         self.timer2.setTolerance_(0.67)  
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
@@ -357,13 +358,15 @@ class AppDelegate(NSObject):
                 if not self.updateOwnMoney_(current_im=None):
                     time.sleep(0.35)
                     if not self.updateOwnMoney_(current_im=None):
-                        print("\nREAD OWN MONEY FAILED EARLY\n")                    
+                        exit("could not read own money at start of game")                 
         time.sleep(0.35)
         with self.lock:
-            self.own_money_before_last_preflop = self.own_money # may be grayed out here still ?????????? would be bad as is then !!!!!!!!!!!!!!!!!  (may be readable tho)
+            self.own_money_before_last_preflop = self.own_money 
+            self.own_money_2 = self.own_money
 
-    def gSSOtherThread_(self, userInfo):
-        NSThread.detachNewThreadSelector_toTarget_withObject_("gameScreenshot:", self, "hello")
+
+    # def gSSOtherThread_(self, userInfo):
+    #     NSThread.detachNewThreadSelector_toTarget_withObject_("gameScreenshot:", self, "hello")
 
     def fold_(self, userInfo):
         with self.dec_lock:
@@ -1221,7 +1224,7 @@ class AppDelegate(NSObject):
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
-        decision = self.makeAIDecisionFlop_(outputs)
+        decision = self.makeAIDecision_(outputs)
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.equity_flop
         with self.potheight_lock:
