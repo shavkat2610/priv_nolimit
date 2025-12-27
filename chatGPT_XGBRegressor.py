@@ -230,9 +230,9 @@ def generate_dataset(n_samples=10001):
     import pickle
     X, y = [], []
     try:
-        with open("X_2", "rb") as fp:   # Unpickling
+        with open("X", "rb") as fp:   # Unpickling
             X = pickle.load(fp)
-        with open("y_2", "rb") as fp:   # Unpickling
+        with open("y", "rb") as fp:   # Unpickling
             y = pickle.load(fp)  
     except:
         print('no pickles could be loaded (none there yet most likely)')  
