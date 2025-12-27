@@ -131,6 +131,7 @@ class AppDelegate(NSObject):
     made_turn_model_input = False    
     model_output = 0
     made_model_output = True
+    wrote_to_csv_s = False
 
 
     # holdemners_pos = [ False ,  False ,  False ,  False ,  False ,  False ,  False ,  False ,  False ] # me first, counterclockwise 
@@ -699,25 +700,27 @@ class AppDelegate(NSObject):
 
     def write_csv_s(self): # todo: update
         print("writing to csv's ...")
-        with self.mod_writing_lock:                               
-            if self.made_turn_model_input:
-                for turn_model_input in self.turn_model_inputs:
-                    with open('csv_s/turnModel.csv','a', newline='') as fd:
-                        writer = csv.writer(fd, delimiter=";")
-                        # print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
-                        writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]), self.model_output])                 
-            if self.made_river_model_input:
-                for river_model_input in self.river_model_inputs:    
-                    with open('csv_s/riverModel.csv','a', newline='') as fd:
-                        writer = csv.writer(fd, delimiter=";")
-                        # print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
-                        writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]), self.model_output])                 
-            if self.made_flop_model_input:
-                for flop_model_input in self.flop_model_inputs:
-                    with open('csv_s/flopModel.csv','a', newline='') as fd:
-                        writer = csv.writer(fd, delimiter=";")
-                        # print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
-                        writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), self.model_output])                 
+        with self.mod_writing_lock:    
+            if not self.wrote_to_csv_s:         
+                self.wrote_to_csv_s = True                          
+                if self.made_turn_model_input:
+                    for turn_model_input in self.turn_model_inputs:
+                        with open('csv_s/turnModel.csv','a', newline='') as fd:
+                            writer = csv.writer(fd, delimiter=";")
+                            # print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]), self.model_output])                 
+                if self.made_river_model_input:
+                    for river_model_input in self.river_model_inputs:    
+                        with open('csv_s/riverModel.csv','a', newline='') as fd:
+                            writer = csv.writer(fd, delimiter=";")
+                            # print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]), self.model_output])                 
+                if self.made_flop_model_input:
+                    for flop_model_input in self.flop_model_inputs:
+                        with open('csv_s/flopModel.csv','a', newline='') as fd:
+                            writer = csv.writer(fd, delimiter=";")
+                            # print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), self.model_output])                 
 
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
@@ -736,7 +739,8 @@ class AppDelegate(NSObject):
             if self.made_flop_model_input:
                 self.made_flop_model_input = False 
                 self.flop_model_inputs = []                
-            self.made_model_output = False     
+            self.made_model_output = False   
+            self.wrote_to_csv_s = False  
         with self.cards_lock:
             self.deck_card_1 = "nn"
             self.deck_card_2 = "nn"
@@ -1624,6 +1628,7 @@ class AppDelegate(NSObject):
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
                 self.mkModelOutputAllInHandled()
+                self.write_csv_s()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.cards_lock:
@@ -1932,6 +1937,7 @@ class AppDelegate(NSObject):
                 if not made_output_temp:
                     self.mkModelOutput()
                 # print("model output made")
+
                 self.write_csv_s()
                 self.resetValues()
 
@@ -1945,6 +1951,7 @@ class AppDelegate(NSObject):
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
                 self.mkModelOutputAllInHandled()
+                self.write_csv_s()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.acting_lock:
