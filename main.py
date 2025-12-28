@@ -1264,7 +1264,7 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
 
-        if decision != "fold" and decision != "call" and to_call > 0.0: # this part increases confidenc after we bet something
+        if decision != "fold" and decision != "call" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
                 self.confidence += 1
         return decision 
