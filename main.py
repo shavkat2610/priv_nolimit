@@ -340,6 +340,21 @@ class AppDelegate(NSObject):
             unwait_4blinds() # remove later maybe ?
         # return
 
+
+    def set_munna_initially(self):
+        time.sleep(0.5)
+        munna = read_own_money()
+        time.sleep(0.35)
+        munna2 = read_own_money()
+        if munna != -10 and munna == munna2:
+            with self.lock:
+                self.own_money = munna
+                self.own_money_2 = munna
+                self.own_money_before_last_preflop = munna
+                return True
+        else:
+            return False
+
     def runitup_(self, sender):
 
         # hide start-up controls
@@ -382,28 +397,16 @@ class AppDelegate(NSObject):
 
         print("game screenshot timer started")
 
-        # setting own money initially
-        time.sleep(0.5)
-        munna = read_own_money()
+        # set own money initially
         time.sleep(0.35)
-        munna2 = read_own_money()
-        if munna != -10 and munna == munna2:
-            with self.lock:
-                self.own_money = munna
-                self.own_money_2 = munna
-                self.own_money_before_last_preflop = munna
-        else:
-            print("could not read own money at start of game, exiting ...")
-            exit("could not read own money at start of game")
-        # time.sleep(0.35)
-        # if not self.updateOwnMoney_(current_im=None):
-        #     time.sleep(0.35)
-        #     if not self.updateOwnMoney_(current_im=None):
-        #         time.sleep(0.35)
-        #         if not self.updateOwnMoney_(current_im=None):
-        #             time.sleep(0.35)
-        #             if not self.updateOwnMoney_(current_im=None):
-        #                 exit("could not read own money at start of game")                 
+        if not self.set_munna_initially():
+            time.sleep(0.35)
+            if not self.set_munna_initially():
+                time.sleep(0.35)
+                if not self.set_munna_initially():
+                    time.sleep(0.35)
+                    if not self.set_munna_initially():
+                        exit("could not read own money at start of game")                 
 
 
     # def gSSOtherThread_(self, userInfo):
