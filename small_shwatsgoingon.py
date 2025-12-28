@@ -202,10 +202,7 @@ def how_much(im = None):
         print("It must have been 5 BB to call ?!?! please ?!?!")
         return 5.0
     # print(data)
-    data = data.replace("BB", "")
-    data = data.replace("8B", "")
-    data = data.replace("B8", "")
-    data = data.replace(" 88", "")
+    data = data[:-2]
     data = data.replace("B", "8")
     data = data.replace("A", "4")
     data = data.replace("S", "5")
