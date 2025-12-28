@@ -1165,14 +1165,16 @@ class AppDelegate(NSObject):
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         decision = self.makeAIDecision_(outputs)
-        with self.mk_comte_carlo_decision_lock:
-            set_1_1 = self.equity_flop
-        with self.potheight_lock:
-            pot_height = self.potheight
+        # with self.mk_comte_carlo_decision_lock:
+        #     set_1_1 = self.equity_flop
+        # with self.potheight_lock:
+        #     pot_height = self.potheight
 
-        if decision != "fold" and decision != "call" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
+        if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
-                self.confidence += 1
+                self.confidence += 1.2
+                if to_call > 5.0:
+                    self.confidence += 2.5                
         return decision 
         decision = "fold"
         if set_1_1 > 0.89:
@@ -1255,7 +1257,18 @@ class AppDelegate(NSObject):
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([1.0, 2.0]))
         else:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))        
-        return self.makeAIDecision_(outputs)
+        decision = self.makeAIDecision_(outputs)
+        # with self.mk_comte_carlo_decision_lock:
+        #     set_1_1 = self.equity_flop
+        # with self.potheight_lock:
+        #     pot_height = self.potheight
+            
+        if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
+            with self.confidence_lock:
+                self.confidence += 1.2
+                if to_call > 5.0:
+                    self.confidence += 2.5
+        return decision 
         # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
         #     decision = "raise1"        
         # if set_1_1 > 0.675 and to_call > 3:
