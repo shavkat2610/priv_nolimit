@@ -1349,10 +1349,10 @@ class AppDelegate(NSObject):
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))
         if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 1.5                
+                self.confidence += 2.5                
         if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.5                
+                self.confidence += 2.78                
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 3.5       
