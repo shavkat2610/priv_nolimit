@@ -199,6 +199,7 @@ def how_much(im = None):
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
     if data == "5SBB":
+        im2.save(f"5BB_please{time.time()}.png")
         print("It must have been 5 BB to call ?!?! please ?!?!")
         return 5.0
     # print(data)
