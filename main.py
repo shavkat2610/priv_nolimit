@@ -1333,8 +1333,8 @@ class AppDelegate(NSObject):
     def makeDecisionTurn(self):
         with self.to_call_lock:
             to_call = self.to_call
-        # with self.mk_comte_carlo_decision_lock:
-        #     set_1_1 = self.probability_1_1
+        with self.mk_comte_carlo_decision_lock:
+            set_1_1 = self.probability_1_1
         # with self.potheight_lock:
         #     pot_height = self.potheight        
         if to_call > 0.0:
