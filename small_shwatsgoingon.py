@@ -531,7 +531,6 @@ def read_own_money_valid(im = None, should_be = 0.0):
 
 
 
-
 def read_own_money(im = None):
     if im == None:
         im = game_screenshot()

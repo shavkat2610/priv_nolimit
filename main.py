@@ -21,7 +21,7 @@ from Foundation import NSObject, NSTimer, NSRunLoop, NSDate, NSThread
 from playsound3 import playsound
 import pytesseract
 from fish_for_cards import crop_wh, fish_for_own_cards, fish_for_deck_cards, prepare_fishing_own_cards, prepare_fishing_deck_cards, own_suits_right, own_suits_left, own_values_left, own_values_right, own_suit_left, own_value_left, own_suits_right, own_value_right, own_card_right_filenames, own_card_left_filenames
-from small_shwatsgoingon import check_if_we_holdin_yet, how_much , check_holders, read_own_cards, read_player_info, read_total_pot_money, read_deck_cards, \
+from small_shwatsgoingon import check_if_we_holdin_yet, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
                                                                     read_old_pot_money, read_own_money, load_smol_watsgoingon_model, general_whats_going_on_model, handle_all_in,\
                                                                           load_flop_equity_model, flop_equity_model_predict, extract_flop_features, load_turn_model, \
                                                                           turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple
@@ -233,9 +233,36 @@ class AppDelegate(NSObject):
         # print("setting own money ...")
         try:
             own_money_current = read_own_money(im=current_im)
+            time.sleep(0.15)
+            own_money_current2 = read_own_money(im=None)
             print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None:
-                # print("\nown money read: "+str(own_money_current))
+                if own_money_current2 != own_money_current:
+                    print("own money read differently twice in a row, aborting ...")
+                    return False
+                with self.lock:
+                    own_money_2 = self.own_money_2
+                if own_money_2 < own_money_current:
+                    print(f"own money_2 ({own_money_2}) less than own_money_current ({own_money_current}), exiting ...")
+                    exit()
+                if read_own_money_valid(im=current_im, should_be=own_money_2):
+                    print("own money read as calculated correctly")
+                    with self.valset_lock:
+                        if not self.values_set:
+                            self.values_set = True                    
+                    return True
+                else: # current read higher than tracked money , must mean we won
+                    with self.potheight_lock:
+                        pot_height = self.potheight                       
+                    difference = own_money_current - own_money_2
+                    print("own money read not as calculated, but higher than tracked money, must mean we won: "+str(difference))
+                    if difference > pot_height * 2.0: # 
+                        print("money read makes no sense, according to own money and potheight ...")
+                        exit()
+                    else:
+                        print("updating own money_2 to current own money ...")
+                        with self.lock:
+                            self.own_money_2 = own_money_current
                 with self.lock:
                     self.own_money = own_money_current
                 with self.valset_lock:
@@ -2019,19 +2046,21 @@ class AppDelegate(NSObject):
                         self.deck_card_5 = "nn"
                     with self.dec_lock:
                         self.decision = "None_yet"
-            if self_dec.startswith("call"):
+            if self_dec.startswith("c"):
                 with self.dec_lock:
                     self.decision = "None_yet"
                 pyautogui.moveTo(670, 610, duration=0.2)
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
                 print("call was clicked")
+                with self.lock:
+                    self.own_money_2 -= to_call
                 with self.to_call_lock: 
                     self.to_call = 0.0    
                 with self.valset_lock:
                     self.values_set = False # own money value only in this                         
             elif self_dec.startswith("r"):
-                if to_call < 1:
+                if to_call < 1.0:
                     pyautogui.moveTo(730, 557, duration=0.2)
                     time.sleep(0.1)     
                     pyautogui.click(730, 557)
@@ -2042,6 +2071,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= 1.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2055,6 +2086,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= to_call*2
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2073,6 +2106,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= 2.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2086,6 +2121,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= to_call*2
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2105,6 +2142,8 @@ class AppDelegate(NSObject):
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= 4.0
                     with self.dec_lock:
                         self.decision = "None_yet"
                     with self.to_call_lock:
@@ -2118,6 +2157,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= to_call*2
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2138,6 +2179,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= 8.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2151,6 +2194,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= to_call*2
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2171,6 +2216,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= 16.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2184,6 +2231,8 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    with self.lock:
+                        self.own_money_2 -= to_call*2
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2196,7 +2245,7 @@ class AppDelegate(NSObject):
                 #     time.sleep(0.45)
                 #     if not self.updateOwnMoney_(current_im=None):
                 #         print("\nread own money failed after clicking ... 20\n")                                                 
-        else:
+        else: # no red button to push
             with self.potheight_lock: # regularly 
                 result = read_total_pot_money(current_im)
                 self.potheight = result["result"]
