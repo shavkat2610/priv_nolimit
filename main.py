@@ -1164,6 +1164,10 @@ class AppDelegate(NSObject):
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
+        with self.mk_comte_carlo_decision_lock:            
+            if self.equity_flop > 0.8: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 3.7          
         decision = self.makeAIDecision_(outputs)
         # with self.mk_comte_carlo_decision_lock:
         #     set_1_1 = self.equity_flop
@@ -1253,6 +1257,9 @@ class AppDelegate(NSObject):
             pot_height = self.potheight            
         with self.to_call_lock:
             to_call = self.to_call    
+        if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.7   
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 3.5       
