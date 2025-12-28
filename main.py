@@ -831,7 +831,7 @@ class AppDelegate(NSObject):
         print(f"Confidence: {confidence}")
         for output in outputs:
             # print(f"Model output: {output}")
-            output = output + (0.17 * confidence) 
+            output = output + (0.125 * confidence) 
             # print(f"Adjusted Model output: {output}")
         if len(outputs) == 2:
             print("someone bet ... no check possible")
@@ -1166,6 +1166,9 @@ class AppDelegate(NSObject):
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         with self.mk_comte_carlo_decision_lock:         
+            if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 1.7               
             if self.equity_flop > 0.7: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 2.7                        
@@ -1256,14 +1259,16 @@ class AppDelegate(NSObject):
     def makeDecisionRiver(self):
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
-            self.equity_river = set_1_1
         with self.potheight_lock:
             pot_height = self.potheight            
         with self.to_call_lock:
             to_call = self.to_call    
+        if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 2.7               
         if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 1.7   
+                self.confidence += 2.7   
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 3.5       
@@ -1335,6 +1340,12 @@ class AppDelegate(NSObject):
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([1.0, 2.0]))
         else:
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))
+        if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 3.5       
+        if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 3.5                 
         return self.makeAIDecision_(outputs)
     
 
@@ -1367,6 +1378,7 @@ class AppDelegate(NSObject):
             if self.deck_card_5 == "nn": # that means river
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
+                    self.equity_river = set_1_1                    
                 if set_1_1 == -1:
                     pass
                 else:
