@@ -981,35 +981,19 @@ class AppDelegate(NSObject):
             print("raise5 equity: "+str(raise5_equity))
 
             if random.randrange(2) == 0:
-                print("random decision made")
-                if random.randrange(2) == 0:
-                    if raise3_equity > 0.0:
-                        return "raise1"
-                    else:
-                        return "fold"
+                print("random decision mode")
+                if random.randrange(2) == 0 and raise3_equity > 0.0:
+                    return "3raise3"
+                elif random.randrange(2) == 0 and raise2_equity > 0.0:
+                    return "2raise2"
+                elif random.randrange(2) == 0 and raise4_equity > 0.0:
+                    return "4raise4"
+                elif random.randrange(2) == 0 and raise5_equity > 0.0:
+                    return "5raise5"
+                elif raise1_equity > 0.0:
+                    return "raise1"
                 else:
-                    if random.randrange(2) == 0:
-                        if raise2_equity > 0.0:
-                            return "2raise2"
-                        else:
-                            return "fold"
-                    else:
-                        if random.randrange(2) == 0:
-                            if raise4_equity > 0.0:
-                                return "3raise3"
-                            else:
-                                return "fold"
-                        else:
-                            if random.randrange(2) == 0:
-                                if raise5_equity > 0.0:
-                                    return "4raise4"
-                                else:
-                                    return "fold"
-                            else:
-                                if raise1_equity > 0.0:
-                                    return "5raise5"
-                                else:
-                                    return "fold"           
+                    return "fold"           
             else:
                 if raise5_equity - raise1_equity > 0.76 :
                     return "5raise5"
