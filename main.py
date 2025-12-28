@@ -253,6 +253,9 @@ class AppDelegate(NSObject):
                     exit()
                 if read_own_money_valid(im=current_im, should_be=own_money_2):
                     print("own money read as calculated correctly")
+                    with self.lock:
+                        self.own_money_2 = own_money_current
+                        self.own_money = own_money_current                    
                     with self.valset_lock:
                         if not self.values_set:
                             self.values_set = True                    
