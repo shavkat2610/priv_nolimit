@@ -358,6 +358,30 @@ class AppDelegate(NSObject):
         else:
             return False
 
+
+    def runItUpAgane(self):
+        # start poker client and game
+        if not run_it_up(big_blind = self.big_blind):
+            print("run it up did not work")
+            exit() # is this the right way to exit the app?
+        # todo: read player data here
+        try:
+            self.updatePlayerData()
+        except Exception as e:
+            print(e)   
+        # set own money initially
+        time.sleep(0.35)
+        if not self.set_munna_initially():
+            time.sleep(0.35)
+            if not self.set_munna_initially():
+                time.sleep(0.35)
+                if not self.set_munna_initially():
+                    time.sleep(0.35)
+                    if not self.set_munna_initially():
+                        exit("could not read own money at start of game")                     
+
+
+
     def runitup_(self, sender):
 
         # hide start-up controls

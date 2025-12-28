@@ -602,10 +602,7 @@ def read_own_money(im = None):
             print("maybe sus value read, ...")
             data = str(data)
             data_0 = data.split(".")[0]
-            if data_0.endswith("7"):
-                data_0 = data_0[:-1]
             data = data_0 + "." + data.split(".")[1]
-            print("removed that seven from data: "+str(data))
             return float(data)
         return data
     except Exception as e:
