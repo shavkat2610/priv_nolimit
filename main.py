@@ -1723,18 +1723,24 @@ class AppDelegate(NSObject):
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
                     # print(e)
-                    time.sleep(1)
+                    time.sleep(0.25)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
-                        print(e) 
-                        print("model said flop, but no cards could be read , exiting ... 24")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                                                 
-                            return
+                        # print(e)
+                        time.sleep(0.25)                    
+                        try:
+                            with self.cards_lock:
+                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                        except Exception as e:
+                            print(e) 
+                            print("model said flop, but no cards could be read , exiting ... 24")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                                                 
+                                return
                 if self.deck_card_4 != "nn":
                     print("model said flop, but found at least four cards, exiting out of gameScreenshot_")
                     with self.game_stage_lock:
