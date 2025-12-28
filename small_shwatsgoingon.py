@@ -548,10 +548,10 @@ def read_own_money(im = None):
     for i in range(im1.size[0]): # for every pixel:
         for j in range(im1.size[1]):
             # print(pixels[i, j])
-            if pixels[i, j][1] >= 135: # 140 initially , trying 130 now
+            if pixels[i, j][1] >= 125: # 140 initially 
                 pixels[i, j] = (10, 10, 10, 255)
             else:
-                if pixels[i,j][0] >= 150:
+                if pixels[i,j][0] >= 120:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
