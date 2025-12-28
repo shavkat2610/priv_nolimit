@@ -1165,7 +1165,10 @@ class AppDelegate(NSObject):
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
-        with self.mk_comte_carlo_decision_lock:            
+        with self.mk_comte_carlo_decision_lock:         
+            if self.equity_flop > 0.7: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 2.7                        
             if self.equity_flop > 0.8: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 3.7          
