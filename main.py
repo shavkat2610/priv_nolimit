@@ -1791,18 +1791,24 @@ class AppDelegate(NSObject):
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
                     # print(e)
-                    time.sleep(1)
+                    time.sleep(0.25)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
-                        print(e) 
-                        print("model said flop, but no cards could be read , exiting ... 24")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            return
+                        # print(e)
+                        time.sleep(0.25)                    
+                        try:
+                            with self.cards_lock:
+                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                        except Exception as e:
+                            print(e) 
+                            print("model said flop, but no cards could be read , exiting ... 24")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                           
+                                return
                 with self.cards_lock:
                     if self.deck_card_4 == "nn":
                         print("model said river, but found no four cards, exiting out of gameScreenshot_")
@@ -1847,7 +1853,7 @@ class AppDelegate(NSObject):
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
                     # print(e)
-                    time.sleep(1)
+                    time.sleep(0.75)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
@@ -1897,25 +1903,31 @@ class AppDelegate(NSObject):
                                 self.cards_open = True
                             except Exception as e:
                                 # print(e)
-                                time.sleep(0.7)
+                                time.sleep(0.37)
                                 try:
                                     [self.own_card_left, self.own_card_right] = read_own_cards()
                                     self.cards_open = True
                                 except Exception as e:
                                     # print(e)
-                                    time.sleep(0.7)
+                                    time.sleep(0.35)                                
                                     try:
                                         [self.own_card_left, self.own_card_right] = read_own_cards()
                                         self.cards_open = True
                                     except Exception as e:
-                                        print(e)
-                                        print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ...")  
-                                        fish_for_own_cards()   
-                                        with self.game_stage_lock:
-                                            self.game_stage_current = "no_decision_to_be_made" 
-                                        with self.acting_lock:
-                                            self.time_to_act = False                                                                           
-                                            return
+                                        # print(e)
+                                        time.sleep(0.35)
+                                        try:
+                                            [self.own_card_left, self.own_card_right] = read_own_cards()
+                                            self.cards_open = True
+                                        except Exception as e:
+                                            print(e)
+                                            print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ...")  
+                                            fish_for_own_cards()   
+                                            with self.game_stage_lock:
+                                                self.game_stage_current = "no_decision_to_be_made" 
+                                            with self.acting_lock:
+                                                self.time_to_act = False                                                                           
+                                                return
                         else:
                             print("check_if_we_holdin_yet failed, model said preflop ...")
                             time.sleep(1)
