@@ -399,7 +399,7 @@ def read_total_pot_money(im = None):
     # im1.show()
     raw_data = pytesseract.image_to_string(im1)
     data = raw_data.strip()
-    print("total_pot_money raw_data: "+raw_data)
+    print("total_pot_money raw_data (stripped): "+data)
     res = {
         "result": 0.001, 
         "im": im
@@ -410,6 +410,7 @@ def read_total_pot_money(im = None):
     # position = data.find("Pot")
     if not ":" in data:
         try:
+            # data = data.strip()
             data = data[:-2]
             data = data.strip()
             data = data.replace("S", "5")
