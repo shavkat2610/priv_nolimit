@@ -189,7 +189,7 @@ def how_much(im = None):
     for i in range(im2.size[0]): # for every pixel:
         for j in range(im2.size[1]):
             # print(pixels[i, j])
-            if pixels[i, j][1] >= 180:
+            if pixels[i, j][1] >= 160:
                 pixels[i, j] = (10, 10, 10, 255)
             else:
                 pixels[i,j] = (255, 255, 255, 255)
