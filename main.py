@@ -265,7 +265,7 @@ class AppDelegate(NSObject):
                         pot_height = self.potheight                       
                     difference = own_money_current - own_money_2
                     print("own money read not as calculated, but higher than tracked money, must mean we won by "+str(difference))
-                    if difference > max(15, pot_height) * 1.5: # lil check for sanity
+                    if difference > max(33.0, pot_height) * 1.5: # lil check for sanity
                         print("money read makes no sense, according to own money and potheight ...")
                         exit()
                     print("updating own money_2 to current own money ...")
