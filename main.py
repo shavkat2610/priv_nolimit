@@ -982,15 +982,15 @@ class AppDelegate(NSObject):
 
             if random.randrange(2) == 0:
                 print("random decision mode")
-                if random.randrange(2) == 0 and raise3_equity > 0.0:
+                if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
-                elif random.randrange(2) == 0 and raise2_equity > 0.0:
+                elif random.randrange(2) == 0 and raise2_equity > 0.0: # swap these maybe later
                     return "2raise2"
-                elif random.randrange(2) == 0 and raise4_equity > 0.0:
+                elif random.randrange(2) == 0 and raise4_equity > 0.0: # swap these maybe later
                     return "4raise4"
-                elif random.randrange(2) == 0 and raise5_equity > 0.0:
+                elif random.randrange(2) == 0 and raise5_equity > 0.0: # swap these maybe later
                     return "5raise5"
-                elif raise1_equity > 0.0:
+                elif raise1_equity > 0.0: # swap these maybe later
                     return "raise1"
                 else:
                     return "fold"           
