@@ -453,7 +453,7 @@ def read_total_pot_money(im = None):
         else:
             pass       
     except:
-        if len(data) == 7 and data[-2] == ".":
+        if len(data) == 7 and data[-2] == ".": # that's when there are trollers (mostly in play money games, they all in with over 1 k bb)
             res["result"] = float(data[:-2].replace(".", ""))
         else:
             print("could not read total pot money, returning 0")
