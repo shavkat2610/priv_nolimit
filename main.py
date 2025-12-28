@@ -1985,8 +1985,8 @@ class AppDelegate(NSObject):
             with self.dec_lock:
                 self_dec = self.decision
             if self_dec == "fold":
-                if to_call < 1:
-                    print("checking here !!! (or calling less than a big blind)")
+                if to_call < 0.1:
+                    print("checking here !!!")
                     pyautogui.moveTo(670, 610, duration=0.2)
                     time.sleep(0.1)
                     pyautogui.click(670, 610)
