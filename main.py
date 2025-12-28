@@ -1903,19 +1903,19 @@ class AppDelegate(NSObject):
                                 self.cards_open = True
                             except Exception as e:
                                 # print(e)
-                                time.sleep(0.37)
+                                time.sleep(0.25)
                                 try:
                                     [self.own_card_left, self.own_card_right] = read_own_cards()
                                     self.cards_open = True
                                 except Exception as e:
                                     # print(e)
-                                    time.sleep(0.35)                                
+                                    time.sleep(0.25)                                
                                     try:
                                         [self.own_card_left, self.own_card_right] = read_own_cards()
                                         self.cards_open = True
                                     except Exception as e:
                                         # print(e)
-                                        time.sleep(0.35)
+                                        time.sleep(0.25)
                                         try:
                                             [self.own_card_left, self.own_card_right] = read_own_cards()
                                             self.cards_open = True
