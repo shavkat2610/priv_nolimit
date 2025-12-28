@@ -248,7 +248,7 @@ class AppDelegate(NSObject):
                     return False
                 with self.lock:
                     own_money_2 = self.own_money_2
-                if own_money_2 > own_money_current:
+                if own_money_2 > own_money_current+1.0: # could be, we paid big blind, so +1.0
                     print(f"own money_2 ({own_money_2}) greater than own_money_current ({own_money_current}), exiting ...")
                     exit()
                 if read_own_money_valid(im=current_im, should_be=own_money_2):
