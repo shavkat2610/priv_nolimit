@@ -345,9 +345,8 @@ class AppDelegate(NSObject):
 
 
     def set_munna_initially(self):
-        time.sleep(0.5)
         munna = read_own_money()
-        time.sleep(0.35)
+        time.sleep(0.25)
         munna2 = read_own_money()
         if munna != -10 and munna == munna2:
             with self.lock:
