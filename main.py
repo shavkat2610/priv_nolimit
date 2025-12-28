@@ -831,7 +831,7 @@ class AppDelegate(NSObject):
         print(f"Confidence: {confidence}")
         for output in outputs:
             # print(f"Model output: {output}")
-            output = output + (0.015 * confidence) 
+            output = output + (0.17 * confidence) 
             # print(f"Adjusted Model output: {output}")
         if len(outputs) == 2:
             print("someone bet ... no check possible")
@@ -1252,7 +1252,13 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight            
         with self.to_call_lock:
-            to_call = self.to_call              
+            to_call = self.to_call    
+        if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 2.5       
+        if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 2.5                        
         # print("makeDecisionRiver probability_1_1: "+str(set_1_1))
         difference_tocall_n_potheight = to_call/pot_height
         if to_call > 0.0:
