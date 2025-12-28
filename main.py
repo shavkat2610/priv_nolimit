@@ -252,7 +252,7 @@ class AppDelegate(NSObject):
                     print(f"own money_2 ({own_money_2}) greater than own_money_current ({own_money_current}), exiting ...")
                     exit()
                 if read_own_money_valid(im=current_im, should_be=own_money_2):
-                    print("own money read as calculated correctly")
+                    print("own money read as calculated")
                     with self.lock:
                         self.own_money_2 = own_money_current
                         self.own_money = own_money_current                    
@@ -2025,9 +2025,14 @@ class AppDelegate(NSObject):
                             # open_game()
                             exit()                    
                     if self.potheight > 2.0:
+                        with self.lock:
+                            if self.own_money_2 > 0:
+                                difference = self.own_money_before_last_preflop-self.own_money_2
+                            else:
+                                difference = self.own_money_before_last_preflop-self.own_money
                         with self.mod_writing_lock:
                             self.made_model_output = True
-                            self.model_output = -0.015 # -0.15
+                            self.model_output = -0.15 * difference # -0.15
                     with self.cards_lock:
                         self.cards_open = False
                     with self.to_call_lock:
