@@ -1166,7 +1166,8 @@ class AppDelegate(NSObject):
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
-        with self.mk_comte_carlo_decision_lock:         
+        with self.mk_comte_carlo_decision_lock:   
+            print("self.equity_flop: "+str(self.equity_flop))      
             if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 1.7               
@@ -1260,6 +1261,7 @@ class AppDelegate(NSObject):
     def makeDecisionRiver(self):
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
+        print("set_1_1 at river-time: "+str(set_1_1))
         with self.potheight_lock:
             pot_height = self.potheight            
         with self.to_call_lock:
@@ -1335,6 +1337,7 @@ class AppDelegate(NSObject):
             to_call = self.to_call
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
+        print("set_1_1 at turn-time: "+str(set_1_1))            
         # with self.potheight_lock:
         #     pot_height = self.potheight        
         if to_call > 0.0:
