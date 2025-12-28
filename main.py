@@ -414,6 +414,19 @@ class AppDelegate(NSObject):
         except Exception as e:
             print(e)
 
+
+
+        # set own money initially
+        time.sleep(0.15)
+        if not self.set_munna_initially():
+            time.sleep(0.15)
+            if not self.set_munna_initially():
+                time.sleep(0.15)
+                if not self.set_munna_initially():
+                    time.sleep(0.15)
+                    if not self.set_munna_initially():
+                        exit("could not read own money at start of game")                 
+
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
         start_time = NSDate.date() #todo: every 2 secs switch between 1. make screenshot 2. use existing screenshot to evaluate
@@ -421,19 +434,7 @@ class AppDelegate(NSObject):
         self.timer2.setTolerance_(0.67)  
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
-
         print("game screenshot timer started")
-
-        # set own money initially
-        time.sleep(0.35)
-        if not self.set_munna_initially():
-            time.sleep(0.35)
-            if not self.set_munna_initially():
-                time.sleep(0.35)
-                if not self.set_munna_initially():
-                    time.sleep(0.35)
-                    if not self.set_munna_initially():
-                        exit("could not read own money at start of game")                 
 
 
     # def gSSOtherThread_(self, userInfo):
