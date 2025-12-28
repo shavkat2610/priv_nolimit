@@ -229,6 +229,12 @@ class AppDelegate(NSObject):
         with self.mk_comte_carlo_decision_lock:
             self.probability_1_1 = -1
 
+
+
+
+
+
+
     def updateOwnMoney_(self, current_im): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
         # print("setting own money ...")
         try:
@@ -376,19 +382,28 @@ class AppDelegate(NSObject):
 
         print("game screenshot timer started")
 
+        # setting own money initially
+        time.sleep(0.5)
+        munna = read_own_money()
         time.sleep(0.35)
-        if not self.updateOwnMoney_(current_im=None):
-            time.sleep(0.35)
-            if not self.updateOwnMoney_(current_im=None):
-                time.sleep(0.35)
-                if not self.updateOwnMoney_(current_im=None):
-                    time.sleep(0.35)
-                    if not self.updateOwnMoney_(current_im=None):
-                        exit("could not read own money at start of game")                 
-        time.sleep(0.35)
-        with self.lock:
-            self.own_money_before_last_preflop = self.own_money 
-            self.own_money_2 = self.own_money
+        munna2 = read_own_money()
+        if munna != -10 and munna == munna2:
+            with self.lock:
+                self.own_money = munna
+                self.own_money_2 = munna
+                self.own_money_before_last_preflop = munna
+        else:
+            print("could not read own money at start of game, exiting ...")
+            exit("could not read own money at start of game")
+        # time.sleep(0.35)
+        # if not self.updateOwnMoney_(current_im=None):
+        #     time.sleep(0.35)
+        #     if not self.updateOwnMoney_(current_im=None):
+        #         time.sleep(0.35)
+        #         if not self.updateOwnMoney_(current_im=None):
+        #             time.sleep(0.35)
+        #             if not self.updateOwnMoney_(current_im=None):
+        #                 exit("could not read own money at start of game")                 
 
 
     # def gSSOtherThread_(self, userInfo):
