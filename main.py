@@ -1259,7 +1259,6 @@ class AppDelegate(NSObject):
     def makeDecisionRiver(self):
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
-            self.equity_river = set_1_1
         with self.potheight_lock:
             pot_height = self.potheight            
         with self.to_call_lock:
@@ -1341,6 +1340,12 @@ class AppDelegate(NSObject):
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([1.0, 2.0]))
         else:
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))
+        if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 3.5       
+        if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 3.5                 
         return self.makeAIDecision_(outputs)
     
 
@@ -1373,6 +1378,7 @@ class AppDelegate(NSObject):
             if self.deck_card_5 == "nn": # that means river
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
+                    self.equity_river = set_1_1                    
                 if set_1_1 == -1:
                     pass
                 else:
