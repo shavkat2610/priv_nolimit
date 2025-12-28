@@ -1464,9 +1464,9 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkRiverModelInput()
-                        return
-                time.sleep(0.7) 
+                    self.mkRiverModelInput()
+                    return
+                time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                 if set_1_1 == -1:
@@ -1481,9 +1481,9 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkRiverModelInput()
-                        return
-                time.sleep(0.7) 
+                    self.mkRiverModelInput()
+                    return
+                time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                 if set_1_1 == -1:
@@ -1498,9 +1498,9 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkRiverModelInput()
-                        return       
-                time.sleep(0.7) 
+                    self.mkRiverModelInput()
+                    return       
+                time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                 if set_1_1 == -1:
@@ -1515,9 +1515,9 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkRiverModelInput()
-                        return
-                time.sleep(1.7) 
+                    self.mkRiverModelInput()
+                    return
+                time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                 if set_1_1 == -1:
@@ -1532,9 +1532,43 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkRiverModelInput()
-                        return
-                time.sleep(1.7)                     
+                    self.mkRiverModelInput()
+                    return                
+                time.sleep(0.35) 
+                with self.mk_comte_carlo_decision_lock:
+                    set_1_1 = self.probability_1_1
+                if set_1_1 == -1:
+                    pass
+                else:
+                    with self.dec_lock:
+                        decision = self.decision
+                    if decision == "None_yet":
+                        model_dec = self.makeDecisionRiver()
+                        time.sleep(0.5)
+                        with self.dec_lock:
+                            decision = self.decision
+                        if decision == "None_yet":
+                            self.decision = model_dec
+                    self.mkRiverModelInput()
+                    return                
+                time.sleep(0.35) 
+                with self.mk_comte_carlo_decision_lock:
+                    set_1_1 = self.probability_1_1
+                if set_1_1 == -1:
+                    pass
+                else:
+                    with self.dec_lock:
+                        decision = self.decision
+                    if decision == "None_yet":
+                        model_dec = self.makeDecisionRiver()
+                        time.sleep(0.5)
+                        with self.dec_lock:
+                            decision = self.decision
+                        if decision == "None_yet":
+                            self.decision = model_dec
+                    self.mkRiverModelInput()
+                    return
+                time.sleep(0.35)                     
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                 if set_1_1 == -1:
@@ -1545,8 +1579,7 @@ class AppDelegate(NSObject):
                         if self.decision == "None_yet":
                             self.decision = self.makeDecisionRiver()  
                         self.mkRiverModelInput()
-                        return                          
-                return     
+                        return    
             if self.deck_card_5 != "nn": # that means turn
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1562,8 +1595,8 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkTurnModelInput()
-                        return
+                    self.mkTurnModelInput()
+                    return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1579,8 +1612,8 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkTurnModelInput()
-                        return
+                    self.mkTurnModelInput()
+                    return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1596,8 +1629,8 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkTurnModelInput()
-                        return      
+                    self.mkTurnModelInput()
+                    return      
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1613,8 +1646,8 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkTurnModelInput()
-                        return
+                    self.mkTurnModelInput()
+                    return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1631,8 +1664,8 @@ class AppDelegate(NSObject):
                             decision = self.decision
                         if decision == "None_yet":
                             self.decision = model_dec
-                        self.mkTurnModelInput()
-                        return                 
+                    self.mkTurnModelInput()
+                    return                 
     
 
     def sliderChanged_(self, sender):
