@@ -944,8 +944,9 @@ class AppDelegate(NSObject):
         if left_above and rigth_above:
             print("debug : both seven or above")
             if difference_tocall_n_potheight < 0.25 and to_call<=1.0 and pot_height<=10.0 and pot_height>=3.0:
-                print("funny lil raise here 1")
-                decision = "raise1"
+                # print("funny lil raise here 1")
+                # decision = "raise1"
+                pass
             else:
                 if own_card_left[0] == own_card_right[0]: # suited
                     print("debug : suited")
