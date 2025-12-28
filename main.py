@@ -1174,7 +1174,7 @@ class AppDelegate(NSObject):
             with self.confidence_lock:
                 self.confidence += 1.2
                 if to_call > 5.0:
-                    self.confidence += 2.5    
+                    self.confidence += 1.5    
                 if decision.startswith("4") or decision.startswith("5"):
                     self.confidence += 1.5                                    
         return decision 
@@ -1255,10 +1255,10 @@ class AppDelegate(NSObject):
             to_call = self.to_call    
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.5       
+                self.confidence += 3.5       
         if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.5                        
+                self.confidence += 3.5                        
         # print("makeDecisionRiver probability_1_1: "+str(set_1_1))
         difference_tocall_n_potheight = to_call/pot_height
         if to_call > 0.0:
@@ -1275,9 +1275,9 @@ class AppDelegate(NSObject):
             with self.confidence_lock:
                 self.confidence += 1.2
                 if to_call > 5.0:
-                    self.confidence += 2.5
+                    self.confidence += 1.5
                 if decision.startswith("4") or decision.startswith("5"):
-                    self.confidence += 1.5                    
+                    self.confidence += 0.5                    
         return decision 
         # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
         #     decision = "raise1"        
