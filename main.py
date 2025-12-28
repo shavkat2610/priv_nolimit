@@ -1264,7 +1264,7 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
 
-        if decision != "fold" and decision != "call" and to_call > 0.0: # this part increases confidenc after we bet something
+        if decision != "fold" and decision != "call" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
                 self.confidence += 1
         return decision 
@@ -2006,6 +2006,7 @@ class AppDelegate(NSObject):
                 self.to_call = how_much(im=current_im)
                 self.difference_tocall_n_potheight = self.to_call/self.potheight
                 to_call = self.to_call
+                print(f"to_call is : {str(to_call)}")
             # self.setValuesOurTurn_(current_im=current_im)
             self.makeDecision()
 
@@ -2090,7 +2091,7 @@ class AppDelegate(NSObject):
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
                     with self.lock:
-                        self.own_money_2 -= to_call*2
+                        self.own_money_2 -= to_call*2.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
