@@ -1173,6 +1173,8 @@ class AppDelegate(NSObject):
         if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
                 self.confidence += 1.2
+                if to_call > 5.0:
+                    self.confidence += 2.5                
         return decision 
         decision = "fold"
         if set_1_1 > 0.89:
@@ -1264,6 +1266,8 @@ class AppDelegate(NSObject):
         if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
                 self.confidence += 1.2
+                if to_call > 5.0:
+                    self.confidence += 2.5
         return decision 
         # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
         #     decision = "raise1"        
