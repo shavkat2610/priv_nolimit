@@ -1324,7 +1324,7 @@ class AppDelegate(NSObject):
                     decision = self.decision
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
-                    time.sleep(0.5)
+                    time.sleep(0.25)
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
@@ -1341,7 +1341,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1358,7 +1358,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1375,7 +1375,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1392,7 +1392,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1409,7 +1409,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1426,7 +1426,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1443,7 +1443,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1460,7 +1460,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1477,7 +1477,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1506,7 +1506,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1523,7 +1523,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1540,7 +1540,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1557,7 +1557,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
@@ -1575,7 +1575,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        time.sleep(0.5)
+                        time.sleep(0.25)
                         with self.dec_lock:
                             decision = self.decision
                         if decision == "None_yet":
