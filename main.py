@@ -169,9 +169,9 @@ class AppDelegate(NSObject):
     difference_tocall_n_potheight = to_call/potheight # important for early decision making , and also for ai models possibly
 
     lock = Lock() #
-    own_money = 0.0
-    own_money_2 = 0.0
-    own_money_before_last_preflop = 25.0
+    own_money = 30.0
+    own_money_2 = 30.0
+    own_money_before_last_preflop = 30.0
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -256,7 +256,7 @@ class AppDelegate(NSObject):
                         pot_height = self.potheight                       
                     difference = own_money_current - own_money_2
                     print("own money read not as calculated, but higher than tracked money, must mean we won: "+str(difference))
-                    if difference > pot_height * 2.0: # 
+                    if difference > max(15, pot_height) * 1.5: # 
                         print("money read makes no sense, according to own money and potheight ...")
                         exit()
                     else:
