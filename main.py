@@ -1174,7 +1174,9 @@ class AppDelegate(NSObject):
             with self.confidence_lock:
                 self.confidence += 1.2
                 if to_call > 5.0:
-                    self.confidence += 2.5                
+                    self.confidence += 2.5    
+                if decision.startswith("4") or decision.startswith("5"):
+                    self.confidence += 1.5                                    
         return decision 
         decision = "fold"
         if set_1_1 > 0.89:
@@ -1268,6 +1270,8 @@ class AppDelegate(NSObject):
                 self.confidence += 1.2
                 if to_call > 5.0:
                     self.confidence += 2.5
+                if decision.startswith("4") or decision.startswith("5"):
+                    self.confidence += 1.5                    
         return decision 
         # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
         #     decision = "raise1"        
