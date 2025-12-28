@@ -1266,6 +1266,9 @@ class AppDelegate(NSObject):
             pot_height = self.potheight            
         with self.to_call_lock:
             to_call = self.to_call    
+        if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.7              
         if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 2.7               
