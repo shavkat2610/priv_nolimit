@@ -2020,14 +2020,14 @@ class AppDelegate(NSObject):
             if self_dec == "fold":
                 if to_call < 0.1:
                     print("checking here !!!")
-                    pyautogui.moveTo(670, 610, duration=0.2)
+                    pyautogui.moveTo(670, 610, duration=0.1)
                     time.sleep(0.1)
                     pyautogui.click(670, 610)
                     with self.dec_lock:
                         self.decision = "None_yet"                        
                     # self.to_call = 0.0 # already here
                 else :
-                    pyautogui.moveTo(540, 610, duration=0.2)
+                    pyautogui.moveTo(540, 610, duration=0.1)
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
                     with self.lock:
@@ -2063,7 +2063,7 @@ class AppDelegate(NSObject):
             if self_dec.startswith("c"):
                 with self.dec_lock:
                     self.decision = "None_yet"
-                pyautogui.moveTo(670, 610, duration=0.2)
+                pyautogui.moveTo(670, 610, duration=0.1)
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
                 print("call was clicked")
@@ -2075,7 +2075,7 @@ class AppDelegate(NSObject):
                     self.values_set = False # own money value only in this                         
             elif self_dec.startswith("r"):
                 if to_call < 1.0:
-                    pyautogui.moveTo(730, 557, duration=0.2)
+                    pyautogui.moveTo(730, 557, duration=0.1)
                     time.sleep(0.1)     
                     pyautogui.click(730, 557)
                     pyautogui.typewrite("1")
@@ -2094,7 +2094,7 @@ class AppDelegate(NSObject):
                     with self.valset_lock:
                         self.values_set = False # own money value only in this        
                 else: # simply clicking the raise button
-                    pyautogui.moveTo(800, 610, duration=0.2)
+                    pyautogui.moveTo(800, 610, duration=0.1)
                     time.sleep(0.1)                  
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
@@ -2110,7 +2110,7 @@ class AppDelegate(NSObject):
                         self.values_set = False # own money value only in this                                              
             elif self_dec.startswith("2"):
                 if to_call < 1:
-                    pyautogui.moveTo(730, 557, duration=0.2)
+                    pyautogui.moveTo(730, 557, duration=0.1)
                     time.sleep(0.1)     
                     pyautogui.click(730, 557)
                     pyautogui.typewrite("2")
@@ -2129,7 +2129,7 @@ class AppDelegate(NSObject):
                     with self.valset_lock:
                         self.values_set = False # own money value only in this    
                 else: # simply clicking the raise button
-                    pyautogui.moveTo(800, 610, duration=0.2)
+                    pyautogui.moveTo(800, 610, duration=0.1)
                     time.sleep(0.1)                  
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
@@ -2147,7 +2147,7 @@ class AppDelegate(NSObject):
                 if to_call < 2:
                     print("raise3 was clicked")
                     # todo click text field, type 3, hit (800, 610)
-                    pyautogui.moveTo(730, 557, duration=0.2)
+                    pyautogui.moveTo(730, 557, duration=0.1)
                     time.sleep(0.1)     
                     pyautogui.click(730, 557)
                     pyautogui.typewrite("4")
@@ -2165,7 +2165,7 @@ class AppDelegate(NSObject):
                     with self.valset_lock:
                         self.values_set = False # own money value only in this     
                 else: # simply clicking the raise button
-                    pyautogui.moveTo(800, 610, duration=0.2)
+                    pyautogui.moveTo(800, 610, duration=0.1)
                     time.sleep(0.1)                  
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
@@ -2183,7 +2183,7 @@ class AppDelegate(NSObject):
                 if to_call < 2:
                     print("raise4 was clicked")
                     # click text field, type 4, hit (800, 610)
-                    pyautogui.moveTo(730, 557, duration=0.2)
+                    pyautogui.moveTo(730, 557, duration=0.1)
                     time.sleep(0.1)              
                     pyautogui.click(730, 557)
                     pyautogui.typewrite("8")
@@ -2202,7 +2202,7 @@ class AppDelegate(NSObject):
                     with self.valset_lock:
                         self.values_set = False # own money value only in this     
                 else: # simply clicking the raise button
-                    pyautogui.moveTo(800, 610, duration=0.2)
+                    pyautogui.moveTo(800, 610, duration=0.1)
                     time.sleep(0.1)                  
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
@@ -2220,7 +2220,7 @@ class AppDelegate(NSObject):
                 if to_call < 8:
                     print("raise5 was clicked")
                     # click text field, type 4, hit (800, 610)
-                    pyautogui.moveTo(730, 557, duration=0.2)
+                    pyautogui.moveTo(730, 557, duration=0.1)
                     time.sleep(0.1)              
                     pyautogui.click(730, 557)
                     pyautogui.typewrite("16")
@@ -2239,7 +2239,7 @@ class AppDelegate(NSObject):
                     with self.valset_lock:
                         self.values_set = False # own money value only in this     
                 else: # simply clicking the raise button
-                    pyautogui.moveTo(800, 610, duration=0.2)
+                    pyautogui.moveTo(800, 610, duration=0.1)
                     time.sleep(0.1)                  
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
