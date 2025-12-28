@@ -169,8 +169,8 @@ class AppDelegate(NSObject):
     difference_tocall_n_potheight = to_call/potheight # important for early decision making , and also for ai models possibly
 
     lock = Lock() #
-    own_money = 30.0
-    own_money_2 = 30.0
+    own_money = 0.0
+    own_money_2 = 0.0
     own_money_before_last_preflop = 30.0
 
     d_lock = Lock() # for setting dealer position
@@ -242,8 +242,8 @@ class AppDelegate(NSObject):
                     return False
                 with self.lock:
                     own_money_2 = self.own_money_2
-                if own_money_2 < own_money_current:
-                    print(f"own money_2 ({own_money_2}) less than own_money_current ({own_money_current}), exiting ...")
+                if own_money_2 > own_money_current:
+                    print(f"own money_2 ({own_money_2}) greater than own_money_current ({own_money_current}), exiting ...")
                     exit()
                 if read_own_money_valid(im=current_im, should_be=own_money_2):
                     print("own money read as calculated correctly")
@@ -255,20 +255,18 @@ class AppDelegate(NSObject):
                     with self.potheight_lock:
                         pot_height = self.potheight                       
                     difference = own_money_current - own_money_2
-                    print("own money read not as calculated, but higher than tracked money, must mean we won: "+str(difference))
-                    if difference > max(15, pot_height) * 1.5: # 
+                    print("own money read not as calculated, but higher than tracked money, must mean we won by "+str(difference))
+                    if difference > max(15, pot_height) * 1.5: # lil check for sanity
                         print("money read makes no sense, according to own money and potheight ...")
                         exit()
-                    else:
-                        print("updating own money_2 to current own money ...")
-                        with self.lock:
-                            self.own_money_2 = own_money_current
-                with self.lock:
-                    self.own_money = own_money_current
-                with self.valset_lock:
-                    if not self.values_set:
-                        self.values_set = True
-                return True
+                    print("updating own money_2 to current own money ...")
+                    with self.lock:
+                        self.own_money_2 = own_money_current
+                        self.own_money = own_money_current
+                    with self.valset_lock:
+                        if not self.values_set:
+                            self.values_set = True
+                    return True
             return False
         except Exception as e:
             print("read own money failed")
