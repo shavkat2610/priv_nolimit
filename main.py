@@ -2006,6 +2006,7 @@ class AppDelegate(NSObject):
                 self.to_call = how_much(im=current_im)
                 self.difference_tocall_n_potheight = self.to_call/self.potheight
                 to_call = self.to_call
+                print(f"to_call is : {str(to_call)}")
             # self.setValuesOurTurn_(current_im=current_im)
             self.makeDecision()
 
