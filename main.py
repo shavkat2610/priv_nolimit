@@ -2091,7 +2091,7 @@ class AppDelegate(NSObject):
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
                     with self.lock:
-                        self.own_money_2 -= to_call*2
+                        self.own_money_2 -= to_call*2.0
                     with self.to_call_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
