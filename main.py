@@ -835,7 +835,7 @@ class AppDelegate(NSObject):
         if len(outputs) == 2:
             print("someone bet ... no check possible")
             for output in outputs:
-                output = output + (0.175 * confidence) 
+                output = output + (0.275 * confidence) 
             call_equity = outputs[0]
             bet_equity = outputs[1]
             print("call equity: "+str(call_equity))
