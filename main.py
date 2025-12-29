@@ -948,156 +948,151 @@ class AppDelegate(NSObject):
         rigth_above = own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")
         if left_above and rigth_above:
             print("debug : both seven or above")
-            if difference_tocall_n_potheight < 0.25 and to_call<=1.0 and pot_height<=10.0 and pot_height>=3.0:
-                # print("funny lil raise here 1")
-                # decision = "raise1"
-                pass
-            else:
-                if own_card_left[0] == own_card_right[0]: # suited
-                    print("debug : suited")
-                    if own_card_left.startswith("A") and own_card_right.startswith("A"):
+            if own_card_left[0] == own_card_right[0]: # suited
+                print("debug : suited")
+                if own_card_left.startswith("A") and own_card_right.startswith("A"):
+                    decision = "3raise3"
+                elif own_card_left.startswith("K") and own_card_right.startswith("K"):
+                    if to_call <= 6.0: 
+                        print("debug : both K")
+                        decision = "3raise3"          
+                    elif to_call <= 20.0: 
+                        decision = "raise1"  
+                    elif to_call <= 35.0:
+                        decision = "call"                  
+                elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
+                    if to_call <= 1.5:
                         decision = "3raise3"
-                    elif own_card_left.startswith("K") and own_card_right.startswith("K"):
-                        if to_call <= 6.0: 
-                            print("debug : both K")
-                            decision = "3raise3"          
-                        elif to_call <= 20.0: 
-                            decision = "raise1"  
-                        elif to_call <= 35.0:
-                            decision = "call"                  
-                    elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
-                        if to_call <= 1.5:
-                            decision = "3raise3"
-                        elif to_call <= 8.0: 
-                            decision = "2raise2"
-                        else:
-                            decision = "call" 
-                    elif own_card_left.startswith("J") and own_card_right.startswith("J"):
-                        if to_call <= 5.7:
-                            decision = "raise1"      
-                        else:
-                            decision = "call"                                                                                                     
-                    elif own_card_left.startswith("T") and own_card_right.startswith("T"):
-                        if to_call <= 3.67:
-                            decision = "raise1" 
-                        elif to_call <= 12.0:
-                            decision = "call"
-                    elif own_card_left.startswith("9") and own_card_right.startswith("9"):
-                        if to_call <= 11:
-                            decision = "call" 
-                    elif own_card_left.startswith("8") and own_card_right.startswith("8"):
-                        if to_call <= 8:
-                            decision = "call"
-                elif own_card_left.startswith("A") or own_card_right.startswith("A"):# one is ace
-                    print("debug: one is ace")       
-                    if to_call <= 0.5:
-                        print("debug : ace and something else, to_call very low")
-                        print("funny lil raise here 2")
-                        decision = "raise1" # funny move   
-                    elif to_call<=4.75:
+                    elif to_call <= 8.0: 
+                        decision = "2raise2"
+                    else:
+                        decision = "call" 
+                elif own_card_left.startswith("J") and own_card_right.startswith("J"):
+                    if to_call <= 5.7:
+                        decision = "raise1"      
+                    else:
+                        decision = "call"                                                                                                     
+                elif own_card_left.startswith("T") and own_card_right.startswith("T"):
+                    if to_call <= 3.67:
+                        decision = "raise1" 
+                    elif to_call <= 12.0:
                         decision = "call"
-                    elif to_call<=5.5 and pot_height>=8.5:
-                        decision = "call"                      
-                    elif to_call<=7.5 and pot_height>=18.5:
-                        decision = "call"                               
-                    if own_card_left.startswith("K") or own_card_right.startswith("K"): # ace,  king
-                        print("debug : ace and king")
-                        if to_call < 1.0:
-                            print("funny lil raise here 3")
-                            decision = "raise1"     
-                        elif to_call < 7.5:
-                            decision = "call"                                     
-                    else:                                   #                              
-                        if own_card_left.startswith("Q") or own_card_right.startswith("Q"): #  ace # queen
-                            print("debug : ace and queen")
-                            if to_call <= 2.0:
-                                print("funny lil raise here 4")
-                                decision = "2raise2"
-                            elif to_call <= 4.0: 
-                                print("funny lil raise here 5")
-                                decision = "raise1"
-                            elif to_call <= 8.0: 
-                                decision = "call" 
-                        elif own_card_left.startswith("J") or own_card_right.startswith("J"): # ace # jack
-                            print("debug : ace and jack")
-                            if to_call <= 2.5:
-                                print("funny lil raise here 6")
-                                decision = "raise1"
-                            elif to_call <= 4.9: 
-                                decision = "call"
-                        else:
-                            if to_call <= 3.0:
-                                decision = "call"                                           
-                    
-
-                else: # no ace but 7 or higher                 
-                    if own_card_left.startswith("K") or own_card_right.startswith("K"):
-                        print("debug : one is K")
-                        if to_call <= 4.0: 
-                            decision = "call"      
-                        elif own_card_left.startswith("Q") or own_card_right.startswith("Q"): # K & Q
-                            print("debug : K and Q")
-                            if to_call<5.0:
-                                decision = "call"                                
-                            if to_call<15.0 and pot_height>=10.0:
-                                decision = "call"          
-                        elif own_card_left.startswith("J") or own_card_right.startswith("J"): # K & J
-                            print("debug : K and J")
-                            if to_call<4.0:
-                                decision = "call"                                
-                            if to_call<12.0 and pot_height>=8.0:
-                                decision = "call"       
-                        elif own_card_left.startswith("T") or own_card_right.startswith("T"): # K & T
-                            print("debug : K and T")
-                            if to_call<3.67:
-                                decision = "call"                                
-                            if to_call<12.0 and pot_height>=8.0:
-                                decision = "call"                                                                                                                                                                              
-                    elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
-                        print("both Q")
-                        if to_call <= 1.5:
-                            decision = "3raise3"
-                        elif to_call <= 8.0: 
+                elif own_card_left.startswith("9") and own_card_right.startswith("9"):
+                    if to_call <= 11:
+                        decision = "call" 
+                elif own_card_left.startswith("8") and own_card_right.startswith("8"):
+                    if to_call <= 8:
+                        decision = "call"
+            elif own_card_left.startswith("A") or own_card_right.startswith("A"):# one is ace
+                print("debug: one is ace")       
+                if to_call <= 1.5:
+                    print("debug : ace and something else, to_call very low")
+                    print("funny lil raise here 2")
+                    decision = "raise1" # funny move   
+                elif to_call<=4.75:
+                    decision = "call"
+                elif to_call<=5.5 and pot_height>=8.5:
+                    decision = "call"                      
+                elif to_call<=7.5 and pot_height>=18.5:
+                    decision = "call"                               
+                if own_card_left.startswith("K") or own_card_right.startswith("K"): # ace,  king
+                    print("debug : ace and king")
+                    if to_call < 1.0:
+                        print("funny lil raise here 3")
+                        decision = "raise1"     
+                    elif to_call < 7.5:
+                        decision = "call"                                     
+                else:                                   #                              
+                    if own_card_left.startswith("Q") or own_card_right.startswith("Q"): #  ace # queen
+                        print("debug : ace and queen")
+                        if to_call <= 2.0:
+                            print("funny lil raise here 4")
                             decision = "2raise2"
-                        else:
-                            decision = "call"
-                    elif own_card_left.startswith("Q") or own_card_right.startswith("Q"):
-                        print("debug :one is Q")
-                        if to_call <= 2.5: 
-                            decision = "call"   
-                        if own_card_left.startswith("J") or own_card_right.startswith("J"): # Q & J
-                            print("debug : Q and J")
-                            if to_call <= 5.0: 
-                                decision = "call"   
-                        if own_card_left.startswith("T") or own_card_right.startswith("T"): # Q & T
-                            print("debug : Q and T")
-                            if to_call <= 4.5: 
-                                decision = "call"     
-                    elif own_card_left.startswith("J") and own_card_right.startswith("J"):
-                        decision = "raise1"                                                                                                           
-                    elif own_card_left.startswith("J") or own_card_right.startswith("J"):
-                        print("debug :one is J")
-                        if to_call <= 2.5: 
-                            decision = "call"
-                        if own_card_left.startswith("T") or own_card_right.startswith("T"): # J & T
-                            print("debug : J and T")
-                            if to_call <= 4.5: 
-                                decision = "call"                               
-                    elif own_card_left.startswith("T") and own_card_right.startswith("T"):
-                        if to_call <= 10:
-                            decision = "call"
-                    elif own_card_left.startswith("T") or own_card_right.startswith("T"):
+                        elif to_call <= 4.0: 
+                            print("funny lil raise here 5")
+                            decision = "raise1"
+                        elif to_call <= 8.0: 
+                            decision = "call" 
+                    elif own_card_left.startswith("J") or own_card_right.startswith("J"): # ace # jack
+                        print("debug : ace and jack")
                         if to_call <= 2.5:
-                            decision = "call"                            
-                    elif own_card_left.startswith("9") and own_card_right.startswith("9"):
-                        if to_call <= 9:
+                            print("funny lil raise here 6")
+                            decision = "raise1"
+                        elif to_call <= 4.9: 
                             decision = "call"
-                    elif own_card_left.startswith("8") and own_card_right.startswith("8"):
-                        if to_call <= 8:
-                            decision = "call"
-                    elif own_card_left.startswith("7") and own_card_right.startswith("7"):
-                        if to_call <= 7:
-                            decision = "call"
+                    else:
+                        if to_call <= 3.0:
+                            decision = "call"                                           
+                
+
+            else: # no ace but 7 or higher                 
+                if own_card_left.startswith("K") or own_card_right.startswith("K"):
+                    print("debug : one is K")
+                    if to_call <= 4.0: 
+                        decision = "call"      
+                    elif own_card_left.startswith("Q") or own_card_right.startswith("Q"): # K & Q
+                        print("debug : K and Q")
+                        if to_call<5.0:
+                            decision = "call"                                
+                        if to_call<15.0 and pot_height>=10.0:
+                            decision = "call"          
+                    elif own_card_left.startswith("J") or own_card_right.startswith("J"): # K & J
+                        print("debug : K and J")
+                        if to_call<4.0:
+                            decision = "call"                                
+                        if to_call<12.0 and pot_height>=8.0:
+                            decision = "call"       
+                    elif own_card_left.startswith("T") or own_card_right.startswith("T"): # K & T
+                        print("debug : K and T")
+                        if to_call<3.67:
+                            decision = "call"                                
+                        if to_call<12.0 and pot_height>=8.0:
+                            decision = "call"                                                                                                                                                                              
+                elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
+                    print("both Q")
+                    if to_call <= 1.5:
+                        decision = "3raise3"
+                    elif to_call <= 8.0: 
+                        decision = "2raise2"
+                    else:
+                        decision = "call"
+                elif own_card_left.startswith("Q") or own_card_right.startswith("Q"):
+                    print("debug :one is Q")
+                    if to_call <= 2.5: 
+                        decision = "call"   
+                    if own_card_left.startswith("J") or own_card_right.startswith("J"): # Q & J
+                        print("debug : Q and J")
+                        if to_call <= 5.0: 
+                            decision = "call"   
+                    if own_card_left.startswith("T") or own_card_right.startswith("T"): # Q & T
+                        print("debug : Q and T")
+                        if to_call <= 4.5: 
+                            decision = "call"     
+                elif own_card_left.startswith("J") and own_card_right.startswith("J"):
+                    decision = "raise1"                                                                                                           
+                elif own_card_left.startswith("J") or own_card_right.startswith("J"):
+                    print("debug :one is J")
+                    if to_call <= 2.5: 
+                        decision = "call"
+                    if own_card_left.startswith("T") or own_card_right.startswith("T"): # J & T
+                        print("debug : J and T")
+                        if to_call <= 4.5: 
+                            decision = "call"                               
+                elif own_card_left.startswith("T") and own_card_right.startswith("T"):
+                    if to_call <= 10:
+                        decision = "call"
+                elif own_card_left.startswith("T") or own_card_right.startswith("T"):
+                    if to_call <= 2.5:
+                        decision = "call"                            
+                elif own_card_left.startswith("9") and own_card_right.startswith("9"):
+                    if to_call <= 9:
+                        decision = "call"
+                elif own_card_left.startswith("8") and own_card_right.startswith("8"):
+                    if to_call <= 8:
+                        decision = "call"
+                elif own_card_left.startswith("7") and own_card_right.startswith("7"):
+                    if to_call <= 7:
+                        decision = "call"
                                          
         else:
             print("debug : one is six or under")
