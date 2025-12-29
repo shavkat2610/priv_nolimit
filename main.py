@@ -2099,9 +2099,9 @@ class AppDelegate(NSObject):
                             else:
                                 difference = self.own_money_before_last_preflop-self.own_money
                         if difference < 0.0:
-                            difference = max(-2, difference)
+                            difference = max(-2.0, difference)
                         else:
-                            difference = min(2, difference)                            
+                            difference = min(2.0, difference)                            
                         with self.mod_writing_lock:
                             self.made_model_output = True
                             self.model_output = -0.75 * difference # -0.15
