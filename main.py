@@ -1180,7 +1180,13 @@ class AppDelegate(NSObject):
                     self.confidence += 2.7                        
             if self.equity_flop > 0.8: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 3.7          
+                    self.confidence += 3.7         
+            if self.equity_flop > 0.9: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 4.7           
+            if self.equity_flop > 0.95: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 5.7                                       
         decision = self.makeAIDecision_(outputs)
         # with self.mk_comte_carlo_decision_lock:
         #     set_1_1 = self.equity_flop
