@@ -769,9 +769,9 @@ class AppDelegate(NSObject):
 
 
     def write_csv_s(self): # todo: update
-        print("writing to csv's ...")
         with self.mod_writing_lock:    
-            if not self.wrote_to_csv_s:         
+            if not self.wrote_to_csv_s:    
+                print("writing to csv's ...")     
                 self.wrote_to_csv_s = True                          
                 if self.made_turn_model_input:
                     for turn_model_input in self.turn_model_inputs:
@@ -1639,6 +1639,37 @@ class AppDelegate(NSObject):
         # time.sleep(0.05)
 
 
+
+    def roundswap(self):
+        if not self.updateOwnMoney_(current_im=None):
+            time.sleep(0.35)
+            if not self.updateOwnMoney_(current_im=None):
+                time.sleep(0.75)
+                print("retrying reading own money at preflop")
+                if not self.updateOwnMoney_(current_im=None):
+                    time.sleep(0.35)
+                    print("retrying reading own money at preflop")
+                    if not self.updateOwnMoney_(current_im=None):
+                        time.sleep(0.75)
+                        print("retrying reading own money at preflop")
+                        if not self.updateOwnMoney_(current_im=None):
+                            time.sleep(0.35)
+                            print("retrying reading own money at preflop")
+                            if not self.updateOwnMoney_(current_im=None):
+                                print("\nread own money failed at preflop - bad ! - !!!\n")                                  
+                                exit()
+
+        # model training
+        with self.mod_writing_lock:
+            made_output_temp =  self.made_model_output
+        if not made_output_temp:
+            self.mkModelOutput()
+        # print("model output made")
+
+        self.write_csv_s()
+        self.resetValues()
+
+
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
         with self.acting_lock:
@@ -1894,10 +1925,12 @@ class AppDelegate(NSObject):
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
             if current_game_stage != "preflop":
+                
                 with self.game_stage_lock:
                     self.game_stage_current = "preflop"                
                 with self.d_lock: # only once after turn or once every preflop
                     self.d_position = read_D(current_im)
+                self.roundswap()
                 print("preflop")
                 with self.cards_lock:
                     if self.cards_open == False:
@@ -1978,33 +2011,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False                                                                              
                             return
                         
-                if not self.updateOwnMoney_(current_im=None):
-                    time.sleep(0.35)
-                    if not self.updateOwnMoney_(current_im=None):
-                        time.sleep(0.75)
-                        print("retrying reading own money at preflop")
-                        if not self.updateOwnMoney_(current_im=None):
-                            time.sleep(0.35)
-                            print("retrying reading own money at preflop")
-                            if not self.updateOwnMoney_(current_im=None):
-                                time.sleep(0.75)
-                                print("retrying reading own money at preflop")
-                                if not self.updateOwnMoney_(current_im=None):
-                                    time.sleep(0.35)
-                                    print("retrying reading own money at preflop")
-                                    if not self.updateOwnMoney_(current_im=None):
-                                        print("\nread own money failed at preflop - bad ! - !!!\n")                                  
-                                        exit()
-
-                # model training
-                with self.mod_writing_lock:
-                    made_output_temp =  self.made_model_output
-                if not made_output_temp:
-                    self.mkModelOutput()
-                # print("model output made")
-
-                self.write_csv_s()
-                self.resetValues()
+                
 
         
 
