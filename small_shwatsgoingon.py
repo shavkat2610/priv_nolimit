@@ -561,7 +561,7 @@ def read_own_money(im = None):
         return -1.0
     if len(data)<=2:
         print("COULD NOT READ OWN MONEY 24 - data :"+str(data))
-        im2.save(f"sus_own_money_reading{time.time()}.png")
+        # im2.save(f"sus_own_money_reading{time.time()}.png")
         return -10
     if len(data)<=3:
         # print("!!!!!!!!!!!!!!!!   SUS READ OWN MONEY 24 - data :"+str(data))
