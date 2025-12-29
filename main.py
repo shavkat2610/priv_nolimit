@@ -2082,7 +2082,7 @@ class AppDelegate(NSObject):
                                 difference = self.own_money_before_last_preflop-self.own_money
                         with self.mod_writing_lock:
                             self.made_model_output = True
-                            self.model_output = -0.15 * difference # -0.15
+                            self.model_output = -0.25 * difference # -0.15
                     with self.cards_lock:
                         self.cards_open = False
                     with self.to_call_lock:
