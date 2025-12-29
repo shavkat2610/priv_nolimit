@@ -1732,6 +1732,8 @@ class AppDelegate(NSObject):
                     self.game_stage_current = "no_decision_to_be_made"
             secs = time.time()
             # current_im.save(f"shmol_model_not_sure/all_in/all_in_{str(secs).split(".")[0]}.png")
+            with self.lock:
+                self.own_money_2 = -1
             time.sleep(0.25)
             if not self.updateOwnMoney_(current_im=None):
                 time.sleep(0.35)
