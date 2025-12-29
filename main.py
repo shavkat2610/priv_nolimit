@@ -834,8 +834,10 @@ class AppDelegate(NSObject):
             # print(f"Adjusted Model output: {output}")
         if len(outputs) == 2:
             print("someone bet ... no check possible")
+            print() 
             print("call equity before confidence: "+str(outputs[0]))
-            print("bet equity before confidence: "+str(outputs[1]))            
+            print("bet equity before confidence: "+str(outputs[1]))    
+            print()        
             for output in outputs:
                 output = output + (0.275 * confidence) 
             call_equity = outputs[0]
