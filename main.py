@@ -985,6 +985,9 @@ class AppDelegate(NSObject):
                 elif own_card_left.startswith("8") and own_card_right.startswith("8"):
                     if to_call <= 8:
                         decision = "call"
+                elif own_card_left.startswith("7") and own_card_right.startswith("7"):
+                    if to_call <= 7:
+                        decision = "call"                        
             elif own_card_left.startswith("A") or own_card_right.startswith("A"):# one is ace
                 print("debug: one is ace")       
                 if to_call <= 1.5:
