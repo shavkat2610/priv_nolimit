@@ -198,6 +198,11 @@ def how_much(im = None):
     raw_data = pytesseract.image_to_string(im2)
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
+    while True:
+        if not data[0].isdigit():
+            data = data[1:]
+        else:
+            break    
     if data == "5SBB":
         im2.save(f"5BB_please{time.time()}.png")
         print("It must have been 5 BB to call ?!?! please ?!?!")
