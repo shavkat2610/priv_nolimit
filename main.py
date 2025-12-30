@@ -44,12 +44,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # general, small whats-going-on-model to see if there is maybe a dancing man, connectivity-issues or something to click ", for added excitement" -done
 # writo to csv - done
 # fifth raise button, by 16x big blind - done
+# keep track of money, check if everything read corrrectly ... - done
 
 
 # todo:
 
-# keep track of money, check if everything read corrrectly ...
 
+
+# adjust tesseract ocr (install newer version?)
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
 # open last card ... - not yet done completely
