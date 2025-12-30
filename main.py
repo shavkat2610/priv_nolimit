@@ -49,8 +49,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 
 # todo:
 
-
-
+# the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # adjust tesseract ocr (install newer version?)
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
