@@ -1184,14 +1184,17 @@ class AppDelegate(NSObject):
 
         # for now no AI-decision-making
         with self.dec_lock:
-            if self.decision == "None_yet":
-                time.sleep(1.0)
-                if self.decision == "None_yet":
-                    return "fold"
-                else:
-                    return self.decision
+            decision = self.decision
+        if decision == "None_yet":
+            time.sleep(1.0)
+            with self.dec_lock:
+                decision = self.decision            
+            if decision == "None_yet":
+                return "fold"
             else:
-                return self.decision
+                return decision
+        else:
+            return decision
                             
         with self.to_call_lock:
             to_call = self.to_call      
@@ -1350,14 +1353,17 @@ class AppDelegate(NSObject):
 
         # for now no AI-decision-making
         with self.dec_lock:
-            if self.decision == "None_yet":
-                time.sleep(1.0)
-                if self.decision == "None_yet":
-                    return "fold"
-                else:
-                    return self.decision
+            decision = self.decision
+        if decision == "None_yet":
+            time.sleep(1.0)
+            with self.dec_lock:
+                decision = self.decision            
+            if decision == "None_yet":
+                return "fold"
             else:
-                return self.decision
+                return decision
+        else:
+            return decision
 
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
@@ -1440,14 +1446,17 @@ class AppDelegate(NSObject):
 
         # for now no AI-decision-making
         with self.dec_lock:
-            if self.decision == "None_yet":
-                time.sleep(1.0)
-                if self.decision == "None_yet":
-                    return "fold"
-                else:
-                    return self.decision
+            decision = self.decision
+        if decision == "None_yet":
+            time.sleep(1.0)
+            with self.dec_lock:
+                decision = self.decision            
+            if decision == "None_yet":
+                return "fold"
             else:
-                return self.decision
+                return decision
+        else:
+            return decision
 
 
         with self.to_call_lock:
@@ -1476,7 +1485,7 @@ class AppDelegate(NSObject):
         return self.makeAIDecision_(outputs)
     
 
-    def makeDecision(self): # needs to set decision in dec_lock     
+    def makeDecision(self):  
         set_1_1 = -1
         if self.deck_card_1 == "nn":  # that means its preflop
             with self.dec_lock:
