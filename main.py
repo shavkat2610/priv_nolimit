@@ -1508,11 +1508,15 @@ class AppDelegate(NSObject):
                 if decision == "None_yet":
                     time.sleep(0.5)
                     model_dec = self.makeDecisionFlop()
+                    print("I was here flop dec making 3")
                     with self.dec_lock:
                         decision = self.decision
+                    print("I was here flop dec making 4")
                     if decision == "None_yet":
                         self.decision = model_dec
+                    print("I was here flop dec making 5")
                 self.mkFlopModelInput()
+                print("I was here flop dec making 6")
                 return
             if self.deck_card_5 == "nn": # that means river
                 with self.mk_comte_carlo_decision_lock:
