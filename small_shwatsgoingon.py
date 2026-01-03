@@ -405,6 +405,7 @@ def read_total_pot_money(im = None):
     # im1.show()
     raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:")
     data = raw_data.strip()
+    print("read_total_pot_money raw_data stripped: "+str(data))
     res = {
         "result": 0.001, 
         "im": im
