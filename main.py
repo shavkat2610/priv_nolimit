@@ -797,13 +797,13 @@ class AppDelegate(NSObject):
                         with open('csv_s/turnModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             # print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]), self.model_output])                 
+                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]), self.model_output])                 
                 if self.made_river_model_input:
                     for river_model_input in self.river_model_inputs:    
                         with open('csv_s/riverModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             # print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]), self.model_output])                 
+                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]), self.model_output])                 
                 if self.made_flop_model_input:
                     for flop_model_input in self.flop_model_inputs:
                         with open('csv_s/flopModel.csv','a', newline='') as fd:
@@ -845,6 +845,8 @@ class AppDelegate(NSObject):
         
 
     def makeAIDecision_(self, outputs):
+
+        
         # outputs from model prediction
         with self.confidence_lock:
             confidence = self.confidence    
@@ -1179,6 +1181,16 @@ class AppDelegate(NSObject):
 
 
     def makeDecisionFlop(self):
+
+        # for now no AI-decision-making
+        with self.dec_lock:
+            if self.decision == "None_yet":
+                time.sleep(1.0)
+                if self.decision == "None_yet":
+                    return "fold"
+                else:
+                    return self.decision
+                
         with self.to_call_lock:
             to_call = self.to_call      
         if to_call > 0.0:
@@ -1333,6 +1345,17 @@ class AppDelegate(NSObject):
 
 
     def makeDecisionRiver(self):
+
+        # for now no AI-decision-making
+        with self.dec_lock:
+            if self.decision == "None_yet":
+                time.sleep(1.0)
+                if self.decision == "None_yet":
+                    return "fold"
+                else:
+                    return self.decision
+
+
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
         print("set_1_1 at river-time: "+str(set_1_1))
@@ -1410,6 +1433,19 @@ class AppDelegate(NSObject):
     
 
     def makeDecisionTurn(self):
+
+
+        # for now no AI-decision-making
+        with self.dec_lock:
+            if self.decision == "None_yet":
+                time.sleep(1.0)
+                if self.decision == "None_yet":
+                    return "fold"
+                else:
+                    return self.decision
+
+
+
         with self.to_call_lock:
             to_call = self.to_call
         with self.mk_comte_carlo_decision_lock:

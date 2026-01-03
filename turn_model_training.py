@@ -11,7 +11,7 @@ import pickle
 
 
 
-inputs = ['probability_1_1', 'potheight', 'average_pot_2', 'average_pot_3', 'average_pot_5', 'average_pot_7', 'average_pot_9', 'average_pot_11', 'average_pot_13', 'average_pot_16', 'average_pot_20', 'average_pot_30', 'average_pot_50', 'to_call', 'equity_flop', 'equity_river', 'decision', 'difference_tocall_n_potheight']
+inputs = ['probability_1_1', 'potheight', 'average_pot_2', 'average_pot_3', 'average_pot_4', 'average_pot_5', 'average_pot_6', 'average_pot_7', 'average_pot_9', 'average_pot_11', 'average_pot_13', 'average_pot_16', 'average_pot_20', 'average_pot_30', 'average_pot_50', 'to_call', 'equity_flop', 'equity_river', 'decision', 'difference_tocall_n_potheight']
 # Load data
 df = pd.read_csv('csv_s/turnModel.csv', sep=';')
 X = df[inputs].values
