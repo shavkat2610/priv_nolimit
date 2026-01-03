@@ -432,11 +432,11 @@ def read_total_pot_money(im = None):
             data = data[:-2]
             data = data.split(":")[1]
             data = data.strip()
-            while True:
-                if not data[0].isdigit():
-                    data = data[1:]
-                else:
-                    break
+            # while True:
+            #     if not data[0].isdigit():
+            #         data = data[1:]
+            #     else:
+            #         break
         except:
             print("could not read total pot money, probably nothing there 2, raw_data: "+str(raw_data))
             return res
