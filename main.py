@@ -1668,8 +1668,8 @@ class AppDelegate(NSObject):
 
 
 
-    def roundswap(self):
-        if not self.updateOwnMoney_(current_im=None):
+    def roundswap_(self, current_im=None):
+        if not self.updateOwnMoney_(current_im=current_im):
             time.sleep(0.35)
             if not self.updateOwnMoney_(current_im=None):
                 time.sleep(0.75)
@@ -1960,13 +1960,14 @@ class AppDelegate(NSObject):
                     self.game_stage_current = "preflop"                
                 with self.d_lock: # only once after turn or once every preflop
                     self.d_position = read_D(current_im)
-                self.roundswap()
+                self.roundswap_(current_im)
                 print("preflop")
                 with self.cards_lock:
                     if self.cards_open == False:
                         secs = time.time()
                         current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
                         if check_if_we_holdin_yet(current_im):
+                            print("I was here 9")
                             try:
                                 [self.own_card_left, self.own_card_right] = read_own_cards()
                                 self.cards_open = True
