@@ -553,7 +553,7 @@ def read_own_money(im = None):
     for i in range(im1.size[0]): # for every pixel:
         for j in range(im1.size[1]):
             # print(pixels[i, j])
-            if pixels[i, j][1] >= 125: # 140 initially 
+            if pixels[i, j][1] >= 140: # 140 initially 
                 pixels[i, j] = (10, 10, 10, 255)
             else:
                 if pixels[i,j][0] >= 120:
@@ -563,12 +563,13 @@ def read_own_money(im = None):
     # im1.show()
     print("before tesseract 1")
     try:
-        raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=0123456789.B")
+        raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=0123456789.,B")
     except Exception as e:
         print(e)
         exit("exit 1")
     print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
+    data = data.replace(",", ".")
     if data == "All-In":
         return -1.0
     if len(data)<=2:

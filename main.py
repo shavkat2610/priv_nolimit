@@ -233,17 +233,12 @@ class AppDelegate(NSObject):
         with self.mk_comte_carlo_decision_lock:
             self.probability_1_1 = -1
 
-    def updateOwnMoney_(self, current_im): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
+    def updateOwnMoney_(self, current_im = None): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
         # print("setting own money ...")
         try:
             own_money_current = read_own_money(im=current_im)
-            time.sleep(0.15)
-            own_money_current2 = read_own_money(im=None)
             print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None:
-                if own_money_current2 != own_money_current:
-                    print("own money read differently twice in a row, aborting ...")
-                    return False
                 with self.lock:
                     own_money_2 = self.own_money_2
                 if own_money_2 > own_money_current+1.0: # could be, we paid big blind, so +1.0
