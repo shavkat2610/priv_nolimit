@@ -2163,7 +2163,10 @@ class AppDelegate(NSObject):
                 to_call = self.to_call
                 print(f"to_call is : {str(to_call)}")
             # self.setValuesOurTurn_(current_im=current_im)
-            self.makeDecision()
+            try:
+                self.makeDecision()
+            except Exception as e:
+                exit(e)
 
             with self.dec_lock:
                 self_dec = self.decision
