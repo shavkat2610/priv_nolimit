@@ -345,7 +345,7 @@ def find_login_button_and_click():
 
 def find_cashier(cshrimg="images/cashier_xmas.png"):
     img = Image.open(cshrimg)
-    if compare_img_screenshot(img,(1114, 352), debug_2=True):
+    if compare_img_screenshot(img,(1114, 352), debug_2=False):
         print("already logged in ")
         return True
     img_pos = imagesearch(cshrimg, precision=0.95, debug=False, calling_function= 'find_cashier')
