@@ -649,8 +649,8 @@ def push_holdem():
                 return True
         else:
             print("something went wrong somehow idk dude ...")
-            # pyautogui.click(410, 455)
-            print(pyautogui.position())
+            pyautogui.click(25, 160)
+            # print(pyautogui.position())
             if imagesearch('images/holdem_clicked.png', precision=0.9, debug = False, calling_function="push_holdem") != [-1, -1]:
                 print("Holdem already clicked. 5 (might be wrong tho!)")
                 return True
