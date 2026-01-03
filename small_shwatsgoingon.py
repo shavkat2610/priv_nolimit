@@ -2,6 +2,7 @@
 from PIL import Image, ImageChops
 import pyautogui
 import pytesseract
+from pytesseract import Output
 from  fish_for_cards import prepare_fishing_deck_cards, prepare_fishing_own_cards, red_own_cards, game_screenshot, fish_for_own_cards, fish_for_deck_cards, red_deck_cards
 from scripts.shavkats_functions import is_red, read_D
 import numpy as np
@@ -179,6 +180,7 @@ def read_game(im = None): # todo: produce input for first model
 
 def how_much(im = None): 
     pyautogui.moveTo(25, 25)
+    time.sleep(0.1)
     if im == None:
         im = game_screenshot() #should be a screenshot
     im2 = crop_wh(im, 640, 508, 74, 22) #check_button
@@ -189,13 +191,22 @@ def how_much(im = None):
     for i in range(im2.size[0]): # for every pixel:
         for j in range(im2.size[1]):
             # print(pixels[i, j])
-            if pixels[i, j][1] >= 160:
+            if pixels[i, j][1] >= 170:
                 pixels[i, j] = (10, 10, 10, 255)
             else:
                 pixels[i,j] = (255, 255, 255, 255)
     # secs = time.time()
-    
-    raw_data = pytesseract.image_to_string(im2, config="--oem 1 --psm 7 -c tessedit_char_whitelist=B0123456789.")
+    data = pytesseract.image_to_data(
+        im2,
+        output_type=Output.DICT,
+        config="--oem 1 --psm 6"
+    )
+    print("\n how_much debug \n")
+    for text, conf in zip(data["text"], data["conf"]):
+        if text.strip():
+            print(text, conf)
+    print("\n how_much debug \n")
+    raw_data = pytesseract.image_to_string(im2, config="--oem 1 --psm 6 -c tessedit_char_whitelist=B0123456789.")
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
     while True:
@@ -209,11 +220,6 @@ def how_much(im = None):
         return 5.0
     # print(data)
     data = data[:-2]
-    data = data.replace("B", "8")
-    data = data.replace("A", "4")
-    data = data.replace("S", "5")
-    data = data.replace(",", ".")
-    data = data.replace("a", "8")
     # im2.save("debug_to_call_"+data+"_"+str(secs).split(".")[0]+".png")
     if data != "":
         try:
