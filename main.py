@@ -1190,7 +1190,9 @@ class AppDelegate(NSObject):
                     return "fold"
                 else:
                     return self.decision
-                
+            else:
+                return self.decision
+                            
         with self.to_call_lock:
             to_call = self.to_call      
         if to_call > 0.0:
@@ -1354,7 +1356,8 @@ class AppDelegate(NSObject):
                     return "fold"
                 else:
                     return self.decision
-
+            else:
+                return self.decision
 
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
@@ -1443,7 +1446,8 @@ class AppDelegate(NSObject):
                     return "fold"
                 else:
                     return self.decision
-
+            else:
+                return self.decision
 
 
         with self.to_call_lock:
