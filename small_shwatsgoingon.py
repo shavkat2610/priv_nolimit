@@ -559,6 +559,7 @@ def read_own_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
+    print("before tesseract 1")
     raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=0123456789.B")
     print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
