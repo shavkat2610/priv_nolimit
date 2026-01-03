@@ -1182,13 +1182,18 @@ class AppDelegate(NSObject):
 
     def makeDecisionFlop(self):
 
+        print("making decision flop")
+
         # for now no AI-decision-making
         with self.dec_lock:
             decision = self.decision
+
+        print(" I was here flop decision making 1")
         if decision == "None_yet":
             time.sleep(1.0)
             with self.dec_lock:
-                decision = self.decision            
+                decision = self.decision   
+            print(" I was here flop decision making 2")         
             if decision == "None_yet":
                 return "fold"
             else:
@@ -1501,6 +1506,7 @@ class AppDelegate(NSObject):
                 print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT, exiting ...")
                 exit()
             if self.deck_card_4 == "nn": # that means flop      
+                print("# that means flop    ")
                 with self.dec_lock:
                     decision = self.decision
                 if decision == "None_yet":
