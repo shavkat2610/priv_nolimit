@@ -196,7 +196,7 @@ def extract_flop_features(hole, flop):
 # -------------------------
 evaluator = Evaluator()
 
-def treys_equity(hole, flop, iters=500):
+def treys_equity(hole, flop, iters=5000):
     wins = 0
     hole_t = [Card.new(c) for c in hole]
     flop_t = [Card.new(c) for c in flop]

@@ -200,7 +200,7 @@ def train_xgb():
 if __name__ == "__main__":
     from joblib import dump, load
     hole = ["2s", "3d"]
-    flop = ["Ah", "4c", "5h"]
+    flop = ["Ah", "4c", "7h"]
     # print(treys_equity(hole, flop, iters=25000))
 
     features = extract_flop_features(hole, flop)
@@ -209,12 +209,12 @@ if __name__ == "__main__":
     # print("Predicted equity:", equity)    
     # exit()
     
-    model = train_xgb()
+    # model = train_xgb()
     # features = extract_flop_features(hole, flop)
     # equity = model.predict([features])[0]
     # print("Predicted flop equity:", round(equity, 7))
 
-    dump(model, "flop_equity_xgb_1.joblib")    
+    # dump(model, "flop_equity_xgb_1.joblib")    
 
     xgb_loaded = load("flop_equity_xgb_1.joblib")
 

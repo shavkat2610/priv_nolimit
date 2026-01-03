@@ -29,7 +29,8 @@ from monte_carlo_0 import exact_win_probability
 from treys import Card
 from treys import Evaluator
 from PIL import Image
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
+
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # import subprocess
 
 
@@ -45,12 +46,12 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # writo to csv - done
 # fifth raise button, by 16x big blind - done
 # keep track of money, check if everything read corrrectly ... - done
+# adjust tesseract ocr (install newer version?)   - done
 
 
 # todo:
 
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
-# adjust tesseract ocr (install newer version?)
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
 # open last card ... - not yet done completely
@@ -152,17 +153,19 @@ class AppDelegate(NSObject):
     
     potheight_lock = Lock()
     potheight = 0.1
-    average_pot_2 = 13.0
-    average_pot_3 = 13.0
-    average_pot_5 = 13.0
-    average_pot_7 = 13.0
-    average_pot_9 = 13.0
-    average_pot_11 = 13.0
-    average_pot_13 = 13.0
-    average_pot_16 = 13.0
-    average_pot_20 = 13.0
-    average_pot_30 = 13.0
-    average_pot_50 = 13.0
+    average_pot_2 = 17.0
+    average_pot_3 = 17.0
+    average_pot_4 = 17.0
+    average_pot_5 = 17.0
+    average_pot_6 = 17.0
+    average_pot_7 = 17.0
+    average_pot_9 = 17.0
+    average_pot_11 = 17.0
+    average_pot_13 = 17.0
+    average_pot_16 = 17.0
+    average_pot_20 = 17.0
+    average_pot_30 = 17.0
+    average_pot_50 = 17.0
     last_pot = potheight
 
     to_call_lock = Lock()
@@ -229,12 +232,6 @@ class AppDelegate(NSObject):
     def changeStateMonteCaro(self):
         with self.mk_comte_carlo_decision_lock:
             self.probability_1_1 = -1
-
-
-
-
-
-
 
     def updateOwnMoney_(self, current_im): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
         # print("setting own money ...")
@@ -560,10 +557,19 @@ class AppDelegate(NSObject):
                 self.made_flop_model_input = True
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                      
-                    flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                    flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, self.average_pot_5, 
+                                        self.average_pot_6,
                                             self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                             self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                            self.to_call, decision_temp, self.difference_tocall_n_potheight]
+                                            self.to_call, decision_temp, self.difference_tocall_n_potheight, self.flop_features[0], 
+                                            self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
+                                            self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
+                                            self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
+                                            self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
+                                            self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
+                                            self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
+                                            self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
+                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[32]]
                     self.flop_model_inputs.append(flop_model_input)
 
 
@@ -574,12 +580,21 @@ class AppDelegate(NSObject):
                 with self.mk_comte_carlo_decision_lock:
                     for decision_temp in decs:
                         # print("self.equity_flop at model-input formation: "+str(self.equity_flop))
-                        flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                        flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, self.average_pot_5, 
+                                        self.average_pot_6,
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, decision_temp, self.difference_tocall_n_potheight]
+                                                self.to_call, decision_temp, self.difference_tocall_n_potheight, self.flop_features[0], 
+                                            self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
+                                            self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
+                                            self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
+                                            self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
+                                            self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
+                                            self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
+                                            self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
+                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[32]]
                         flop_model_inputs.append(flop_model_input)
-                    return flop_model_inputs
+                    return flop_model_inputs # different "inputs" for decision making
 
 
     def mkRiverModelInput(self):
@@ -625,7 +640,8 @@ class AppDelegate(NSObject):
             # print("\nshould save something for river model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                                
-                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
+                                             self.average_pot_5, self.average_pot_6, 
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
                                                 self.to_call, self.equity_flop, decision_temp, self.difference_tocall_n_potheight]
@@ -638,7 +654,8 @@ class AppDelegate(NSObject):
             with self.potheight_lock:
                 with self.to_call_lock:
                     for decision_temp in decs:
-                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
+                                             self.average_pot_5, self.average_pot_6, 
                                                 self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                 self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
                                                 self.to_call, self.equity_flop, decision_temp, self.difference_tocall_n_potheight]
@@ -689,11 +706,12 @@ class AppDelegate(NSObject):
             # print("\nshould save something for turn model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                
-                    turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                    turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
+                                             self.average_pot_5, self.average_pot_6, 
                                             self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                             self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
                                             self.to_call, self.equity_flop, self.equity_river, decision_temp, 
-                                            self.difference_tocall_n_potheight]
+                                            self.difference_tocall_n_potheight, ]
                     self.turn_model_inputs.append(turn_model_input)
 
 
@@ -704,7 +722,8 @@ class AppDelegate(NSObject):
                 with self.potheight_lock:
                     with self.to_call_lock:
                         for decision_temp in decs:
-                            turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_5, 
+                            turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
+                                             self.average_pot_5, self.average_pot_6, 
                                                     self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
                                                     self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
                                                     self.to_call, self.equity_flop, self.equity_river, decision_temp, 
@@ -790,7 +809,7 @@ class AppDelegate(NSObject):
                         with open('csv_s/flopModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             # print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), self.model_output])                 
+                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), str(flop_model_input[43]), str(flop_model_input[44]), str(flop_model_input[45]), str(flop_model_input[46]), str(flop_model_input[47]), str(flop_model_input[48]), str(flop_model_input[49]), self.model_output])                 
 
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
@@ -1156,9 +1175,7 @@ class AppDelegate(NSObject):
             print('own cards in flop: '+own_card_left+" "+own_card_right
                   +' | deck cards: '+deck_card_1+" "+deck_card_2+" "+deck_card_3)
             self.flop_features = extract_flop_features([own_card_left, own_card_right], [deck_card_1, deck_card_2, deck_card_3])
-            set_1_1 = flop_equity_model_predict(self.flop_features)
-            print("flop equity model prediction (set_1_1): "+str(set_1_1))
-            self.equity_flop = set_1_1        
+            self.equity_flop = flop_equity_model_predict(self.flop_features)
 
 
     def makeDecisionFlop(self):
@@ -1174,9 +1191,12 @@ class AppDelegate(NSObject):
             outputs = flop_model_predict_multiple(temp_Inputs)
         with self.mk_comte_carlo_decision_lock:   
             print("self.equity_flop: "+str(self.equity_flop))  
+            if self.equity_flop > 0.40: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.37                
             if self.equity_flop > 0.45: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.37                 
+                    self.confidence += 0.47                 
             if self.equity_flop > 0.5: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 0.7                
@@ -1188,10 +1208,34 @@ class AppDelegate(NSObject):
                     self.confidence += 0.7                          
             if self.equity_flop > 0.8: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7          
+                    self.confidence += 0.7    
+            if self.equity_flop > 0.825: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                              
+            if self.equity_flop > 0.85: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7               
+            if self.equity_flop > 0.86: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7             
+            if self.equity_flop > 0.875: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                                                    
             if self.equity_flop > 0.9: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7            
+                    self.confidence += 0.7    
+            if self.equity_flop > 0.91: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                       
+            if self.equity_flop > 0.92: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                       
+            if self.equity_flop > 0.93: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                       
+            if self.equity_flop > 0.94: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 0.7                               
             if self.equity_flop > 0.95: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 0.7                                      
@@ -1203,7 +1247,10 @@ class AppDelegate(NSObject):
                     self.confidence += 0.7                  
             if self.equity_flop > 0.98: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                                                                        
+                    self.confidence += 1.7      
+            if self.equity_flop > 0.99: # need to adjust confidence, while still learning ...
+                with self.confidence_lock:
+                    self.confidence += 7.0                                                                                        
         decision = self.makeAIDecision_(outputs)
         # with self.mk_comte_carlo_decision_lock:
         #     set_1_1 = self.equity_flop
@@ -2326,7 +2373,9 @@ class AppDelegate(NSObject):
                         pot_rescaled = self.potheight # ((self.potheight/16)**2)
                         self.average_pot_2 = (self.average_pot_2 * 1/2) + (pot_rescaled * 1/2)
                         self.average_pot_3 = (self.average_pot_3 * 2/3) + (pot_rescaled * 1/3)
+                        self.average_pot_4 = (self.average_pot_4 * 3/4) + (pot_rescaled * 1/4)
                         self.average_pot_5 = (self.average_pot_5 * 4/5) + (pot_rescaled * 1/5)
+                        self.average_pot_6 = (self.average_pot_6 * 5/6) + (pot_rescaled * 1/6)
                         self.average_pot_7 = (self.average_pot_7 * 6/7) + (pot_rescaled * 1/7)
                         self.average_pot_9 = (self.average_pot_9 * 8/9) + (pot_rescaled * 1/9)
                         self.average_pot_11 = (self.average_pot_11 * 10/11) + (pot_rescaled * 1/11)
