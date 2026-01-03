@@ -409,6 +409,16 @@ def read_total_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
+    data = pytesseract.image_to_data(
+        im1,
+        output_type=Output.DICT,
+        config="--oem 1 --psm 6"
+    )
+    print("\n read_total_pot_money debug \n")
+    for text, conf in zip(data["text"], data["conf"]):
+        if text.strip():
+            print(text, conf)
+    print("\n read_total_pot_money debug \n")    
     raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.,:")
     data = raw_data.strip()
     # print("read_total_pot_money raw_data stripped: "+str(data))
@@ -560,8 +570,16 @@ def read_own_money(im = None):
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
-    # im1.show()
-    print("before tesseract 1")
+    data = pytesseract.image_to_data(
+        im1,
+        output_type=Output.DICT,
+        config="--oem 1 --psm 6"
+    )
+    print("\n read_total_pot_money debug \n")
+    for text, conf in zip(data["text"], data["conf"]):
+        if text.strip():
+            print(text, conf)
+    print("\n read_total_pot_money debug \n")   
     try:
         raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=0123456789.,B")
     except Exception as e:
