@@ -405,7 +405,7 @@ def read_total_pot_money(im = None):
     # im1.show()
     raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.:")
     data = raw_data.strip()
-    print("read_total_pot_money raw_data stripped: "+str(data))
+    # print("read_total_pot_money raw_data stripped: "+str(data))
     res = {
         "result": 0.001, 
         "im": im
@@ -441,8 +441,7 @@ def read_total_pot_money(im = None):
             print("could not read total pot money, probably nothing there 2, raw_data: "+str(raw_data))
             return res
     try:
-        print("read_total_pot_money data: ")
-        print(data)
+        print("read_total_pot_money data: "+data)
         res_temp = float(data)
         if res_temp != None and res_temp > 0.1:
             res["result"] = float(data)
@@ -572,15 +571,11 @@ def read_own_money(im = None):
     else:
         data = data[:-2]
     data = data.strip()
-    data = data.replace("BB", "")
-    data = data.replace("8B", "")
-    data = data.replace("B8", "")
-    data = data.replace(" 88", "")
-    data = data.replace("A", "4")
-    data = data.replace("S", "5")
-    data = data.replace("?", "2")
-    data = data.replace("G", "6")
-    data = data.strip()
+    # data = data.replace("BB", "")
+    # data = data.replace("8B", "")
+    # data = data.replace("B8", "")
+    # data = data.replace("88", "")
+    # data = data.strip()
     if len(data)<1:
         print("COULD NOT READ OWN MONEY 28 - raw_data :"+str(raw_data))
         exit()
