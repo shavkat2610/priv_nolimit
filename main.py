@@ -46,11 +46,12 @@ from PIL import Image
 # writo to csv - done
 # fifth raise button, by 16x big blind - done
 # keep track of money, check if everything read corrrectly ... - done
-# adjust tesseract ocr (install newer version?)   - done
+
 
 
 # todo:
 
+# adjust tesseract ocr (use confidence score for threshholding)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
@@ -1505,6 +1506,7 @@ class AppDelegate(NSObject):
                 with self.dec_lock:
                     decision = self.decision
                 if decision == "None_yet":
+                    time.sleep(0.5)
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
                         decision = self.decision
@@ -1522,6 +1524,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
@@ -1538,6 +1541,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
@@ -1554,6 +1558,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
@@ -1678,6 +1683,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1694,6 +1700,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1710,6 +1717,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1726,6 +1734,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
+                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
