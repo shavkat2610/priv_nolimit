@@ -560,7 +560,7 @@ def read_own_money(im = None):
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
     raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=0123456789.B")
-    # print("own_money raw_data: "+raw_data)
+    print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
     if data == "All-In":
         return -1.0
