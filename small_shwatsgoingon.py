@@ -195,7 +195,7 @@ def how_much(im = None):
                 pixels[i,j] = (255, 255, 255, 255)
     # secs = time.time()
     
-    raw_data = pytesseract.image_to_string(im2, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:")
+    raw_data = pytesseract.image_to_string(im2, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:")
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
     while True:
@@ -249,7 +249,7 @@ def read_player_info(im = None):
         im = game_screenshot()
     # im.show()
     im1 = crop_wh(im, 380, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
+    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
     position = data.find("%")
     if position == -1:
         # print("no percent-sign found, data:")
@@ -277,7 +277,7 @@ def read_player_info(im = None):
     else: 
         print("something went wrong reading value 1 of player info: "+str(data))        
     im1 = crop_wh(im, 438, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
+    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
     position = data.find("%")
     if position == -1:
         # print("no percent-sign found, data:")
@@ -305,7 +305,7 @@ def read_player_info(im = None):
     else: 
         print("something went wrong reading value 2 of player info: "+str(data))        
     im1 = crop_wh(im, 496, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
+    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
     position = data.find("%")
     if position == -1:
         # print("no percent-sign found, data:")
@@ -333,7 +333,7 @@ def read_player_info(im = None):
     else: 
         print("something went wrong reading value 3 of player info: "+str(data))
     im1 = crop_wh(im, 554, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
+    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
     position = data.find("%")
     if position == -1:
         # print("no percent-sign found, data:")
@@ -403,7 +403,7 @@ def read_total_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
-    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:")
+    raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:")
     data = raw_data.strip()
     res = {
         "result": 0.001, 
@@ -482,7 +482,7 @@ def read_old_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
-    data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:.,")
+    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:.,")
     # position = data.find("Pot")
     try:
         data = data.strip()
@@ -559,7 +559,7 @@ def read_own_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
-    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=0123456789.B")
+    raw_data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=0123456789.B")
     # print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
     if data == "All-In":
