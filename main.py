@@ -813,6 +813,8 @@ class AppDelegate(NSObject):
             self.made_model_output = False   
             self.wrote_to_csv_s = False  
         with self.cards_lock:
+            if self.cards_open:
+                self.cards_open = False            
             self.deck_card_1 = "nn"
             self.deck_card_2 = "nn"
             self.deck_card_3 = "nn"
@@ -2101,34 +2103,21 @@ class AppDelegate(NSObject):
                             time.sleep(2)
                             print("exiting program bc own money > 99.0")
                             # open_game()
-                            exit()                    
-                    if self.potheight > 2.0:
-                        with self.lock:
-                            if self.own_money_2 > 0:
-                                difference = self.own_money_before_last_preflop-self.own_money_2
-                            else:
-                                difference = self.own_money_before_last_preflop-self.own_money
-                        if difference < 0.0:
-                            difference = max(-2.0, difference)
-                        else:
-                            difference = min(2.0, difference)                            
-                        with self.mod_writing_lock:
-                            self.made_model_output = True
-                            self.model_output = -0.75 * difference # -0.15
-                    with self.cards_lock:
-                        self.cards_open = False
-                    with self.to_call_lock:
-                        self.to_call = 0.0
-                    with self.cards_lock:
-                        self.own_card_left = "nn"
-                        self.own_card_right = "nn"
-                        self.deck_card_1 = "nn"
-                        self.deck_card_2 = "nn"
-                        self.deck_card_3 = "nn"
-                        self.deck_card_4 = "nn"
-                        self.deck_card_5 = "nn"
-                    with self.dec_lock:
-                        self.decision = "None_yet"
+                            exit()        
+                    self.resetValues() 
+
+                    # with self.to_call_lock:
+                    #     self.to_call = 0.0
+                    # with self.cards_lock:
+                    #     self.own_card_left = "nn"
+                    #     self.own_card_right = "nn"
+                    #     self.deck_card_1 = "nn"
+                    #     self.deck_card_2 = "nn"
+                    #     self.deck_card_3 = "nn"
+                    #     self.deck_card_4 = "nn"
+                    #     self.deck_card_5 = "nn"
+                    # with self.dec_lock:
+                    #     self.decision = "None_yet"
             if self_dec.startswith("c"):
                 with self.dec_lock:
                     self.decision = "None_yet"
