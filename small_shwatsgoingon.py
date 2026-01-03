@@ -195,7 +195,7 @@ def how_much(im = None):
                 pixels[i,j] = (255, 255, 255, 255)
     # secs = time.time()
     
-    raw_data = pytesseract.image_to_string(im2, config="--oem 0 --psm 7 -c tessedit_char_whitelist=B 0123456789.")
+    raw_data = pytesseract.image_to_string(im2, config="--oem 0 --psm 7 -c tessedit_char_whitelist=B0123456789.")
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
     while True:
