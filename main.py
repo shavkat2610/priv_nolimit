@@ -2176,10 +2176,13 @@ class AppDelegate(NSObject):
                 to_call = self.to_call
                 print(f"to_call is : {str(to_call)}")
             # self.setValuesOurTurn_(current_im=current_im)
+            print("debug I was here 20")
             try:
                 self.makeDecision()
             except Exception as e:
                 exit(e)
+            print("debug I was here 21")
+            time.sleep(0.5)
 
             with self.dec_lock:
                 self_dec = self.decision
