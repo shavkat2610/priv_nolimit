@@ -392,13 +392,13 @@ def read_deck_cards(im = None):
 def read_total_pot_money(im = None):
     if im == None:
         im = game_screenshot()
-    im1 = crop_wh(im, 280, 154, 270, 40) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 280, 154, 290, 40) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
     # im1.show()
     pixels = im1.load() # create the pixel map
     for i in range(im1.size[0]): # for every pixel:
             for j in range(im1.size[1]):
                 # print(pixels[i, j])
-                if pixels[i, j][1] >= 180:
+                if pixels[i, j][1] >= 170:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
@@ -419,10 +419,6 @@ def read_total_pot_money(im = None):
             # data = data.strip()
             data = data[:-2]
             data = data.strip()
-            data = data.replace("S", "5")
-            data = data.replace("A", "4")
-            data = data.replace("B", "8")
-            data = data.replace(",", ".")
             while True:
                 if not data[0].isdigit():
                     data = data[1:]
@@ -436,10 +432,6 @@ def read_total_pot_money(im = None):
             data = data[:-2]
             data = data.split(":")[1]
             data = data.strip()
-            data = data.replace("S", "5")
-            data = data.replace("A", "4")
-            data = data.replace("B", "8")
-            data = data.replace(",", ".")
             while True:
                 if not data[0].isdigit():
                     data = data[1:]
