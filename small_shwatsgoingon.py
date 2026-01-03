@@ -403,7 +403,7 @@ def read_total_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
-    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.:")
+    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.,:")
     data = raw_data.strip()
     # print("read_total_pot_money raw_data stripped: "+str(data))
     res = {
@@ -419,6 +419,7 @@ def read_total_pot_money(im = None):
             # data = data.strip()
             data = data[:-2]
             data = data.strip()
+            data = data.replace(",", "")
             while True:
                 if not data[0].isdigit():
                     data = data[1:]
@@ -431,6 +432,7 @@ def read_total_pot_money(im = None):
         try:
             data = data[:-2]
             data = data.split(":")[1]
+            data = data.replace(",", "")
             data = data.strip()
             # while True:
             #     if not data[0].isdigit():
@@ -450,6 +452,8 @@ def read_total_pot_money(im = None):
     except:
         if len(data) == 7 and data[-2] == ".": # that's when there are trollers (mostly in play money games, they all in with over 1 k bb)
             res["result"] = float(data[:-2].replace(".", ""))
+        if data[-1] == ".": # that's when there are trollers (mostly in play money games, they all in with over 1 k bb)
+            res["result"] = float(data[:-1])            
         else:
             print("could not read total pot money, returning 0")
             print("data: "+str(data))
