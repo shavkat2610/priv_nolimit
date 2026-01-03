@@ -403,7 +403,7 @@ def read_total_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
-    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 7 -c tessedit_char_whitelist=PTalot0123456789.:")
+    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.:")
     data = raw_data.strip()
     print("read_total_pot_money raw_data stripped: "+str(data))
     res = {
@@ -449,8 +449,8 @@ def read_total_pot_money(im = None):
             print("could not read total pot money, probably nothing there 2, raw_data: "+str(raw_data))
             return res
     try:
-        # print("read_total_pot_money data: ")
-        # print(data)
+        print("read_total_pot_money data: ")
+        print(data)
         res_temp = float(data)
         if res_temp != None and res_temp > 0.1:
             res["result"] = float(data)
