@@ -1827,9 +1827,9 @@ class AppDelegate(NSObject):
                 if self.game_stage_current != "no_decision_to_be_made":
                     print("no decision to be made")
                     self.game_stage_current = "no_decision_to_be_made"
-                with self.acting_lock:
-                    self.time_to_act = False
-                    return
+                # with self.acting_lock:
+                #     self.time_to_act = False
+                #     return
                 
         
         if game_stage == "river":
