@@ -635,6 +635,7 @@ def push_holdem():
         if not l_info_read:
             see_if_there_is_l_info()
         push_holdem_pos = imagesearch('images/holdem.png', precision=.83, debug = False, debug_2 = False, calling_function="push_holdem")
+        print("push_holdem_pos: "+str(push_holdem_pos))
         if push_holdem_pos != [-1, -1]:
             pyautogui.click(push_holdem_pos[0] +3, push_holdem_pos[1] +3)
             # print("Holdem clicked. 2")
@@ -654,6 +655,7 @@ def push_holdem():
                 return True
             time.sleep(1)
             push_holdem_pos = imagesearch('images/holdem.png', precision=.90, debug = False, calling_function="push_holdem")
+            print("push_holdem_pos: "+str(push_holdem_pos))
             if not l_info_read:
                 see_if_there_is_l_info()
             if push_holdem_pos != [-1, -1]:
