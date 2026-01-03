@@ -983,6 +983,7 @@ def read_game_rules(big_blind = "200", first_start_up = False):
     if position_the_game():
         
         pyautogui.moveTo(25, 25)
+        return True
         time.sleep(1)
         if not check_if_we_holdin_yet():
             return True
