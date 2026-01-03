@@ -363,6 +363,9 @@ def login(debug = False):
 
     if find_cashier(): # when it is december
         return False
+    
+    if find_cashier('images/chachier_new_year.png'): # when it is january
+        return False    
 
     if find_login_button_and_click():
         first_start_up = False
