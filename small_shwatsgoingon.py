@@ -430,6 +430,7 @@ def read_total_pot_money(im = None):
                         index_ = text.find(".")
                         if index_:
                             try:
+                                print("read_total_pot_money debug text: "+text[:index_+1])
                                 res["result"] = float(text[:index_+1])
                                 return res
                             except Exception as e:
@@ -446,6 +447,7 @@ def read_total_pot_money(im = None):
                             elif text.endswith("88"):
                                 text = text[:-2]      
                         if text[0].isdigit():
+                            print("read_total_pot_money debug text: "+text)
                             try:
                                 res["result"] = float(text)
                                 return res
@@ -453,6 +455,7 @@ def read_total_pot_money(im = None):
                                 print("Exiting here 25")
                                 exit(e)  
                         else:
+                            print("else 25")
                             return res
                 else:
                     pass      
