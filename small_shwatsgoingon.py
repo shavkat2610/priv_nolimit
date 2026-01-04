@@ -422,7 +422,7 @@ def read_total_pot_money(im = None):
     for text, conf in zip(data["text"], data["conf"]):
         text = text.strip()
         if text:
-            if text == "Total" or text == "Pat" or text == "Pot":
+            if text == "Total" or text == "Pat" or text == ":" or text == "Pot":
                 pass
             else:
                 if conf > 60:
