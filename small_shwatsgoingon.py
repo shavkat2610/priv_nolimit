@@ -425,18 +425,19 @@ def read_total_pot_money(im = None):
             if text.startswith("Total") or text.startswith("Pat") or text == ":" or text.startswith("Pot"):
                 pass
             else:
-                if conf > 40:
+                if conf > 60:
                     if "." in text:
                         index_ = text.find(".")
                         if index_:
                             try:
-                                print("read_total_pot_money debug text: "+text[:index_+2])
+                                print("read_total_pot_money debug text 1: "+text[:index_+2])
                                 res["result"] = float(text[:index_+2])
                                 return res
                             except Exception as e:
                                 print("Exiting here 25")
                                 exit(e)
                     else:
+                        print("read_total_pot_money debug text 2: "+text)
                         if len(text) > 2:
                             if text.endswith("BB"):
                                 text = text[:-2]
@@ -447,7 +448,7 @@ def read_total_pot_money(im = None):
                             elif text.endswith("88"):
                                 text = text[:-2]      
                         if text[0].isdigit():
-                            print("read_total_pot_money debug text: "+text)
+                            print("read_total_pot_money debug text 3: "+text)
                             try:
                                 res["result"] = float(text)
                                 return res
@@ -469,7 +470,7 @@ def read_total_pot_money(im = None):
                     print("\n")
                     print(conf)
                     print("\n")
-                    im1.save(f"not_conf_enuf_{text}_{conf}.png")
+                    im1.save(f"tesseract_training/raw_data/not_conf_enuf_{text}_{conf}.png")
                     try:
                         res["result"] = float(text)
                         return res
