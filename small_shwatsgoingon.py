@@ -472,13 +472,14 @@ def read_total_pot_money(im = None):
                     print(conf)
                     print("\n")
                     im1.save(f"tesseract_training/raw_data/not_conf_enuf_{text}_{conf}.png")
-                    try:
-                        res["result"] = float(text)
-                        return res
-                    except Exception as e:
-                        print("Exiting here (not confident enough) 26")
-                        print(e)
-                        exit()                                          
+                    exit()
+                    # try:
+                    #     res["result"] = float(text)
+                    #     return res
+                    # except Exception as e:
+                    #     print("Exiting here (not confident enough) 26")
+                    #     print(e)
+                    #     exit()                                          
     print("\n read_total_pot_money debug 2 \n")
     return res               
             
