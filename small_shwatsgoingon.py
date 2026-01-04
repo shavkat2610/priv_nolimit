@@ -404,7 +404,7 @@ def read_total_pot_money(im = None):
     for i in range(im1.size[0]): # for every pixel:
             for j in range(im1.size[1]):
                 # print(pixels[i, j])
-                if pixels[i, j][1] >= 170:
+                if pixels[i, j][1] >= 160:
                     pixels[i, j] = (10, 10, 10, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
@@ -425,7 +425,7 @@ def read_total_pot_money(im = None):
             if text.startswith("Total") or text.startswith("Pat") or text == ":" or text.startswith("Pot"):
                 pass
             else:
-                if conf > 60:
+                if conf > 40:
                     if "." in text:
                         index_ = text.find(".")
                         if index_:
