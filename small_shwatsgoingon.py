@@ -456,7 +456,7 @@ def read_total_pot_money(im = None):
                             return res
                 else:
                     pass      
-
+    print("\n read_total_pot_money debug \n")
     return res               
             
         

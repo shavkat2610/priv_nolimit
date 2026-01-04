@@ -2435,7 +2435,11 @@ class AppDelegate(NSObject):
                 #         print("\nread own money failed after clicking ... 20\n")                                                 
         else: # no red button to push
             with self.potheight_lock: # regularly 
-                result = read_total_pot_money(current_im)
+                try:
+                    result = read_total_pot_money(current_im)
+                except Exception as e:
+                    print("exiting here 27")
+                    exit(e)
                 self.potheight = result["result"]
                 print("debug potheight set to: "+str(self.potheight))
                 if self.potheight >= 1.5:
