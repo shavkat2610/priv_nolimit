@@ -213,7 +213,8 @@ def how_much(im = None):
         if not data[0].isdigit():
             data = data[1:]
         else:
-            break    
+            break  
+    im2.save(f"tesseract_training/raw_data/how_much_{data}.png")
     if data == "5SBB":
         im2.save(f"5BB_please{time.time()}.png")
         print("It must have been 5 BB to call ?!?! please ?!?!")
@@ -651,6 +652,7 @@ def read_own_money(im = None):
         exit("exit 1")
     print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
+    im1.save(f"tesseract_training/raw_data/own_munna_{data}.png")
     data = data.replace(",", ".")
     if data == "All-In":
         return -1.0

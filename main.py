@@ -51,7 +51,7 @@ from PIL import Image
 
 # todo:
 
-# adjust tesseract ocr (use confidence score for threshholding)
+# adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
