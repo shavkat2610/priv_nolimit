@@ -437,13 +437,13 @@ def read_total_pot_money(im = None):
                                 exit(e)
                     else:
                         if len(text) > 2:
-                            if text.endwith("BB"):
+                            if text.endswith("BB"):
                                 text = text[:-2]
-                            elif text.endwith("8B"):
+                            elif text.endswith("8B"):
                                 text = text[:-2]
-                            elif text.endwith("B8"):
+                            elif text.endswith("B8"):
                                 text = text[:-2]
-                            elif text.endwith("88"):
+                            elif text.endswith("88"):
                                 text = text[:-2]      
                         if text[0].isdigit():
                             try:
