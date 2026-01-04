@@ -2439,7 +2439,8 @@ class AppDelegate(NSObject):
                     result = read_total_pot_money(current_im)
                 except Exception as e:
                     print("exiting here 27")
-                    exit(e)
+                    print(e)
+                    exit()
                 self.potheight = result["result"]
                 print("debug potheight set to: "+str(self.potheight))
                 if self.potheight >= 1.5:
