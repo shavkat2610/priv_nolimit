@@ -2437,6 +2437,7 @@ class AppDelegate(NSObject):
             with self.potheight_lock: # regularly 
                 result = read_total_pot_money(current_im)
                 self.potheight = result["result"]
+                print("debug potheight set to: "+str(self.potheight))
                 if self.potheight >= 1.5:
                     if self.last_pot != self.potheight:
                         pot_rescaled = self.potheight # ((self.potheight/16)**2)

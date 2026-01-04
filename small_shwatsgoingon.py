@@ -409,6 +409,10 @@ def read_total_pot_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     # im1.show()
+    res = {
+        "result": 0.001, 
+        "im": im
+    }    
     data = pytesseract.image_to_data(
         im1,
         output_type=Output.DICT,
@@ -416,8 +420,46 @@ def read_total_pot_money(im = None):
     )
     print("\n read_total_pot_money debug \n")
     for text, conf in zip(data["text"], data["conf"]):
-        if text.strip():
-            print(text, conf)
+        text = text.strip()
+        if text:
+            if text == "Total" or text == "Pat" or text == "Pot":
+                pass
+            else:
+                if conf > 60:
+                    if "." in text:
+                        index_ = text.find(".")
+                        if index_:
+                            try:
+                                res["result"] = float(text[:index_+1])
+                                return res
+                            except Exception as e:
+                                print("Exiting here 25")
+                                exit(e)
+                    else:
+                        if len(text) > 2:
+                            if text.endwith("BB"):
+                                text = text[:-2]
+                            elif text.endwith("8B"):
+                                text = text[:-2]
+                            elif text.endwith("B8"):
+                                text = text[:-2]
+                            elif text.endwith("88"):
+                                text = text[:-2]      
+                        if text[0].isdigit():
+                            try:
+                                res["result"] = float(text)
+                                return res
+                            except Exception as e:
+                                print("Exiting here 25")
+                                exit(e)  
+                        else:
+                            return res
+                else:
+                    pass      
+
+    return res               
+            
+        
     print("\n read_total_pot_money debug \n")    
     raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=PTalot0123456789.,:")
     data = raw_data.strip()
