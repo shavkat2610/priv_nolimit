@@ -466,6 +466,8 @@ def read_total_pot_money(im = None):
                     print("not confident enough")
                     print("\n")
                     print(text)
+                    print("\n")
+                    print(conf)
                     print("\n")                    
     print("\n read_total_pot_money debug 2 \n")
     return res               
