@@ -468,7 +468,15 @@ def read_total_pot_money(im = None):
                     print(text)
                     print("\n")
                     print(conf)
-                    print("\n")                    
+                    print("\n")
+                    im1.save(f"not_conf_enuf_{text}_{conf}.png")
+                    try:
+                        res["result"] = float(text)
+                        return res
+                    except Exception as e:
+                        print("Exiting here (not confident enough) 26")
+                        print(e)
+                        exit()                                          
     print("\n read_total_pot_money debug 2 \n")
     return res               
             
