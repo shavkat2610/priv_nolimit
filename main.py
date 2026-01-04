@@ -565,7 +565,7 @@ class AppDelegate(NSObject):
                                             self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
                                             self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
                                             self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
-                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[32]]
+                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[31]]
                     self.flop_model_inputs.append(flop_model_input)
 
 
@@ -588,7 +588,7 @@ class AppDelegate(NSObject):
                                             self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
                                             self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
                                             self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
-                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[32]]
+                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[31]]
                         flop_model_inputs.append(flop_model_input)
                     return flop_model_inputs # different "inputs" for decision making
 
@@ -1515,7 +1515,12 @@ class AppDelegate(NSObject):
                     if decision == "None_yet":
                         self.decision = model_dec
                     print("I was here flop dec making 5")
-                self.mkFlopModelInput()
+                try:
+                    self.mkFlopModelInput()
+                except Exception as e:
+                    print("error 104")
+                    print(e)
+                    exit()
                 print("I was here flop dec making 6")
                 return
             if self.deck_card_5 == "nn": # that means river
