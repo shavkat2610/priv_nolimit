@@ -418,7 +418,7 @@ def read_total_pot_money(im = None):
         output_type=Output.DICT,
         config="--oem 1 --psm 6"
     )
-    print("\n read_total_pot_money debug \n")
+    print("\n read_total_pot_money debug 1 \n")
     for text, conf in zip(data["text"], data["conf"]):
         text = text.strip()
         if text:
@@ -456,10 +456,12 @@ def read_total_pot_money(im = None):
                                 exit(e)  
                         else:
                             print("else 25")
+                            print(text)
+                            print("\n")
                             return res
                 else:
                     pass      
-    print("\n read_total_pot_money debug \n")
+    print("\n read_total_pot_money debug 2 \n")
     return res               
             
         
