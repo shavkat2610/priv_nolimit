@@ -786,7 +786,7 @@ def general_whats_going_on_model(im = None):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=5.0:
+    if (prob/(sec_prob+0.01))<=7.75:
         # print(str(model_output))
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
@@ -976,11 +976,12 @@ def simulate_gss(im=None):
     if im == None:
         im = Image.open('shmol_new_data/connectivity_issues_1766017203.png') #should be a screenshot
 
-    handle_all_in(im=im)
+    # handle_all_in(im=im):
 
 
 
-    # print(general_whats_going_on_model(im))
+
+    print(general_whats_going_on_model(im))
 
     return False
 
@@ -1041,19 +1042,19 @@ def simulate_gss(im=None):
 import glob
 
 if __name__ == "__main__":
-    # prepare_fishing_own_cards()
-    # prepare_fishing_deck_cards()
-    # load_smol_watsgoingon_model()
-    # path = glob.glob("datasets/shmol_watgoinon/**/*.png", recursive=True)
-    # for pth in path :
-    #     if pth.endswith(".png"):
-    #         im = Image.open(pth)
-    #         # im = Image.open("gsss/game_screenshot1764690404.png")
-    #         if simulate_gss(im=im):
-    #             print("found one ! "+str(pth))
-    #         time.sleep(0.1)
+    prepare_fishing_own_cards()
+    prepare_fishing_deck_cards()
+    load_smol_watsgoingon_model()
+    path = glob.glob("datasets/shmol_watgoinon/**/*.png", recursive=True)
+    for pth in path :
+        if pth.endswith(".png"):
+            im = Image.open(pth)
+            # im = Image.open("gsss/game_screenshot1764690404.png")
+            if simulate_gss(im=im):
+                print("found one ! "+str(pth))
+            time.sleep(0.1)
     # print(path)
-    simulate_gss()
+    # simulate_gss()
 
     # load_flop_equity_model()
     # print("start")

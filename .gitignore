@@ -14,7 +14,7 @@ temp*.png
 ./secrets1/*
 .DS_Store
 gsss
-fish
+# fish
 datasets
 dataset_copy
 dataset_copy2

@@ -51,6 +51,9 @@ from PIL import Image
 
 # todo:
 
+# retrain tesseract # get more training samples 
+# feed in more features in river and turn - time
+# # feed in how many card holders there is still before me and after me, before big_blind
 # adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
@@ -209,26 +212,26 @@ class AppDelegate(NSObject):
     own_card_right = "nn"    
     cards_open = False # are we holding cards after flop or no_decision_to_be_made
 
-    # our_turn_lock = Lock()
-    # holders_pos = [ False ,  False ,  False ,  False ,  False ,  False ,  False ,  False ] # check_holders(im) #   # from me counting, counterclockwise, me not considered, because I still hold cards when this is interesting 
-    # num_active_players = 0 # 5 (card holders currently) (aka holders)
-    # num_active_players_before_me = 0 # starting at small blind | (aka holders)
+    our_turn_lock = Lock()
+    holders_pos = [ False ,  False ,  False ,  False ,  False ,  False ,  False ,  False ] # check_holders(im) #   # from me counting, counterclockwise, me not considered, because I still hold cards when this is interesting 
+    num_active_players = 0 # 5 (card holders currently) (aka holders)
+    num_active_players_before_me = 0 # starting at small blind | (aka holders)
 
     valset_lock = Lock()
     values_set = False
 
 
 
-    # def setValuesOurTurn_(self, current_im):
-    #     with self.our_turn_lock:
-    #         self.holders_pos = check_holders(current_im)
-    #         # print("holders set ...")
-    #         self.num_active_players = count_holders(self.holders_pos)
-    #         # print("num_active_players set ...")
-    #         with self.d_lock:
-    #             self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
-    #         # print("num_active_players_before_me set .") 
-    #     # print("done with setValuesOurTurn .")
+    def setValuesOurTurn_(self, current_im):
+        with self.our_turn_lock:
+            self.holders_pos = check_holders(current_im)
+            # print("holders set ...")
+            self.num_active_players = count_holders(self.holders_pos)
+            # print("num_active_players set ...")
+            with self.d_lock:
+                self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
+            # print("num_active_players_before_me set .") 
+        # print("done with setValuesOurTurn .")
 
     def changeStateMonteCaro(self):
         with self.mk_comte_carlo_decision_lock:
@@ -1933,7 +1936,7 @@ class AppDelegate(NSObject):
 
                 
 
-        if game_stage == "no_decision_to_be_made":
+        elif game_stage == "no_decision_to_be_made":
             with self.cards_lock:
                 self.cards_open = False
             secs = time.time()
@@ -1947,7 +1950,7 @@ class AppDelegate(NSObject):
                 #     return
                 
         
-        if game_stage == "river":
+        elif game_stage == "river":
             print("river")
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
@@ -2009,7 +2012,7 @@ class AppDelegate(NSObject):
                     self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
 
 
-        if game_stage == "turn":
+        elif game_stage == "turn":
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
             if current_game_stage != "turn":
@@ -2065,7 +2068,7 @@ class AppDelegate(NSObject):
                     self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
 
         
-        if game_stage == "preflop":
+        elif game_stage == "preflop":
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
             if current_game_stage != "preflop":
@@ -2079,7 +2082,7 @@ class AppDelegate(NSObject):
                 with self.cards_lock:
                     if self.cards_open == False:
                         secs = time.time()
-                        current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
+                        # current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
                         if check_if_we_holdin_yet(current_im):
                             print("I was here 9")
                             try:
@@ -2160,7 +2163,7 @@ class AppDelegate(NSObject):
 
         
 
-        if game_stage == "connectivity_issues":
+        elif game_stage == "connectivity_issues":
             print("connectivity_issues") 
             secs = time.time()
             current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
@@ -2194,7 +2197,7 @@ class AppDelegate(NSObject):
                 self.difference_tocall_n_potheight = self.to_call/self.potheight
                 to_call = self.to_call
                 print(f"to_call is : {str(to_call)}")
-            # self.setValuesOurTurn_(current_im=current_im)
+            self.setValuesOurTurn_(current_im=current_im)
             print("debug I was here 20")
             try:
                 self.makeDecision()
