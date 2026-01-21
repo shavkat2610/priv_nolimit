@@ -20,8 +20,8 @@ dataset_copy
 dataset_copy2
 folder1
 venv
-model*
-model.keras
+# model*
+# model.keras
 # *.keras
 
 

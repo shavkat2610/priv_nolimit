@@ -758,7 +758,7 @@ import keras
 def load_smol_watsgoingon_model():
     global smol_watsgoingon_model
     if smol_watsgoingon_model == None:
-        smol_watsgoingon_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+        smol_watsgoingon_model = keras.saving.load_model("model1_3.keras", custom_objects=None, compile=True, safe_mode=True)
         return True
     else:
         print("model already loaded")
@@ -791,7 +791,8 @@ def general_whats_going_on_model(im = None):
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
         second = class_names[sec_max]
-        im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(prob/(sec_prob+0.001))}.png")
+        # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
+        im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(prob/(sec_prob+0.01))}.png")
     return result
 
 
@@ -1042,8 +1043,8 @@ def simulate_gss(im=None):
 import glob
 
 if __name__ == "__main__":
-    prepare_fishing_own_cards()
-    prepare_fishing_deck_cards()
+    # prepare_fishing_own_cards()
+    # prepare_fishing_deck_cards()
     load_smol_watsgoingon_model()
     path = glob.glob("datasets/shmol_watgoinon/**/*.png", recursive=True)
     for pth in path :
@@ -1052,7 +1053,7 @@ if __name__ == "__main__":
             # im = Image.open("gsss/game_screenshot1764690404.png")
             if simulate_gss(im=im):
                 print("found one ! "+str(pth))
-            time.sleep(0.1)
+            # time.sleep(0.1)
     # print(path)
     # simulate_gss()
 
