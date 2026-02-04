@@ -411,7 +411,7 @@ old_model = keras.saving.load_model("model3.keras", custom_objects=None, compile
 
 model.set_weights(old_model.get_weights()) 
 
-model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.95),
+model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.5),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -446,7 +446,7 @@ old_model = keras.saving.load_model("model4.keras", custom_objects=None, compile
 
 model.set_weights(old_model.get_weights()) 
 
-model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.95),
+model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.5),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -487,7 +487,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.000016, momentum=0.
 
 model.fit(train_ds,validation_data=validation_ds, epochs=50, batch_size=batch_size)
 
-model.save("mode6.keras")
+model.save("model6.keras")
 
 
 

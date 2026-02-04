@@ -60,6 +60,9 @@ def compare_num(im,im2, max_ = 500, max_diff_one = 4.5, max_diff_two = 7., max_d
                     points_allowed-=abs(diff)*1.2
                     if abs(diff)>=max_diff_four:
                         points_allowed-=abs(diff)*1.5
+    if points_allowed < 0.0:
+        # print("compare_num uns")
+        return False                        
 
     if debug:
         if points_allowed<300:
@@ -295,12 +298,14 @@ def red_own_cards(im = None):
                 result[0] = "nn"
             else:
                 result[0]=own_card_left_filenames[i][:2]
+                break
         elif compare_num(ovl, current, debug=False):
             if own_card_left_filenames[i][1]=="_":
                 print(" I HAVE FOUND AN UNDERSCORE IMAGE THING")
                 result[0] = "nn"
             else:
                 result[0]=own_card_left_filenames[i][:2]
+                break
         i+=1
     i = 0
     for current in own_values_right:
@@ -310,12 +315,14 @@ def red_own_cards(im = None):
                 result[1] = "nn"
             else:
                 result[1]=own_card_right_filenames[i][:2]
+                break
         elif compare_num(ovr, current, debug=False):
             if own_card_right_filenames[i][1]=="_":
                 print(" I HAVE FOUND AN UNDERSCORE IMAGE THING")
                 result[1] = "nn"
             else:
                 result[1]=own_card_right_filenames[i][:2]
+                break
         i+=1
     print("read own cards result: "+str(result))
     
@@ -455,11 +462,13 @@ def red_deck_cards(im = None):
                 return result
             else:
                 result[0]=deck_card_filenames[i][:2]
+                break
         elif compare_num(dc1, current):
             if deck_card_filenames[i][1]=="_":
                 return result
             else:
                 result[0]=deck_card_filenames[i][:2]
+                break
         i+=1
     i = 0
     for current in deck_cards:
@@ -468,11 +477,13 @@ def red_deck_cards(im = None):
                 return result
             else:
                 result[1]=deck_card_filenames[i][:2]
+                break
         elif compare_num(dc2, current):
             if deck_card_filenames[i][1]=="_":
                 return result
             else:
                 result[1]=deck_card_filenames[i][:2]
+                break
         i+=1
     i = 0
     for current in deck_cards:
@@ -481,11 +492,13 @@ def red_deck_cards(im = None):
                 return result
             else:
                 result[2]=deck_card_filenames[i][:2]
+                break
         elif compare_num(dc3, current):
             if deck_card_filenames[i][1]=="_":
                 return result
             else:
                 result[2]=deck_card_filenames[i][:2]
+                break
         i+=1
     i = 0
     for current in deck_cards:
@@ -495,12 +508,14 @@ def red_deck_cards(im = None):
                 return result
             else:
                 result[3]=deck_card_filenames[i][:2]
+                break
         elif compare_num(dc4, current):
             if deck_card_filenames[i][1]=="_":
                 print("read deck cards result: "+str(result))
                 return result
             else:
                 result[3]=deck_card_filenames[i][:2]
+                break
         i+=1
     i=0
     for current in deck_cards:
@@ -510,12 +525,14 @@ def red_deck_cards(im = None):
                 return result
             else:
                 result[4]=deck_card_filenames[i][:2]
+                break
         elif compare_num(dc5, current):
             if deck_card_filenames[i][1]=="_":
                 print("read deck cards result: "+str(result))
                 return result
             else:
                 result[4]=deck_card_filenames[i][:2]
+                break
         i+=1
     
     print("read deck cards result: "+str(result))

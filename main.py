@@ -36,6 +36,7 @@ from PIL import Image
 
 # done:
 
+
 # read played info -done
 # red own cards -done
 # read pot money -done
@@ -51,6 +52,10 @@ from PIL import Image
 
 # todo:
 
+# features at river time
+# added money of participants fed into data
+# read money of participants - in works
+# my raises, oponents raises at flop, river and turn time 
 # retrain tesseract # get more training samples 
 # feed in more features in river and turn - time
 # # feed in how many card holders there is still before me and after me, before big_blind
@@ -843,7 +848,7 @@ class AppDelegate(NSObject):
             self.confidence = self.slider.doubleValue()
         
 
-    def makeAIDecision_(self, outputs):
+    def makeAIDecision_(self, outputs): # make decision based on model outputs
 
         
         # outputs from model prediction
@@ -1489,7 +1494,7 @@ class AppDelegate(NSObject):
         return self.makeAIDecision_(outputs)
     
 
-    def makeDecision(self):  
+    def makeDecision(self):  # up confidence according to pot_height when calling (the bet)
         set_1_1 = -1
         if self.deck_card_1 == "nn":  # that means its preflop
             with self.dec_lock:

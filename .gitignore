@@ -23,6 +23,6 @@ venv
 # model*
 # model.keras
 # *.keras
-
+tesseract_training
 
 
