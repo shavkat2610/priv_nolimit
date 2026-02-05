@@ -1008,14 +1008,14 @@ def read_own_money(im = None):
     #     if text.strip():
     #         print(text, conf)
     # print("\n read_total_pot_money debug \n")   
-    try:
-        raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=0123456789.,B")
-    except Exception as e:
-        print(e)
-        exit("exit 1")
+    # try:
+    raw_data = pytesseract.image_to_string(im1, config="--oem 1 --psm 6 -c tessedit_char_whitelist=0123456789.,B ")
+    # except Exception as e:
+    #     print(e)
+    #     exit("exit 1")
     print("own_money raw_data: "+raw_data)
     data = raw_data.strip()
-    im1.save(f"tesseract_training/raw_data/own_munna_{data}.png")
+    # im1.save(f"tesseract_training/raw_data_2/own_munna_{data}.png")
     return True # for now, we are only saving training images
     data = data.replace(",", ".")
     if data == "All-In":
@@ -1342,8 +1342,8 @@ def simulate_gss(im=None):
 
     # handle_all_in(im=im):
 
-    read_total_pot_money_tesseract(im=im)
-    # read_own_money(im=im)
+    # read_total_pot_money_tesseract(im=im)
+    read_own_money(im=im)
 
 
     # print(general_whats_going_on_model(im))
