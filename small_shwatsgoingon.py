@@ -179,8 +179,8 @@ def read_game(im = None): # todo: produce input for first model
 
 
 def how_much(im = None): 
-    pyautogui.moveTo(25, 25)
-    time.sleep(0.1)
+    # pyautogui.moveTo(25, 25)
+    # time.sleep(0.1)
     if im == None:
         im = game_screenshot() #should be a screenshot
     im2 = crop_wh(im, 640, 508, 74, 22) #check_button
@@ -214,7 +214,7 @@ def how_much(im = None):
             data = data[1:]
         else:
             break  
-    im2.save(f"tesseract_training/raw_data/how_much_{data}.png")
+    im2.save(f"raw_data_3/how_much_{data}.png")
     if data == "5SBB":
         im2.save(f"5BB_please{time.time()}.png")
         print("It must have been 5 BB to call ?!?! please ?!?!")
@@ -231,8 +231,8 @@ def how_much(im = None):
                 return 9.0
             else:
                 print("raw_data: "+raw_data)
-                im1.save("new_check_button_probbaly.png")
-                im2.save("new_check_button_probbaly_edited.png")
+                im1.save(f"new_check_button_probbaly{time.time()}.png")
+                im2.save(f"new_check_button_probbaly_edited{time.time()}.png")
                 raw_data = raw_data.strip()
                 if raw_data == "Check":
                     return 0.0
@@ -1343,8 +1343,12 @@ def simulate_gss(im=None):
     # handle_all_in(im=im):
 
     # read_total_pot_money_tesseract(im=im)
-    read_own_money(im=im)
+    # read_own_money(im=im)
+    pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
+    # print("pix (where red button might be): "+ str(pix))
 
+    if is_red(pix): 
+        how_much(im=im)
 
     # print(general_whats_going_on_model(im))
 
