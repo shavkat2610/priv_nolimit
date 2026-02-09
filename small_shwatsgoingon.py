@@ -206,15 +206,18 @@ def how_much(im = None):
     #     if text.strip():
     #         print(text, conf)
     # print("\n how_much debug \n")
-    raw_data = pytesseract.image_to_string(im2, config="--oem 1 --psm 6 -c tessedit_char_whitelist=B0123456789.")
+    raw_data = pytesseract.image_to_string(im2, config="--oem 1 --psm 6 -c tessedit_char_whitelist=B0123456789. ")
     print("raw_data how much: "+raw_data)
     data = raw_data.strip()
+    if data == "":
+        print("probably empty button still")
+        return 0.0
     while True:
         if not data[0].isdigit():
             data = data[1:]
         else:
             break  
-    im2.save(f"raw_data_3/how_much_{data}.png")
+    im2.save(f"raw_data_3/how_much_{data}_{str(time.time())[:12].replace('.', '_')}.png")
     if data == "5SBB":
         im2.save(f"5BB_please{time.time()}.png")
         print("It must have been 5 BB to call ?!?! please ?!?!")
@@ -1344,7 +1347,12 @@ def simulate_gss(im=None):
 
     # read_total_pot_money_tesseract(im=im)
     # read_own_money(im=im)
-    pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
+    try:
+        pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
+    except Exception as e:
+        print("Error getting pixel: "+str(e))
+        print("im.filename: "+str(im.filename))
+        exit()
     # print("pix (where red button might be): "+ str(pix))
 
     if is_red(pix): 
@@ -1415,7 +1423,8 @@ if __name__ == "__main__":
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
     # prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
+    # path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
+    path = glob.glob("screenshots/*.png", recursive=True)
     for pth in path :
         if pth.endswith(".png"):
             im = Image.open(pth)
