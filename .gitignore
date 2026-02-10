@@ -23,6 +23,10 @@ venv
 # model*
 # model.keras
 # *.keras
-tesseract_training
+tesseract_training/ground_truth_flies
+tesseract_training/old_gt
+tesseract_training/raw_data
+tesseract_training/raw_data_2
+tesseract_training/raw_data_4
 
 
