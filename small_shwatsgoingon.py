@@ -1388,8 +1388,8 @@ if __name__ == "__main__":
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
     prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
-    # path = glob.glob("screenshots/*.png", recursive=True)
+    # path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
+    path = glob.glob("screenshots/*.png", recursive=True)
     for pth in path :
         if pth.endswith(".png"):
             im = Image.open(pth)
