@@ -52,6 +52,8 @@ from PIL import Image
 
 # todo:
 
+# get allIn's out of river, flop and turn samples
+# pot_20 etc. into I raised at preflop, flop, river, turn, how much I had to call at ... and potheight at ...
 # features at river time
 # added money of participants fed into data
 # read money of participants - in works
@@ -64,6 +66,7 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # run it three times ... # not always done yet ...
 # open last card ... - not yet done completely
+
 # all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 # write to app: info on win probability 1 v 1 (at flop, river and turn)
 # write to app: info on win probability 1 v number called (at flop, river and turn) ( probability ^ number )
@@ -2192,7 +2195,8 @@ class AppDelegate(NSObject):
             # time to cat logic :
             with self.potheight_lock:
                 result = read_total_pot_money(current_im)
-                self.potheight = result["result"]
+                if result["result"] > 0.1:
+                    self.potheight = result["result"]
                 # if self.potheight > 0.2:
                 #     pot_rescaled = ((self.potheight/8)**2)
          
@@ -2454,26 +2458,26 @@ class AppDelegate(NSObject):
                     print("exiting here 27")
                     print(e)
                     exit()
-                self.potheight = result["result"]
+                if result["result"] > 0.1:
+                    self.potheight = result["result"]
                 print("debug potheight set to: "+str(self.potheight))
-                if self.potheight >= 1.5:
-                    if self.last_pot != self.potheight:
-                        pot_rescaled = self.potheight # ((self.potheight/16)**2)
-                        self.average_pot_2 = (self.average_pot_2 * 1/2) + (pot_rescaled * 1/2)
-                        self.average_pot_3 = (self.average_pot_3 * 2/3) + (pot_rescaled * 1/3)
-                        self.average_pot_4 = (self.average_pot_4 * 3/4) + (pot_rescaled * 1/4)
-                        self.average_pot_5 = (self.average_pot_5 * 4/5) + (pot_rescaled * 1/5)
-                        self.average_pot_6 = (self.average_pot_6 * 5/6) + (pot_rescaled * 1/6)
-                        self.average_pot_7 = (self.average_pot_7 * 6/7) + (pot_rescaled * 1/7)
-                        self.average_pot_9 = (self.average_pot_9 * 8/9) + (pot_rescaled * 1/9)
-                        self.average_pot_11 = (self.average_pot_11 * 10/11) + (pot_rescaled * 1/11)
-                        self.average_pot_13 = (self.average_pot_13 * 12/13) + (pot_rescaled * 1/13)    
-                        self.average_pot_16 = (self.average_pot_16 * 15/16) + (pot_rescaled * 1/16)        
-                        self.average_pot_20 = (self.average_pot_20 * 19/20) + (pot_rescaled * 1/20)    
-                        self.average_pot_30 = (self.average_pot_30 * 29/30) + (pot_rescaled * 1/30)
-                        self.average_pot_50 = (self.average_pot_50 * 49/50) + (pot_rescaled * 1/50)        
-                        self.last_pot = self.potheight           
-                        # print("pot_rescaled set to: "+str(pot_rescaled)) # check if its printing after update with our take in it 
+                if self.last_pot != self.potheight:
+                    pot_rescaled = self.potheight # ((self.potheight/16)**2)
+                    self.average_pot_2 = (self.average_pot_2 * 1/2) + (pot_rescaled * 1/2)
+                    self.average_pot_3 = (self.average_pot_3 * 2/3) + (pot_rescaled * 1/3)
+                    self.average_pot_4 = (self.average_pot_4 * 3/4) + (pot_rescaled * 1/4)
+                    self.average_pot_5 = (self.average_pot_5 * 4/5) + (pot_rescaled * 1/5)
+                    self.average_pot_6 = (self.average_pot_6 * 5/6) + (pot_rescaled * 1/6)
+                    self.average_pot_7 = (self.average_pot_7 * 6/7) + (pot_rescaled * 1/7)
+                    self.average_pot_9 = (self.average_pot_9 * 8/9) + (pot_rescaled * 1/9)
+                    self.average_pot_11 = (self.average_pot_11 * 10/11) + (pot_rescaled * 1/11)
+                    self.average_pot_13 = (self.average_pot_13 * 12/13) + (pot_rescaled * 1/13)    
+                    self.average_pot_16 = (self.average_pot_16 * 15/16) + (pot_rescaled * 1/16)        
+                    self.average_pot_20 = (self.average_pot_20 * 19/20) + (pot_rescaled * 1/20)    
+                    self.average_pot_30 = (self.average_pot_30 * 29/30) + (pot_rescaled * 1/30)
+                    self.average_pot_50 = (self.average_pot_50 * 49/50) + (pot_rescaled * 1/50)        
+                    self.last_pot = self.potheight           
+                    # print("pot_rescaled set to: "+str(pot_rescaled)) # check if its printing after update with our take in it 
             time.sleep(0.79)
             with self.valset_lock:
                 need_set = False

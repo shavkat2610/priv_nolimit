@@ -447,7 +447,7 @@ def prepare_pot_digits():
             print(f"found some non png file in tesseract_training/digits, {filename}, skipping...")
 
 
-def tess_read(im):
+def tess_read(im): #input is preprocessed image of the number, output is the number, if it cannot be read, return 0.001 for now, and save the image for later training
     saving = False
     data = pytesseract.image_to_data(
         im,
@@ -460,13 +460,13 @@ def tess_read(im):
         text = text.strip()
         if conf != -1 :
             whole_text += text + "_"
-        if conf < 77 and str(conf) != "-1":
-            print("read_total_pot_money_tesseract data: "+text+" conf: "+str(conf))
-            # saving = True  
+        if conf < 82 and str(conf) != "-1":
+            print("tess_read data: "+text+" conf: "+str(conf))
+            saving = True  
         if conf != -1 and text[0].isdigit():
             if not text[-1].isdigit():
                 print("\n \nprobably B character at the end of text, removing it for reading\n \n")
-                # saving = True  
+                saving = True  
                 text = text[:-1]
             if not text[-1].isdigit():
                 print("\n \nprobably another B character at the end of text, removing it for reading\n \n")
@@ -474,14 +474,29 @@ def tess_read(im):
             try:
                 result = float(text)
                 if saving:
-                    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
                 return result
             except Exception as e:
-                print("Exiting here 24")
+                if text.count('.') > 1 or text.count(',') > 0:
+                    text = text[0]+text[2:]
+                    try:
+                        result = float(text)
+                        im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                        return result
+                    except Exception as e:
+                        print("could not read number with extra dot or comma, probably something else went wrong, saving for now")
+                        print("text: "+text)
+                        im.save(f"tesseract_training/raw_data/t_weird_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                        print(e)
+                        return 0.001         
+                print("returning here 24")
                 print("text: "+text)
+                im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")  
                 print(e)
-                exit()
-    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_')}{str(time.time())[:12].replace('.', '_')}.png")
+                return 0.001
+    if whole_text == "All-In_":
+        return -1.0
+    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
     return 0.001 # for now   
 
 
@@ -531,17 +546,22 @@ def read_total_pot_money_manually(im = None):
     result = ""
     i = 0
     for current in pot_digits:
-        if np.array_equal(dig1, current):
+        if np.array_equal(dig1, current):                
+            if pot_digits_filenames[i][0].isdigit() == False:
+                    return (i_1, 0.001)  
             result += pot_digits_filenames[i][0]
             break
-        elif compare_num(dig1, current, debug=False):
+        elif compare_num(dig1, current, debug=False):                
+            if pot_digits_filenames[i][0].isdigit() == False:
+                    return (i_1, 0.001)  
             result += pot_digits_filenames[i][0]
             break
         i+=1 
     
     if result == "m" or result == "":
         print("could not read total pot money first digit")
-        im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
+        if result == "":
+            im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
 
@@ -579,8 +599,9 @@ def read_total_pot_money_manually(im = None):
             elif compare_num(dig2, current, debug=False):
                 result += pot_digits_filenames[i][0]
                 break
+
             i+=1
-        print("read_total_pot_money result (after dot 1): "+str(result))
+        # print("read_total_pot_money result (after dot 1): "+str(result))
         return (i_1, float(result))
     
     # no dot found yet
@@ -620,7 +641,7 @@ def read_total_pot_money_manually(im = None):
 
     if pixels[2, 8][1] > 160 and pixels[1, 8][1] > 160 and pixels[0, 8][1] > 160 and pixels[0, 9][1] < 160 and pixels[1, 9][1] < 160: # dot found
         result += "."
-        print("we have a dot 3rd digit")
+        # print("we have a dot 3rd digit")
         im4 = crop_wh(im1, i_i+89, 16, 6, 10) # digit after dot
         pixels = im4.load() # create the pixel map
         for i in range(im4.size[0]): # width
@@ -643,7 +664,7 @@ def read_total_pot_money_manually(im = None):
                 result += pot_digits_filenames[i][0]
                 break
             i+=1
-        print("read_total_pot_money result (after dot 2): "+str(result))
+        # print("read_total_pot_money result (after dot 2): "+str(result))
         return (i_1, float(result))
     
 
@@ -659,14 +680,14 @@ def read_total_pot_money_manually(im = None):
                 result += pot_digits_filenames[i][0]
                 break
             else:
-                print("read_total_pot_money result 2: "+str(result))
+                # print("read_total_pot_money result 2: "+str(result))
                 return (i_1, float(result))            
         elif compare_num(dig1, current, debug=False):
             if  pot_digits_filenames[i][0] != "B":
                 result += pot_digits_filenames[i][0]
                 break
             else:
-                print("read_total_pot_money result 2: "+str(result))
+                # print("read_total_pot_money result 2: "+str(result))
                 return (i_1, float(result))
         i+=1   
 
@@ -710,7 +731,7 @@ def read_total_pot_money_manually(im = None):
                 result += pot_digits_filenames[i][0]
                 break
             i+=1
-        print("read_total_pot_money result (after dot 3): "+str(result))
+        # print("read_total_pot_money result (after dot 3): "+str(result))
         return (i_1, float(result))
     
     dig1 = np.array(im3)
@@ -725,14 +746,14 @@ def read_total_pot_money_manually(im = None):
                 result += pot_digits_filenames[i][0]
                 break
             else:
-                print("read_total_pot_money result 3: "+str(result))
+                # print("read_total_pot_money result 3: "+str(result))
                 return (i_1, float(result))            
         elif compare_num(dig1, current, debug=False):
             if  pot_digits_filenames[i][0] != "B":
                 result += pot_digits_filenames[i][0]
                 break
             else:
-                print("read_total_pot_money result 3: "+str(result))
+                # print("read_total_pot_money result 3: "+str(result))
                 return (i_1, float(result))
         i+=1   
 
@@ -833,11 +854,20 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
     # compare the two results
     if abs(result - read_3) < 0.2:
         # print("both methods agree enough, returning tesseract result")
+        if read_3 > 0.1:
+            return {"result": read_3, "im": im}
+        else:
+            im2.save(f"tesseract_training/raw_data/no_read_{str(time.time())[:12].replace('.', '_')}.png")
+            return {"result": read_3, "im": im}
+    if read_3 > 1000 :
+        if str(read_3)[0]==str(result)[0]: # that's when there are trollers (mostly in play money games, they all in with over 1 k bb)
+            return {"result": read_3, "im": im}   
+    if read_3 > 1.35 and read_3 < 1.67:   
         return {"result": read_3, "im": im}
-    
-    print("both methods do not agree enough, returning tesseract result for now, saving tesseract image for training")
-    im2.save(f"tesseract_training/raw_data/n_{str(read_3)}_{str(time.time())[:12].replace('.', '_')}.png")
-    return {"result": read_3, "im": im}
+    print("both methods do not agree enough, returning 0.001 for now, saving image for tesseract training")
+
+    im2.save(f"tesseract_training/raw_data/n_{str(read_3)}_{str(result)}_{str(time.time())[:12].replace('.', '_')}.png")
+    return {"result": 0.001, "im": im}
 
 
 def read_old_pot_money(im = None):
@@ -917,7 +947,7 @@ def read_own_money(im = None):
     if im == None:
         im = game_screenshot()
     im1 = crop_wh(im, 378, 495, 95, 25) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    im2 = im1
+    # im2 = im1
     # im1.show()
     # exit()
     pixels = im1.load() # create the pixel map
@@ -925,12 +955,16 @@ def read_own_money(im = None):
         for j in range(im1.size[1]):
             # print(pixels[i, j])
             if pixels[i, j][1] >= 140: # 140 initially 
-                pixels[i, j] = (10, 10, 10, 255)
+                pixels[i, j] = (0, 0, 0, 255)
             else:
                 if pixels[i,j][0] >= 120:
-                    pixels[i, j] = (10, 10, 10, 255)
+                    pixels[i, j] = (0, 0, 0, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
+    read_3 = tess_read(im1)
+    print("read_own_money tess_read result: "+str(read_3))
+    # im1.save(f"tesseract_training/raw_data/own_munna_{read_3}_{str(time.time())[:12].replace('.', '')}.png")
+    return read_3
     # data = pytesseract.image_to_data(
     #     im1,
     #     output_type=Output.DICT,
@@ -1275,9 +1309,9 @@ def simulate_gss(im=None):
 
     # handle_all_in(im=im):
 
-    read_total_pot_money(im=im)
+    # read_total_pot_money(im=im)
     # read_total_pot_money_manually(im=im)
-    # read_own_money(im=im)
+    read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
     # except Exception as e:
@@ -1354,7 +1388,7 @@ if __name__ == "__main__":
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
     prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/river/*.png", recursive=True)
+    path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
     # path = glob.glob("screenshots/*.png", recursive=True)
     for pth in path :
         if pth.endswith(".png"):
