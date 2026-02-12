@@ -460,7 +460,7 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
         text = text.strip()
         if conf != -1 :
             whole_text += text + "_"
-        if conf < 82 and str(conf) != "-1":
+        if conf < 84 and str(conf) != "-1":
             print("tess_read data: "+text+" conf: "+str(conf))
             saving = True  
         if conf != -1 and text[0].isdigit():
@@ -496,8 +496,9 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                 return 0.001
     if whole_text == "All-In_":
         return -1.0
-    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
-    return 0.001 # for now   
+    if whole_text != "":
+        im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
+    return 0.001 # for now
 
 
 def check_if_included(new_img_array, existing_arrays, debug = False):
