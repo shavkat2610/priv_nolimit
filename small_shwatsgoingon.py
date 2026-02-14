@@ -460,9 +460,10 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
         text = text.strip()
         if conf != -1 :
             whole_text += text + "_"
-        if conf < 84 and str(conf) != "-1":
+        if conf < 87 and str(conf) != "-1":
             print("tess_read data: "+text+" conf: "+str(conf))
             saving = True  
+        
         if conf != -1 and text[0].isdigit():
             if not text[-1].isdigit():
                 print("\n \nprobably B character at the end of text, removing it for reading\n \n")
@@ -473,6 +474,8 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                 text = text[:-1]                
             try:
                 result = float(text)
+                # if result > 22.0:
+                #     saving = True
                 if saving:
                     im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
                 return result
@@ -494,7 +497,7 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                 im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")  
                 print(e)
                 return 0.001
-    if whole_text == "All-In_":
+    if whole_text == "All-In_" or whole_text == "All-1n_" or whole_text == "All-n_":
         return -1.0
     if whole_text != "":
         im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
@@ -871,6 +874,7 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
     return {"result": 0.001, "im": im}
 
 
+
 def read_old_pot_money(im = None):
     if im == None:
         im = game_screenshot()
@@ -942,7 +946,7 @@ def read_own_money_valid(im = None, should_be = 0.0):
 
 
 
-
+filenames = []
 
 def read_own_money(im = None):
     if im == None:
@@ -964,6 +968,9 @@ def read_own_money(im = None):
                     pixels[i,j] = (255, 255, 255, 255)
     read_3 = tess_read(im1)
     print("read_own_money tess_read result: "+str(read_3))
+    if read_3 == -1:
+        global filenames
+        filenames.append(im.filename)
     # im1.save(f"tesseract_training/raw_data/own_munna_{read_3}_{str(time.time())[:12].replace('.', '')}.png")
     return read_3
     # data = pytesseract.image_to_data(
@@ -1389,8 +1396,8 @@ if __name__ == "__main__":
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
     prepare_pot_digits()
-    # path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True)
-    path = glob.glob("screenshots/*.png", recursive=True)
+    path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    # path = glob.glob("screenshots/*.png", recursive=True)
     for pth in path :
         if pth.endswith(".png"):
             im = Image.open(pth)
@@ -1398,6 +1405,8 @@ if __name__ == "__main__":
             if simulate_gss(im=im):
                 print("found one ! "+str(pth))
             # time.sleep(0.1)
+    print("done with all images !")
+    print("filenames with own money reading of -1: \n"+str(filenames))
     # print(path)
     # simulate_gss()
 
