@@ -456,6 +456,7 @@ class AppDelegate(NSObject):
 
 
     def doCalculation_(self, boardCards): # check in decision, if probability_1_1 is set, or use this function on main thread ...
+        print("doCalculation_ called ...")
 
 
         with self.cards_lock:
@@ -490,6 +491,7 @@ class AppDelegate(NSObject):
 
 
     def mkFlopModelInput(self):
+        print("mkFlopModelInput called ...")
         with self.dec_lock:
             decision = self.decision
         with self.potheight_lock:     
@@ -569,6 +571,7 @@ class AppDelegate(NSObject):
 
 
     def mkRiverModelInput(self):
+        print("mkRiverModelInput called ...")
         with self.dec_lock:
             decision = self.decision
         with self.potheight_lock:     
@@ -635,6 +638,7 @@ class AppDelegate(NSObject):
 
 
     def mkTurnModelInput(self):
+        print("mkTurnModelInput called ...")
         with self.dec_lock:
             decision = self.decision
         with self.potheight_lock:     
@@ -703,6 +707,7 @@ class AppDelegate(NSObject):
 
 
     def mkModelOutput(self): # #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
+        print("mkModelOutput called ...")
         with self.mod_writing_lock:
             self.made_model_output = True
             with self.lock:    
@@ -757,7 +762,8 @@ class AppDelegate(NSObject):
                 return
 
 
-    def write_csv_s(self): # todo: update
+    def writeToCSVs(self): # todo: update
+        print("writeToCSVs called ...")
         with self.mod_writing_lock:    
             if not self.wrote_to_csv_s:    
                 print("writing to csv's ...")     
@@ -1162,6 +1168,7 @@ class AppDelegate(NSObject):
 
     def makeDecisionFlop(self):
 
+        print("makeDecisionFlop called ...")
 
         # for now no AI-decision-making
         with self.dec_lock:
@@ -1174,8 +1181,10 @@ class AppDelegate(NSObject):
             if decision == "None_yet":
                 return "fold"
             else:
+                print("decision was made while waiting: "+decision)
                 return decision
         else:
+            print("decision already made before flop model prediction, maybe preflop decision, maybe something else ... "+decision)
             return decision
                             
         with self.potheight_lock:
@@ -1332,6 +1341,7 @@ class AppDelegate(NSObject):
 
 
     def makeDecisionRiver(self):
+        print("makeDecisionRiver called")
 
         # for now no AI-decision-making
         with self.dec_lock:
@@ -1424,6 +1434,7 @@ class AppDelegate(NSObject):
     
 
     def makeDecisionTurn(self):
+        print("makeDecisionTurn called")
 
 
         # for now no AI-decision-making
@@ -1468,6 +1479,7 @@ class AppDelegate(NSObject):
     
 
     def makeDecision(self):  # up confidence according to pot_height when calling (the bet)
+        print("makeDecision called")
         set_1_1 = -1
         if self.deck_card_1 == "nn":  # that means its preflop
             with self.dec_lock:
@@ -1794,7 +1806,7 @@ class AppDelegate(NSObject):
             self.mkModelOutput()
         # print("model output made")
 
-        self.write_csv_s()
+        self.writeToCSVs()
         self.resetValues()
 
 
@@ -1834,7 +1846,7 @@ class AppDelegate(NSObject):
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
                 self.mkModelOutputAllInHandled()
-                self.write_csv_s()
+                self.writeToCSVs()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.cards_lock:
@@ -2185,7 +2197,7 @@ class AppDelegate(NSObject):
             if handle_all_in(current_im):
                 print("ALL IN HANDLED NICELY")
                 self.mkModelOutputAllInHandled()
-                self.write_csv_s()
+                self.writeToCSVs()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
             with self.acting_lock:
