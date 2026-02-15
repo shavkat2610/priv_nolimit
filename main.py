@@ -32,7 +32,7 @@ from treys import Card
 from treys import Evaluator
 from PIL import Image
 
-number_of_the_universe = 1
+
 
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # import subprocess
@@ -219,6 +219,7 @@ class AppDelegate(NSObject):
 
     valset_lock = Lock()
     values_set = False
+    number_of_the_universe = 1
 
 
 
@@ -1921,7 +1922,7 @@ class AppDelegate(NSObject):
                 
 
         elif game_stage == "no_decision_to_be_made":
-            if number_of_the_universe%20==0:
+            if self.number_of_the_universe%20==0:
                 current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
             with self.cards_lock:
                 self.cards_open = False
@@ -2428,8 +2429,6 @@ class AppDelegate(NSObject):
                 #     if not self.updateOwnMoney_(current_im=None):
                 #         print("\nread own money failed after clicking ... 20\n")                                                 
         else: # no red button to push
-            global number_of_the_universe
-            number_of_the_universe += 1
             try:
                 result = read_total_pot_money(current_im)
             except Exception as e:
@@ -2443,6 +2442,7 @@ class AppDelegate(NSObject):
                     print("debug potheight set to: "+str(self.potheight))
             time.sleep(0.375)
             with self.valset_lock:
+                self.number_of_the_universe += 1
                 need_set = False
                 if not self.values_set: # own money value not set after it changed 
                     need_set = True
