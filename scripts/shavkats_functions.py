@@ -20,7 +20,7 @@ from playsound3 import playsound
 
 
 
-first_start_up = False
+first_start_up = False #todo: remove
 pull_to = [10, 45]
 def_clint = [12, 46] #69, 70
 l_info_read = False
