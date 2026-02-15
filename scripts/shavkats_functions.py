@@ -1075,7 +1075,7 @@ def get_up_stand_up(im = None): # pass image screenshot here
 def run_it_up(big_blind = "200"):
     print("run it up with bb: "+big_blind)
     if not check_if_client_running(waiting=False):
-        # print("starting up client and logging in...")
+        print("starting up client and logging in...")
         first_start_up =  start_client_and_login() # always True (see comment on login)
     else:
         reset_client_window()
