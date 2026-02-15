@@ -1865,7 +1865,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False                                                                                                 
                             current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
                             exit()                
-                if current_game_stage != "preflop" :
+                if current_game_stage != "preflop" and current_game_stage != "connectivity_issues":
                     print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
                     current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
                     print("exiting")
@@ -1938,7 +1938,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False  
                             current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")                                                                         
                             exit()
-                if current_game_stage != "flop" :
+                if current_game_stage != "flop" and current_game_stage != "connectivity_issues":
                     print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
                     current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
                     print("exiting")
@@ -2007,7 +2007,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False                                                                           
                             current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                             exit()
-                if current_game_stage != "river":
+                if current_game_stage != "river" and current_game_stage != "connectivity_issues":
                     print("\n \n!!! \nmodel said turn, but game stage was not river, probably a wrong classification happened\n!!!\n \n")
                     current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                     print("exiting")
@@ -2034,21 +2034,27 @@ class AppDelegate(NSObject):
                     except Exception as e:
                         print(e) 
                         print("model said flop, but no cards could be read , exiting ... 24")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                        exit()                          
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
-                            self.time_to_act = False                                                                           
+                            self.time_to_act = False
                             return
                 with self.cards_lock:
                     if self.deck_card_4 == "nn":
                         print("model said turn, but found no four cards, returning out of gameScreenshot_")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                        exit()                        
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False    
-
                             return
                     if self.deck_card_5 == "nn":
+                        print("model said turn, but found no four cards, returning out of gameScreenshot_")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                        exit()              
                         print("model said turn, but no five cards, returning out of gameScreenshot_")
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
