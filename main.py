@@ -1146,9 +1146,7 @@ class AppDelegate(NSObject):
             deck_card_2 = self.deck_card_2 
             deck_card_3 = self.deck_card_3  
         with self.mk_comte_carlo_decision_lock:
-            print('own cards in flop: '+own_card_left+" "+own_card_right
-                  +' | deck cards: '+deck_card_1+" "+deck_card_2+" "+deck_card_3)
-            
+            print('own cards in flop: '+own_card_left+" "+own_card_right +' | deck cards: '+deck_card_1+" "+deck_card_2+" "+deck_card_3)
             self.flop_features = extract_flop_features([own_card_left, own_card_right], [deck_card_1, deck_card_2, deck_card_3])
             print("debug - extracted flop features: "+str(self.flop_features))
             self.equity_flop = flop_equity_model_predict(self.flop_features)
