@@ -3,7 +3,7 @@ import time
 from scripts.shavkats_functions import position_the_game
 
 
-time.sleep(1)
+time.sleep(1.5)
 
 # position_the_game()
 time.sleep(1.5)
