@@ -32,7 +32,7 @@ from treys import Card
 from treys import Evaluator
 from PIL import Image
 
-number_of_the_universe = 42
+number_of_the_universe = 1
 
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # import subprocess
@@ -1149,7 +1149,11 @@ class AppDelegate(NSObject):
             deck_card_3 = self.deck_card_3  
         with self.mk_comte_carlo_decision_lock:
             print('own cards in flop: '+own_card_left+" "+own_card_right +' | deck cards: '+deck_card_1+" "+deck_card_2+" "+deck_card_3)
-            self.flop_features = extract_flop_features([own_card_left, own_card_right], [deck_card_1, deck_card_2, deck_card_3])
+            try:
+                self.flop_features = extract_flop_features([own_card_left, own_card_right], [deck_card_1, deck_card_2, deck_card_3])
+            except Exception as e:
+                print(e)
+                exit(1)
             print("debug - extracted flop features: "+str(self.flop_features))
             self.equity_flop = flop_equity_model_predict(self.flop_features)
             print("debug - calculated flop equity: "+str(self.equity_flop))
