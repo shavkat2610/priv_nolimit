@@ -5,10 +5,12 @@ from scripts.shavkats_functions import position_the_game
 
 time.sleep(1)
 
-position_the_game()
+# position_the_game()
 time.sleep(1.5)
 # time.sleep(5)
 print(pyautogui.position())
+im = pyautogui.screenshot(region=(300, 630, 100, 20))
+im.save("temp_screenshot.png")
 
 
 
