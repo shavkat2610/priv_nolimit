@@ -1,21 +1,8 @@
-
-
-
-
-
-
-
-
-
-
 from fish_for_cards import game_screenshot
-
-
-
-
 import time
+from scripts.shavkats_functions import position_the_game
 
-
+position_the_game()
 
 while True:
     im = game_screenshot()
