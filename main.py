@@ -1794,9 +1794,6 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
-        global number_of_the_universe
-        number_of_the_universe += 1
-
         with self.acting_lock:
             if self.time_to_act:
                 print("time_to_act active during game screenshot 24")
@@ -2192,270 +2189,268 @@ class AppDelegate(NSObject):
 
         pix = current_im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
         # print("pix (where red button might be): "+ str(pix))
-        try:
-            if is_red(pix): 
-                # pyautogui.moveTo(25, 45)
-                # time to cat logic :
-                with self.potheight_lock:
-                    result = read_total_pot_money(current_im)
-                    if result["result"] > 0.1:
-                        self.potheight = result["result"]
-                    # if self.potheight > 0.2:
-                    #     pot_rescaled = ((self.potheight/8)**2)
-            
+        if is_red(pix): 
+            # pyautogui.moveTo(25, 45)
+            # time to cat logic :
+            with self.potheight_lock:
+                result = read_total_pot_money(current_im)
+                if result["result"] > 0.1:
+                    self.potheight = result["result"]
+                # if self.potheight > 0.2:
+                #     pot_rescaled = ((self.potheight/8)**2)
+        
 
-                with self.potheight_lock:
-                    self.to_call = how_much(im=current_im)
-                    to_call = self.to_call
-                    print(f"to_call is : {str(to_call)}")
-                self.setValuesOurTurn_(current_im=current_im)
-                # print("debug I was here 20")
-                try:
-                    self.makeDecision()
-                except Exception as e:
-                    print(f"Exception in makeDecision: {e}")
-                    exit()
-                print("debug I was here 21")
-                time.sleep(0.5)
+            with self.potheight_lock:
+                self.to_call = how_much(im=current_im)
+                to_call = self.to_call
+                print(f"to_call is : {str(to_call)}")
+            self.setValuesOurTurn_(current_im=current_im)
+            # print("debug I was here 20")
+            try:
+                self.makeDecision()
+            except Exception as e:
+                print(f"Exception in makeDecision: {e}")
+                exit()
+            print("debug I was here 21")
+            time.sleep(0.5)
 
+            with self.dec_lock:
+                self_dec = self.decision
+            if self_dec == "fold":
+                if to_call < 0.1:
+                    print("checking here !!!")
+                    pyautogui.moveTo(670, 610, duration=0.1)
+                    time.sleep(0.1)
+                    pyautogui.click(670, 610)
+                    with self.dec_lock:
+                        self.decision = "None_yet"                        
+                    # self.to_call = 0.0 # already here
+                else :
+                    pyautogui.moveTo(540, 610, duration=0.1)
+                    time.sleep(0.1)                    
+                    pyautogui.click(540, 610) # folding, reset values
+                    with self.lock:
+                        if self.own_money > 99.0:
+                            close_game()
+                            time.sleep(2)
+                            print("exiting program bc own money > 99.0")
+                            # open_game()
+                            exit()        
+                    self.resetValues() 
+
+                    # with self.potheight_lock:
+                    #     self.to_call = 0.0
+                    # with self.cards_lock:
+                    #     self.own_card_left = "nn"
+                    #     self.own_card_right = "nn"
+                    #     self.deck_card_1 = "nn"
+                    #     self.deck_card_2 = "nn"
+                    #     self.deck_card_3 = "nn"
+                    #     self.deck_card_4 = "nn"
+                    #     self.deck_card_5 = "nn"
+                    # with self.dec_lock:
+                    #     self.decision = "None_yet"
+            if self_dec.startswith("c"):
                 with self.dec_lock:
-                    self_dec = self.decision
-                if self_dec == "fold":
-                    if to_call < 0.1:
-                        print("checking here !!!")
-                        pyautogui.moveTo(670, 610, duration=0.1)
-                        time.sleep(0.1)
-                        pyautogui.click(670, 610)
-                        with self.dec_lock:
-                            self.decision = "None_yet"                        
-                        # self.to_call = 0.0 # already here
-                    else :
-                        pyautogui.moveTo(540, 610, duration=0.1)
-                        time.sleep(0.1)                    
-                        pyautogui.click(540, 610) # folding, reset values
-                        with self.lock:
-                            if self.own_money > 99.0:
-                                close_game()
-                                time.sleep(2)
-                                print("exiting program bc own money > 99.0")
-                                # open_game()
-                                exit()        
-                        self.resetValues() 
-
-                        # with self.potheight_lock:
-                        #     self.to_call = 0.0
-                        # with self.cards_lock:
-                        #     self.own_card_left = "nn"
-                        #     self.own_card_right = "nn"
-                        #     self.deck_card_1 = "nn"
-                        #     self.deck_card_2 = "nn"
-                        #     self.deck_card_3 = "nn"
-                        #     self.deck_card_4 = "nn"
-                        #     self.deck_card_5 = "nn"
-                        # with self.dec_lock:
-                        #     self.decision = "None_yet"
-                if self_dec.startswith("c"):
+                    self.decision = "None_yet"
+                pyautogui.moveTo(670, 610, duration=0.1)
+                time.sleep(0.1)                     
+                pyautogui.click(670, 610)
+                print("call was clicked")
+                with self.potheight_lock: 
+                    self.to_call = 0.0    
+                with self.valset_lock:
+                    self.values_set = False # own money value only in this                         
+            elif self_dec.startswith("r"):
+                if to_call < 1.0:
+                    pyautogui.moveTo(730, 557, duration=0.1)
+                    time.sleep(0.1)     
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("1")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
-                    pyautogui.moveTo(670, 610, duration=0.1)
-                    time.sleep(0.1)                     
-                    pyautogui.click(670, 610)
-                    print("call was clicked")
-                    with self.potheight_lock: 
-                        self.to_call = 0.0    
                     with self.valset_lock:
-                        self.values_set = False # own money value only in this                         
-                elif self_dec.startswith("r"):
-                    if to_call < 1.0:
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("1")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this        
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                              
-                elif self_dec.startswith("2"):
-                    if to_call < 1:
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("2")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this    
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                                           
-                elif self_dec.startswith("3"):
-                    if to_call < 2:
-                        print("raise3 was clicked")
-                        # todo click text field, type 3, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("4")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        pyautogui.click(670, 610) # call click
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                                       
-                elif self_dec.startswith("4"):
-                    if to_call < 2:
-                        print("raise4 was clicked")
-                        # click text field, type 4, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)              
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("8")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)              
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)             
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this            
-                elif self_dec.startswith("5"):
-                    if to_call < 8:
-                        print("raise5 was clicked")
-                        # click text field, type 4, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)              
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("16")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)              
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)             
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                               
-                                
-                    # time.sleep(1.4)
-                    # if not self.updateOwnMoney_(current_im=None):
-                    #     time.sleep(0.45)
-                    #     if not self.updateOwnMoney_(current_im=None):
-                    #         print("\nread own money failed after clicking ... 20\n")                                                 
-            else: # no red button to push
-                try:
-                    result = read_total_pot_money(current_im)
-                except Exception as e:
-                    print("exiting here 27")
-                    print(e)
-                    exit()
-                
-                if result["result"] > 0.1:
-                    with self.potheight_lock: # regularly 
-                        self.potheight = result["result"]
-                        print("debug potheight set to: "+str(self.potheight))
-                time.sleep(0.375)
-                with self.valset_lock:
-                    need_set = False
-                    if not self.values_set: # own money value not set after it changed 
-                        need_set = True
-                if need_set:
-                    if not self.updateOwnMoney_(current_im=None):
-                        time.sleep(0.25)
-                        self.updateOwnMoney_(current_im=None)
-                        # print("\nread own money failed gss ... \n")      
-        except Exception as e:
-            print(f"Exception in main game loop: {e}")
-            exit()        
+                        self.values_set = False # own money value only in this        
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.1)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this                                              
+            elif self_dec.startswith("2"):
+                if to_call < 1:
+                    pyautogui.moveTo(730, 557, duration=0.1)
+                    time.sleep(0.1)     
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("2")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this    
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.1)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this                                                           
+            elif self_dec.startswith("3"):
+                if to_call < 2:
+                    print("raise3 was clicked")
+                    # todo click text field, type 3, hit (800, 610)
+                    pyautogui.moveTo(730, 557, duration=0.1)
+                    time.sleep(0.1)     
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("4")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    pyautogui.click(670, 610) # call click
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this     
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.1)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this                                                       
+            elif self_dec.startswith("4"):
+                if to_call < 2:
+                    print("raise4 was clicked")
+                    # click text field, type 4, hit (800, 610)
+                    pyautogui.moveTo(730, 557, duration=0.1)
+                    time.sleep(0.1)              
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("8")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)              
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)             
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this     
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.1)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this            
+            elif self_dec.startswith("5"):
+                if to_call < 8:
+                    print("raise5 was clicked")
+                    # click text field, type 4, hit (800, 610)
+                    pyautogui.moveTo(730, 557, duration=0.1)
+                    time.sleep(0.1)              
+                    pyautogui.click(730, 557)
+                    pyautogui.typewrite("16")
+                    pyautogui.moveTo(800, 610)
+                    time.sleep(0.1)              
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)             
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this     
+                else: # simply clicking the raise button
+                    pyautogui.moveTo(800, 610, duration=0.1)
+                    time.sleep(0.1)                  
+                    pyautogui.click(800, 610)
+                    pyautogui.moveTo(670, 610)
+                    time.sleep(0.1)            
+                    pyautogui.click(670, 610) # call click
+                    with self.potheight_lock:
+                        self.to_call = 0.0
+                    with self.dec_lock:
+                        self.decision = "None_yet"
+                    with self.valset_lock:
+                        self.values_set = False # own money value only in this                               
+                            
+                # time.sleep(1.4)
+                # if not self.updateOwnMoney_(current_im=None):
+                #     time.sleep(0.45)
+                #     if not self.updateOwnMoney_(current_im=None):
+                #         print("\nread own money failed after clicking ... 20\n")                                                 
+        else: # no red button to push
+            global number_of_the_universe
+            number_of_the_universe += 1
+            try:
+                result = read_total_pot_money(current_im)
+            except Exception as e:
+                print("exiting here 27")
+                print(e)
+                exit()
+            
+            if result["result"] > 0.1:
+                with self.potheight_lock: # regularly 
+                    self.potheight = result["result"]
+                    print("debug potheight set to: "+str(self.potheight))
+            time.sleep(0.375)
+            with self.valset_lock:
+                need_set = False
+                if not self.values_set: # own money value not set after it changed 
+                    need_set = True
+            if need_set:
+                if not self.updateOwnMoney_(current_im=None):
+                    time.sleep(0.25)
+                    self.updateOwnMoney_(current_im=None)
+                    # print("\nread own money failed gss ... \n")    
 
         with self.acting_lock:
             self.time_to_act = False  
