@@ -466,7 +466,7 @@ def start_client_and_login():
     
     time.sleep(1)
 
-    login()
+    # login()
 
     return False
 
@@ -1079,7 +1079,7 @@ def run_it_up(big_blind = "200"):
         first_start_up =  start_client_and_login() # always True (see comment on login)
     else:
         reset_client_window()
-        first_start_up = login() # always false | if client is already running (client needs to be closed for first_start_up to work properly (the first opened game after closing client is no-good and will start up a play-money game in our script, expecting it not to work (so the client need to actually eb closed or visible on the desktop)))
+        # first_start_up = login() # always false | if client is already running (client needs to be closed for first_start_up to work properly (the first opened game after closing client is no-good and will start up a play-money game in our script, expecting it not to work (so the client need to actually eb closed or visible on the desktop)))
     time.sleep(1)
     reset_client_window()
     if not l_info_read:
