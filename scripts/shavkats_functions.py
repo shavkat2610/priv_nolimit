@@ -916,6 +916,7 @@ def maximize_client(): # dont even use that I don't think ...
 
 
 def read_game_rules(big_blind = "200", first_start_up = False):
+    global first_start_up
     print("reading game rules, big blind: "+str(big_blind))
     def click_selection_or_exit(big_blind="200", first_start_up = False): # development game
         if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
