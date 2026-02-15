@@ -2,6 +2,8 @@ from fish_for_cards import game_screenshot
 import time
 from scripts.shavkats_functions import position_the_game
 
+time.sleep(5.0)
+
 position_the_game()
 
 while True:
