@@ -4,6 +4,7 @@ import pyautogui
 import time
 import numpy as np
 import cv2
+from chatGPT_XGBRegressor import river_features, turn_features
 from scripts.shavkats_functions import click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
@@ -47,24 +48,25 @@ from PIL import Image
 # writo to csv - done
 # fifth raise button, by 16x big blind - done
 # keep track of money, check if everything read corrrectly ... - done
+# get allIn's out of river, flop and turn samples - done
 
 
 
 # todo:
 
-# get allIn's out of river, flop and turn samples
-# pot_20 etc. into I raised at preflop, flop, river, turn, how much I had to call at ... and potheight at ...
-# features at river time
-# added money of participants fed into data
-# read money of participants - in works
-# my raises, oponents raises at flop, river and turn time 
-# retrain tesseract # get more training samples 
 # feed in more features in river and turn - time
 # # feed in how many card holders there is still before me and after me, before big_blind
+# # pot_20 etc. into I raised at preflop, flop, river, turn, how much I had to call at ... and potheight at ...
+# # my raises, oponents raises at flop, river and turn time 
+# features at river time, turn time
+# run it three times, accept opponents request
+# run it three times ... # not always done yet ...
+# added money of participants fed into data ?
+# read money of participants ?
+# retrain tesseract # get more training samples - in works
 # adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
-# run it three times ... # not always done yet ...
 # open last card ... - not yet done completely
 
 # all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
@@ -157,36 +159,20 @@ class AppDelegate(NSObject):
 
     mutex_screenshot = Lock()
     im = Image.open("starter_img.png")
-
-    mutex_copy = Lock()
     
     game_stage_lock = Lock()
     game_stage_current = "no_decision_to_be_made" # preflop, flop, river, turn, no_decision_to_be_made
     
     potheight_lock = Lock()
+    potheight_after_preflop = 1.5
+    potheight_after_flop = 3.5
+    potheight_after_river = 4.5
     potheight = 0.1
-    average_pot_2 = 17.0
-    average_pot_3 = 17.0
-    average_pot_4 = 17.0
-    average_pot_5 = 17.0
-    average_pot_6 = 17.0
-    average_pot_7 = 17.0
-    average_pot_9 = 17.0
-    average_pot_11 = 17.0
-    average_pot_13 = 17.0
-    average_pot_16 = 17.0
-    average_pot_20 = 17.0
-    average_pot_30 = 17.0
-    average_pot_50 = 17.0
-    last_pot = potheight
-
-    to_call_lock = Lock()
     to_call = 0.0
     difference_tocall_n_potheight = to_call/potheight # important for early decision making , and also for ai models possibly
 
     lock = Lock() #
     own_money = 0.0
-    own_money_2 = 0.0
     own_money_before_last_preflop = 30.0
 
     d_lock = Lock() # for setting dealer position
@@ -201,6 +187,8 @@ class AppDelegate(NSObject):
     equity_river = -1
     equity_flop = -1
     flop_features = np.zeros(32)
+    river_features = np.zeros(14)
+    turn_features = np.zeros(15)
 
     lock2 = Lock() #busy ticking lock
     busy_ticking = False
@@ -235,6 +223,7 @@ class AppDelegate(NSObject):
             self.holders_pos = check_holders(current_im)
             # print("holders set ...")
             self.num_active_players = count_holders(self.holders_pos)
+            current_im.save(f"active_hodlers/holders_{self.num_active_players}_{str(time.time()).split('.')[0]}.png") # remove later
             # print("num_active_players set ...")
             with self.d_lock:
                 self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
@@ -252,35 +241,11 @@ class AppDelegate(NSObject):
             print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None:
                 with self.lock:
-                    own_money_2 = self.own_money_2
-                if own_money_2 > own_money_current+1.0: # could be, we paid big blind, so +1.0
-                    print(f"own money_2 ({own_money_2}) greater than own_money_current ({own_money_current}), exiting ...")
-                    exit()
-                if read_own_money_valid(im=current_im, should_be=own_money_2):
-                    print("own money read as calculated")
-                    with self.lock:
-                        self.own_money_2 = own_money_current
-                        self.own_money = own_money_current                    
-                    with self.valset_lock:
-                        if not self.values_set:
-                            self.values_set = True                    
-                    return True
-                else: # current read higher than tracked money , must mean we won
-                    with self.potheight_lock:
-                        pot_height = self.potheight                       
-                    difference = own_money_current - own_money_2
-                    print("own money read not as calculated, but higher than tracked money, must mean we won by "+str(difference))
-                    if difference > max(33.0, pot_height) * 1.5: # lil check for sanity
-                        print("money read makes no sense, according to own money and potheight ...")
-                        exit()
-                    print("updating own money_2 to current own money ...")
-                    with self.lock:
-                        self.own_money_2 = own_money_current
-                        self.own_money = own_money_current
-                    with self.valset_lock:
-                        if not self.values_set:
-                            self.values_set = True
-                    return True
+                    self.own_money = own_money_current                    
+                with self.valset_lock:
+                    if not self.values_set:
+                        self.values_set = True                    
+                return True
             return False
         except Exception as e:
             print("read own money failed")
@@ -351,12 +316,9 @@ class AppDelegate(NSObject):
 
     def set_munna_initially(self):
         munna = read_own_money()
-        time.sleep(0.25)
-        munna2 = read_own_money()
-        if munna != -10 and munna == munna2:
+        if munna != -10 and munna != None:
             with self.lock:
                 self.own_money = munna
-                self.own_money_2 = munna
                 self.own_money_before_last_preflop = munna
                 return True
         else:
@@ -472,11 +434,18 @@ class AppDelegate(NSObject):
             self.decision = "5raise5"
 
 
-    def startCalculationsOtherThread_(self, boardCards):
+    def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
         if self.setting_monte_caro == True:
             return False
         with self.mk_comte_carlo_decision_lock:
             self.setting_monte_caro = True
+            try:
+                boardCards.remove("nn") #river
+                with self.cards_lock: 
+                    self.river_features = river_features(self.own_card_left, self.own_card_right, boardCards)            
+            except: #turn
+                with self.cards_lock:
+                    self.turn_features = turn_features(self.own_card_left, self.own_card_right, boardCards)            
         NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
         return True
 
@@ -487,27 +456,20 @@ class AppDelegate(NSObject):
         with self.cards_lock:
             hero_cards=[self.own_card_left, self.own_card_right]
         
-        with self.mk_comte_carlo_decision_lock:
-            self.probability_1_1 = -1   
-            if boardCards[3] == "nn":      
-                return False
-        
         board_cards = boardCards
+        with self.mk_comte_carlo_decision_lock:
+            self.probability_1_1 = -1  
 
-        try:
-            board_cards.remove("nn")
-        except:
-            pass
         # try:
         #     board_cards.remove("nn")
         # except:
         #     pass        
 
         if "nn" in board_cards:
-            print("not enough board cards read for monte carlo")
+            print("not enough board cards read for monte carlo, exiting, something went wrong ...")
             with self.mk_comte_carlo_decision_lock:
                 self.probability_1_1 = -1
-                return False            
+                exit()         
 
         monte_caro = exact_win_probability(hero_cards=hero_cards, board_cards=board_cards)
 
@@ -525,7 +487,7 @@ class AppDelegate(NSObject):
     def mkFlopModelInput(self):
         with self.dec_lock:
             decision = self.decision
-        with self.to_call_lock:     
+        with self.potheight_lock:     
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
@@ -563,35 +525,32 @@ class AppDelegate(NSObject):
             if not self.made_flop_model_input:
                 self.made_flop_model_input = True
             with self.mk_comte_carlo_decision_lock:
-                with self.potheight_lock:                      
-                    flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, self.average_pot_5, 
-                                        self.average_pot_6,
-                                            self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                            self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                            self.to_call, decision_temp, self.difference_tocall_n_potheight, self.flop_features[0], 
-                                            self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
-                                            self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
-                                            self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
-                                            self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
-                                            self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
-                                            self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
-                                            self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
-                                            self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[31]]
-                    self.flop_model_inputs.append(flop_model_input)
+                with self.potheight_lock:    
+                    with self.our_turn_lock:                  
+                        flop_model_input = [self.equity_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
+                                                self.num_active_players, self.num_active_players_before_me,
+                                                self.flop_features[0], # 7 + 32 = 39 features total for flop model input
+                                                self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
+                                                self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
+                                                self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
+                                                self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
+                                                self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
+                                                self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
+                                                self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
+                                                self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[31]]
+                        self.flop_model_inputs.append(flop_model_input)
 
 
     def mkFlopModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         flop_model_inputs = []
         with self.potheight_lock:
-            with self.to_call_lock:
-                with self.mk_comte_carlo_decision_lock:
+            with self.mk_comte_carlo_decision_lock:
+                with self.our_turn_lock: 
                     for decision_temp in decs:
                         # print("self.equity_flop at model-input formation: "+str(self.equity_flop))
-                        flop_model_input = [self.equity_flop, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, self.average_pot_5, 
-                                        self.average_pot_6,
-                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, decision_temp, self.difference_tocall_n_potheight, self.flop_features[0], 
+                        flop_model_input = [self.equity_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
+                                                self.num_active_players, self.num_active_players_before_me,
+                                                self.flop_features[0], 
                                             self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
                                             self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
                                             self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
@@ -601,13 +560,13 @@ class AppDelegate(NSObject):
                                             self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
                                             self.flop_features[29], self.flop_features[30], self.flop_features[31], self.flop_features[31]]
                         flop_model_inputs.append(flop_model_input)
-                    return flop_model_inputs # different "inputs" for decision making
+                return flop_model_inputs # different "inputs" for decision making
 
 
     def mkRiverModelInput(self):
         with self.dec_lock:
             decision = self.decision
-        with self.to_call_lock:     
+        with self.potheight_lock:     
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
@@ -647,33 +606,33 @@ class AppDelegate(NSObject):
             # print("\nshould save something for river model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                                
-                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
-                                             self.average_pot_5, self.average_pot_6, 
-                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, self.equity_flop, decision_temp, self.difference_tocall_n_potheight]
-                        self.river_model_inputs.append(river_model_input)
+                    river_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, # 9 + 14 = 23
+                                         self.to_call, self.equity_flop, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                                            self.river_features[0], self.river_features[1], self.river_features[2], self.river_features[3], self.river_features[4],
+                                            self.river_features[5], self.river_features[6], self.river_features[7], self.river_features[8], self.river_features[9], 
+                                            self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]
+                                            ]
+                    self.river_model_inputs.append(river_model_input)
 
     
     def mkRiverModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
         river_model_inputs = []
         with self.mk_comte_carlo_decision_lock:
             with self.potheight_lock:
-                with self.to_call_lock:
-                    for decision_temp in decs:
-                        river_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
-                                             self.average_pot_5, self.average_pot_6, 
-                                                self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                self.to_call, self.equity_flop, decision_temp, self.difference_tocall_n_potheight]
-                        river_model_inputs.append(river_model_input)
-                    return river_model_inputs
+                for decision_temp in decs:
+                    river_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop,
+                                            self.to_call, self.equity_flop, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                                            self.river_features[0], self.river_features[1], self.river_features[2], self.river_features[3], self.river_features[4],
+                                            self.river_features[5], self.river_features[6], self.river_features[7], self.river_features[8], self.river_features[9], 
+                                            self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]]
+                    river_model_inputs.append(river_model_input)
+                return river_model_inputs
 
 
     def mkTurnModelInput(self):
         with self.dec_lock:
             decision = self.decision
-        with self.to_call_lock:     
+        with self.potheight_lock:     
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
@@ -712,13 +671,13 @@ class AppDelegate(NSObject):
                 self.made_turn_model_input = True
             # print("\nshould save something for turn model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
-                with self.potheight_lock:                
-                    turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
-                                             self.average_pot_5, self.average_pot_6, 
-                                            self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                            self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                            self.to_call, self.equity_flop, self.equity_river, decision_temp, 
-                                            self.difference_tocall_n_potheight, ]
+                with self.potheight_lock:# 11 + 15 = 26 features total for turn model input       
+                    turn_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, self.potheight_after_river,
+                                            self.to_call, self.equity_flop, self.equity_river, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                                            self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
+                                            self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
+                                            self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
+                                            ]
                     self.turn_model_inputs.append(turn_model_input)
 
 
@@ -727,16 +686,15 @@ class AppDelegate(NSObject):
         with self.mod_writing_lock:
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:
-                    with self.to_call_lock:
-                        for decision_temp in decs:
-                            turn_model_input = [self.probability_1_1, self.potheight, self.average_pot_2, self.average_pot_3, self.average_pot_4, 
-                                             self.average_pot_5, self.average_pot_6, 
-                                                    self.average_pot_7, self.average_pot_9, self.average_pot_11, self.average_pot_13, 
-                                                    self.average_pot_16, self.average_pot_20, self.average_pot_30, self.average_pot_50, 
-                                                    self.to_call, self.equity_flop, self.equity_river, decision_temp, 
-                                                    self.difference_tocall_n_potheight]
-                            turn_model_inputs.append(turn_model_input)
-                        return turn_model_inputs
+                    for decision_temp in decs:
+                        turn_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, self.potheight_after_river,
+                                                self.to_call, self.equity_flop, self.equity_river, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                                                self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
+                                                self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
+                                                self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
+                                                ]
+                        turn_model_inputs.append(turn_model_input)
+                    return turn_model_inputs
 
 
     def mkModelOutput(self): # #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
@@ -803,28 +761,34 @@ class AppDelegate(NSObject):
                     for turn_model_input in self.turn_model_inputs:
                         with open('csv_s/turnModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
-                            # print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]), self.model_output])                 
+                            print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]),str(turn_model_input[20]),str(turn_model_input[21]),str(turn_model_input[22]),str(turn_model_input[23]),str(turn_model_input[24]),str(turn_model_input[25]), self.model_output])                 
                 if self.made_river_model_input:
                     for river_model_input in self.river_model_inputs:    
                         with open('csv_s/riverModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
-                            # print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]), self.model_output])                 
+                            print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]),str(river_model_input[19]),str(river_model_input[20]),str(river_model_input[21]),str(river_model_input[22]), self.model_output])                 
                 if self.made_flop_model_input:
                     for flop_model_input in self.flop_model_inputs:
                         with open('csv_s/flopModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
-                            # print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), str(flop_model_input[43]), str(flop_model_input[44]), str(flop_model_input[45]), str(flop_model_input[46]), str(flop_model_input[47]), str(flop_model_input[48]), str(flop_model_input[49]), self.model_output])                 
+                            print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), self.model_output])                 
 
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
+        with self.potheight_lock:
+            self.potheight_after_preflop = -1
+            self.potheight_after_flop = -1   
+            self.potheight_after_river = -1         
         with self.mk_comte_carlo_decision_lock:
             self.probability_1_1 = -1
             self.equity_flop = -1
             self.equity_river = -1
             self.flop_features = np.zeros(32)
+            self.river_features = np.zeros(14)
+            self.turn_features = np.zeros(15)
         with self.mod_writing_lock:
             if self.made_turn_model_input:
                 self.made_turn_model_input = False 
@@ -966,7 +930,6 @@ class AppDelegate(NSObject):
     def makeDecisionPreflop(self):
         with self.potheight_lock:
             pot_height = self.potheight
-        with self.to_call_lock:
             to_call = self.to_call
         difference_tocall_n_potheight = to_call/pot_height
         with self.own_cards_lock:
@@ -1208,7 +1171,7 @@ class AppDelegate(NSObject):
         else:
             return decision
                             
-        with self.to_call_lock:
+        with self.potheight_lock:
             to_call = self.to_call      
         if to_call > 0.0:
             temp_Inputs = self.mkFlopModelInputs_([1.0, 2.0])
@@ -1382,7 +1345,7 @@ class AppDelegate(NSObject):
         print("set_1_1 at river-time: "+str(set_1_1))
         with self.potheight_lock:
             pot_height = self.potheight            
-        with self.to_call_lock:
+        with self.potheight_lock:
             to_call = self.to_call    
         if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
@@ -1471,7 +1434,7 @@ class AppDelegate(NSObject):
             return decision
 
 
-        with self.to_call_lock:
+        with self.potheight_lock:
             to_call = self.to_call
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
@@ -1852,7 +1815,7 @@ class AppDelegate(NSObject):
 
         with self.lock:
             own_money = self.own_money
-        if own_money == -1: 
+        if own_money == -1: # todo: save images when clicking for debugging
             print("\n all in ... \n")
             with self.valset_lock: # reset own money please
                 self.values_set = False
@@ -1871,8 +1834,6 @@ class AppDelegate(NSObject):
                     self.game_stage_current = "no_decision_to_be_made"
             secs = time.time()
             # current_im.save(f"shmol_model_not_sure/all_in/all_in_{str(secs).split(".")[0]}.png")
-            with self.lock:
-                self.own_money_2 = -1
             time.sleep(0.25)
             if not self.updateOwnMoney_(current_im=None):
                 time.sleep(0.35)
@@ -1905,7 +1866,15 @@ class AppDelegate(NSObject):
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False                                                                                                 
-                            return
+                            current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
+                            exit()                
+                if current_game_stage != "preflop" :
+                    print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
+                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                    print("exiting")
+                    exit()
+                with self.potheight_lock:
+                    self.potheight_after_preflop = self.potheight
                 with self.game_stage_lock:
                     self.game_stage_current = "flop"
                 secs = time.time()
@@ -1969,8 +1938,16 @@ class AppDelegate(NSObject):
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            return
+                            self.time_to_act = False  
+                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")                                                                         
+                            exit()
+                if current_game_stage != "flop" :
+                    print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
+                    current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                    print("exiting")
+                    exit()  
+                with self.potheight_lock:
+                    self.potheight_after_flop = self.potheight                          
                 self.changeStateMonteCaro()
                 with self.game_stage_lock:
                     self.game_stage_current = "river"
@@ -2031,7 +2008,15 @@ class AppDelegate(NSObject):
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False                                                                           
-                            return
+                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                            exit()
+                if current_game_stage != "river":
+                    print("\n \n!!! \nmodel said turn, but game stage was not river, probably a wrong classification happened\n!!!\n \n")
+                    current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                    print("exiting")
+                    exit()
+                with self.potheight_lock:
+                    self.potheight_after_river = self.potheight
                 with self.game_stage_lock:
                     self.game_stage_current = "turn"
                 self.changeStateMonteCaro()
@@ -2201,17 +2186,18 @@ class AppDelegate(NSObject):
                 #     pot_rescaled = ((self.potheight/8)**2)
          
 
-            with self.to_call_lock:
+            with self.potheight_lock:
                 self.to_call = how_much(im=current_im)
                 self.difference_tocall_n_potheight = self.to_call/self.potheight
                 to_call = self.to_call
                 print(f"to_call is : {str(to_call)}")
             self.setValuesOurTurn_(current_im=current_im)
-            print("debug I was here 20")
+            # print("debug I was here 20")
             try:
                 self.makeDecision()
             except Exception as e:
-                exit(e)
+                print(f"Exception in makeDecision: {e}")
+                exit()
             print("debug I was here 21")
             time.sleep(0.5)
 
@@ -2239,7 +2225,7 @@ class AppDelegate(NSObject):
                             exit()        
                     self.resetValues() 
 
-                    # with self.to_call_lock:
+                    # with self.potheight_lock:
                     #     self.to_call = 0.0
                     # with self.cards_lock:
                     #     self.own_card_left = "nn"
@@ -2258,9 +2244,7 @@ class AppDelegate(NSObject):
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
                 print("call was clicked")
-                with self.lock:
-                    self.own_money_2 -= to_call
-                with self.to_call_lock: 
+                with self.potheight_lock: 
                     self.to_call = 0.0    
                 with self.valset_lock:
                     self.values_set = False # own money value only in this                         
@@ -2276,9 +2260,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= 1.0
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2291,9 +2273,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= to_call*2.0
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2311,9 +2291,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= 2.0
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2326,9 +2304,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= to_call*2
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2347,11 +2323,9 @@ class AppDelegate(NSObject):
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= 4.0
                     with self.dec_lock:
                         self.decision = "None_yet"
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.valset_lock:
                         self.values_set = False # own money value only in this     
@@ -2362,9 +2336,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= to_call*2
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2384,9 +2356,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= 8.0
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2399,9 +2369,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= to_call*2
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2421,9 +2389,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= 16.0
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2436,9 +2402,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    with self.lock:
-                        self.own_money_2 -= to_call*2
-                    with self.to_call_lock:
+                    with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
                         self.decision = "None_yet"
@@ -2451,34 +2415,18 @@ class AppDelegate(NSObject):
                 #     if not self.updateOwnMoney_(current_im=None):
                 #         print("\nread own money failed after clicking ... 20\n")                                                 
         else: # no red button to push
-            with self.potheight_lock: # regularly 
-                try:
-                    result = read_total_pot_money(current_im)
-                except Exception as e:
-                    print("exiting here 27")
-                    print(e)
-                    exit()
-                if result["result"] > 0.1:
+            try:
+                result = read_total_pot_money(current_im)
+            except Exception as e:
+                print("exiting here 27")
+                print(e)
+                exit()
+            
+            if result["result"] > 0.1:
+                with self.potheight_lock: # regularly 
                     self.potheight = result["result"]
-                print("debug potheight set to: "+str(self.potheight))
-                if self.last_pot != self.potheight:
-                    pot_rescaled = self.potheight # ((self.potheight/16)**2)
-                    self.average_pot_2 = (self.average_pot_2 * 1/2) + (pot_rescaled * 1/2)
-                    self.average_pot_3 = (self.average_pot_3 * 2/3) + (pot_rescaled * 1/3)
-                    self.average_pot_4 = (self.average_pot_4 * 3/4) + (pot_rescaled * 1/4)
-                    self.average_pot_5 = (self.average_pot_5 * 4/5) + (pot_rescaled * 1/5)
-                    self.average_pot_6 = (self.average_pot_6 * 5/6) + (pot_rescaled * 1/6)
-                    self.average_pot_7 = (self.average_pot_7 * 6/7) + (pot_rescaled * 1/7)
-                    self.average_pot_9 = (self.average_pot_9 * 8/9) + (pot_rescaled * 1/9)
-                    self.average_pot_11 = (self.average_pot_11 * 10/11) + (pot_rescaled * 1/11)
-                    self.average_pot_13 = (self.average_pot_13 * 12/13) + (pot_rescaled * 1/13)    
-                    self.average_pot_16 = (self.average_pot_16 * 15/16) + (pot_rescaled * 1/16)        
-                    self.average_pot_20 = (self.average_pot_20 * 19/20) + (pot_rescaled * 1/20)    
-                    self.average_pot_30 = (self.average_pot_30 * 29/30) + (pot_rescaled * 1/30)
-                    self.average_pot_50 = (self.average_pot_50 * 49/50) + (pot_rescaled * 1/50)        
-                    self.last_pot = self.potheight           
-                    # print("pot_rescaled set to: "+str(pot_rescaled)) # check if its printing after update with our take in it 
-            time.sleep(0.79)
+                    print("debug potheight set to: "+str(self.potheight))
+            time.sleep(0.375)
             with self.valset_lock:
                 need_set = False
                 if not self.values_set: # own money value not set after it changed 

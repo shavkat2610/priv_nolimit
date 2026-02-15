@@ -10,7 +10,7 @@ for file_path in directory.glob("*.txt"):
         # text = text.replace("BB", " BB")
         pass
     else:
-        print("ALARM: text does not start with Total Pot: "+text + "|TEXT_END|")
+        print("ALARM: text does not start with Total Pot: "+text + "|TEXT_END| in file: "+str(file_path))
         if text.endswith("BB "):
             text = text[:-1] # remove the extra space at the end
             file_path.write_text(text, encoding="utf-8")      

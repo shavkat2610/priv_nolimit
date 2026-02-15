@@ -196,6 +196,9 @@ def how_much(im = None):
             else:
                 pixels[i,j] = (255, 255, 255, 255)
     secs = time.time()
+    number = tess_read(im2)
+    print("how_much result number: "+str(number))
+    return number
     data = pytesseract.image_to_data(
         im2,
         output_type=Output.DICT,
@@ -457,47 +460,49 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
     )
     whole_text = ""
     for text, conf in zip(data["text"], data["conf"]):
-        text = text.strip()
-        if conf != -1 :
-            whole_text += text + "_"
-        if conf < 87 and str(conf) != "-1":
-            print("tess_read data: "+text+" conf: "+str(conf))
-            saving = True  
         
-        if conf != -1 and text[0].isdigit():
-            if not text[-1].isdigit():
-                print("\n \nprobably B character at the end of text, removing it for reading\n \n")
+        if conf != -1 :
+            text = text.strip()
+            whole_text += text + "_"
+            if conf < 90:
+                # print("tess_read data: "+text+" conf: "+str(conf)+" filepath: "+str(im.filename))
+                print("tess_read data: "+text+" conf: "+str(conf))
                 saving = True  
-                text = text[:-1]
-            if not text[-1].isdigit():
-                print("\n \nprobably another B character at the end of text, removing it for reading\n \n")
-                text = text[:-1]                
-            try:
-                result = float(text)
-                # if result > 22.0:
-                #     saving = True
-                if saving:
-                    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
-                return result
-            except Exception as e:
-                if text.count('.') > 1 or text.count(',') > 0:
-                    text = text[0]+text[2:]
-                    try:
-                        result = float(text)
+        
+            if text[0].isdigit():
+                if not text[-1].isdigit():
+                    print("\n \nprobably B character at the end of text, removing it for reading\n \n")
+                    saving = True  
+                    text = text[:-1]
+                if not text[-1].isdigit():
+                    print("\n \nprobably another B character at the end of text, removing it for reading\n \n")
+                    text = text[:-1]                
+                try:
+                    result = float(text)
+                    # if result > 22.0:
+                    #     saving = True
+                    if saving:
                         im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
-                        return result
-                    except Exception as e:
-                        print("could not read number with extra dot or comma, probably something else went wrong, saving for now")
-                        print("text: "+text)
-                        im.save(f"tesseract_training/raw_data/t_weird_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
-                        print(e)
-                        return 0.001         
-                print("returning here 24")
-                print("text: "+text)
-                im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")  
-                print(e)
-                return 0.001
-    if whole_text == "All-In_" or whole_text == "All-1n_" or whole_text == "All-n_":
+                    return result
+                except Exception as e:
+                    if text.count('.') > 1 or text.count(',') > 0:
+                        text = text[0]+text[2:]
+                        try:
+                            result = float(text)
+                            im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                            return result
+                        except Exception as e:
+                            print("could not read number with extra dot or comma, probably something else went wrong, saving for now")
+                            print("text: "+text)
+                            im.save(f"tesseract_training/raw_data/t_weird_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                            print(e)
+                            return 0.001         
+                    print("returning here 24")
+                    print("text: "+text)
+                    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")  
+                    print(e)
+                    return 0.001
+    if whole_text.startswith("All"):
         return -1.0
     if whole_text != "":
         im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
@@ -946,7 +951,7 @@ def read_own_money_valid(im = None, should_be = 0.0):
 
 
 
-filenames = []
+# filenames = []
 
 def read_own_money(im = None):
     if im == None:
@@ -968,9 +973,9 @@ def read_own_money(im = None):
                     pixels[i,j] = (255, 255, 255, 255)
     read_3 = tess_read(im1)
     print("read_own_money tess_read result: "+str(read_3))
-    if read_3 == -1:
-        global filenames
-        filenames.append(im.filename)
+    # if read_3 == -1:
+    #     global filenames
+    #     filenames.append(im.filename)
     # im1.save(f"tesseract_training/raw_data/own_munna_{read_3}_{str(time.time())[:12].replace('.', '')}.png")
     return read_3
     # data = pytesseract.image_to_data(
@@ -1124,13 +1129,13 @@ def general_whats_going_on_model(im = None):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=5.6:
+    if (prob/(sec_prob+0.01))<=7.6:
         # print(str(model_output))
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
         second = class_names[sec_max]
         # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
-        im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(prob/(sec_prob+0.01))}.png")
+        im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
     return result
 
 
@@ -1319,7 +1324,7 @@ def simulate_gss(im=None):
 
     # read_total_pot_money(im=im)
     # read_total_pot_money_manually(im=im)
-    read_own_money(im=im)
+    # read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
     # except Exception as e:
@@ -1331,7 +1336,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    # print(general_whats_going_on_model(im))
+    print(general_whats_going_on_model(im))
 
     return False
 
@@ -1394,19 +1399,21 @@ import glob
 if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
-    # load_smol_watsgoingon_model()
-    prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/turn/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    load_smol_watsgoingon_model()
+    # prepare_pot_digits()
+    path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
+    # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
     for pth in path :
         if pth.endswith(".png"):
             im = Image.open(pth)
+            # tess_read(im=im)
             # im = Image.open("gsss/game_screenshot1764690404.png")
             if simulate_gss(im=im):
                 print("found one ! "+str(pth))
             # time.sleep(0.1)
-    print("done with all images !")
-    print("filenames with own money reading of -1: \n"+str(filenames))
+    # print("done with all images !")
+    # print("filenames with own money reading of -1: \n"+str(filenames))
     # print(path)
     # simulate_gss()
 

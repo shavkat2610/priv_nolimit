@@ -202,7 +202,7 @@ def rank_value(card):
     return RANK_TO_INT[rank(card)]
 
 
-def river_features(hero, board):
+def river_features(hero, board): # 14 features
     all_cards = hero + board
     board_ranks = [rank(c) for c in board]
     board_values = sorted([rank_value(c) for c in board])
@@ -361,7 +361,7 @@ def evaluate_7cards(cards):
     return rank_class / 8.0
 
 
-def turn_features(hero, board):
+def turn_features(hero, board): # 15 features
     cards = hero + board
     hero_vals = [value(c) for c in hero]
     board_vals = sorted([value(c) for c in board])
@@ -573,7 +573,7 @@ def train_xgb():
 if __name__ == "__main__":
     from joblib import dump, load
     hole = ["Ks", "Kd"]
-    flop = ["Ah", "Kc", "Kh"]
+    board = ["Ah", "Kc", "Kh", "Qd", "Qh"]
     # print(treys_equity(hole, flop, iters=25000))
 
     # features = extract_flop_features(hole, flop)
@@ -582,16 +582,17 @@ if __name__ == "__main__":
     # print("Predicted equity:", equity)    
     # exit()
     
-    model = train_xgb()
-    features = extract_flop_features(hole, flop)
+    # model = train_xgb()
+    features = turn_features(hole, board)
+    print("features:", features)
     # equity = model.predict([features])[0]
     # print("Predicted flop equity:", round(equity, 7))
-
+    exit()
 
 
     
 
-    dump(model, "flop_equity_xgb.joblib")    
+    # dump(model, "flop_equity_xgb.joblib")    
 
     xgb_loaded = load("flop_equity_xgb.joblib")
 
