@@ -181,8 +181,6 @@ def extract_flop_features(hole, flop):
 
 
 
-
-from collections import Counter
 from itertools import combinations
 
 RANKS = "23456789TJQKA"
@@ -190,7 +188,7 @@ SUITS = "cdhs"
 RANK_TO_INT = {r: i for i, r in enumerate(RANKS, start=2)}
 
 
-def rank(card):
+def rank2(card):
     return card[0]
 
 
@@ -199,15 +197,15 @@ def suit(card):
 
 
 def rank_value(card):
-    return RANK_TO_INT[rank(card)]
+    return RANK_TO_INT[rank2(card)]
 
 
 def river_features(hero, board): # 14 features
     all_cards = hero + board
-    board_ranks = [rank(c) for c in board]
+    board_ranks = [rank2(c) for c in board]
     board_values = sorted([rank_value(c) for c in board])
     board_suits = [suit(c) for c in board]
-    hero_ranks = [rank(c) for c in hero]
+    hero_ranks = [rank2(c) for c in hero]
     hero_values = [rank_value(c) for c in hero]
     hero_suits = [suit(c) for c in hero]
 
@@ -301,8 +299,8 @@ SUITS = "cdhs"
 RANK_TO_INT = {r: i for i, r in enumerate(RANKS, start=2)}
 
 
-def rank(card):
-    return card[0]
+# def rank(card):
+#     return card[0]
 
 
 def suit(card):
@@ -310,7 +308,7 @@ def suit(card):
 
 
 def value(card):
-    return RANK_TO_INT[rank(card)]
+    return RANK_TO_INT[rank2(card)]
 
 
 def evaluate_7cards(cards):
@@ -366,7 +364,7 @@ def turn_features(hero, board): # 15 features
     hero_vals = [value(c) for c in hero]
     board_vals = sorted([value(c) for c in board])
     board_suits = [suit(c) for c in board]
-    board_ranks = [rank(c) for c in board]
+    board_ranks = [rank2(c) for c in board]
 
     features = []
 
@@ -573,7 +571,7 @@ def train_xgb():
 if __name__ == "__main__":
     from joblib import dump, load
     hole = ["Ks", "Kd"]
-    board = ["Ah", "Kc", "Kh", "Qd", "Qh"]
+    board = ["Ah", "Kc", "Kh", "2d"]
     # print(treys_equity(hole, flop, iters=25000))
 
     # features = extract_flop_features(hole, flop)
@@ -583,8 +581,9 @@ if __name__ == "__main__":
     # exit()
     
     # model = train_xgb()
-    features = turn_features(hole, board)
+    features = river_features(hole, board)
     print("features:", features)
+    # equity = xgb_loaded.predict([features])[0]
     # equity = model.predict([features])[0]
     # print("Predicted flop equity:", round(equity, 7))
     exit()
