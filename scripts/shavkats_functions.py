@@ -919,7 +919,7 @@ def read_game_rules(big_blind = "200", first_start_up = False):
     print("reading game rules, big blind: "+str(big_blind))
     def click_selection_or_exit(big_blind="200", first_start_up = False): # development game
         if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
-            image_path = 'images/5k.png'
+            image_path = 'images/100_200.png'
             if not click_two_times_please(image_path, precision=.8, debug = False):
                 print("Could not find selection once ...")
                 if not click_two_times_please(image_path, precision=8, debug = False):
@@ -929,7 +929,7 @@ def read_game_rules(big_blind = "200", first_start_up = False):
             print("trying to click selection ... ")
             try:
                 if first_start_up:
-                    image_path = 'images/10k.png' # development game
+                    image_path = 'images/200_500.png' # development game
                     first_start_up = False
                 else:
                     image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
