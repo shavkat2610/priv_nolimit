@@ -1478,7 +1478,12 @@ class AppDelegate(NSObject):
             if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
                 print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT")
                 with self.lock:
-                    [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                    try:
+                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                    except Exception as e:
+                        print("error 103")
+                        print(e)
+                        exit()
             if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
                 print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT, exiting ...")
                 exit()
