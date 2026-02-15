@@ -27,7 +27,6 @@ batch_size = 128
 # base_model.trainable = False
 
 
-
 train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon",
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
@@ -43,6 +42,21 @@ validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation
     batch_size=batch_size)
 
 
+def make_datasets():
+    global train_ds, validation_ds
+    train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon",
+        label_mode = "categorical",
+        class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
+        seed=int(time.time()),
+        image_size=(150, 150),
+        batch_size=batch_size)
+
+    validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
+        label_mode = "categorical",
+        class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
+        seed=int(time.time()),
+        image_size=(150, 150),
+        batch_size=batch_size)    
 
 
 inputs = keras.Input(shape=(150, 150, 3))
@@ -75,6 +89,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00003),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+# make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -117,6 +132,9 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00004),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+
+
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -158,6 +176,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00005),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -200,6 +219,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00003),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -245,6 +265,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00003),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -290,6 +311,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.00003),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds,epochs=100, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
@@ -345,6 +367,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00005, momentum=0.9
               metrics=["accuracy"])
 
 # Train end-to-end. Be careful to stop before you overfit!
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model2_1.keras")
@@ -380,6 +403,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00002, momentum=0.8
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model3.keras")
@@ -415,6 +439,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.5
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model4.keras")
@@ -450,6 +475,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00001, momentum=0.5
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds, validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model5.keras")
@@ -485,6 +511,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.000016, momentum=0.
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model6.keras")
@@ -520,6 +547,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.000032, momentum=0.
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model7.keras")
@@ -558,6 +586,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.0000017, momentum=0
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model8.keras")
@@ -566,6 +595,7 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00000238, momentum=
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model9.keras")
@@ -574,127 +604,158 @@ model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.000001245678910, mo
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model20.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model1.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model2.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model3.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model4.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model5.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model6.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model7.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model8.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model9.keras")
 print("9")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
 
+make_datasets()
 model.fit(train_ds,validation_data=validation_ds, epochs=100, batch_size=batch_size)
 
 model.save("model.keras")
@@ -704,4 +765,5 @@ model.save("model.keras")
 # model.compile(optimizer=keras.optimizers.Adam(),
 #               loss=keras.losses.BinaryCrossentropy(from_logits=True),
 #               metrics=[keras.metrics.BinaryAccuracy()])
-# model.fit(new_dataset, epochs=20, callbacks=..., validation_data=...)
+# make_datasets()
+model.fit(new_dataset, epochs=20, callbacks=..., validation_data=...)

@@ -32,6 +32,8 @@ from treys import Card
 from treys import Evaluator
 from PIL import Image
 
+number_of_the_universe = 42
+
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
 # import subprocess
 
@@ -1788,6 +1790,9 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
+        global number_of_the_universe
+        number_of_the_universe += 1
+
         with self.acting_lock:
             if self.time_to_act:
                 print("time_to_act active during game screenshot 24")
@@ -1915,6 +1920,8 @@ class AppDelegate(NSObject):
                 
 
         elif game_stage == "no_decision_to_be_made":
+            if number_of_the_universe%20==0:
+                current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
             with self.cards_lock:
                 self.cards_open = False
             secs = time.time()
