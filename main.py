@@ -25,7 +25,8 @@ from fish_for_cards import crop_wh, fish_for_own_cards, fish_for_deck_cards, pre
 from small_shwatsgoingon import check_if_we_holdin_yet, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
                                                                     read_old_pot_money, read_own_money, load_smol_watsgoingon_model, general_whats_going_on_model, handle_all_in,\
                                                                           load_flop_equity_model, flop_equity_model_predict, extract_flop_features, load_turn_model, \
-                                                                          turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple
+                                                                          turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple, \
+                                                                                prepare_pot_digits
 from monte_carlo_0 import exact_win_probability
 from treys import Card
 from treys import Evaluator
@@ -90,6 +91,7 @@ load_flop_equity_model()
 load_flop_model()
 load_river_model()
 load_turn_model()
+prepare_pot_digits()
 
 
 
