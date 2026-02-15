@@ -1152,18 +1152,15 @@ class AppDelegate(NSObject):
 
     def makeDecisionFlop(self):
 
-        print("making decision flop")
 
         # for now no AI-decision-making
         with self.dec_lock:
             decision = self.decision
 
-        print(" I was here flop decision making 1")
         if decision == "None_yet":
             time.sleep(1.0)
             with self.dec_lock:
-                decision = self.decision   
-            print(" I was here flop decision making 2")         
+                decision = self.decision        
             if decision == "None_yet":
                 return "fold"
             else:
@@ -1480,7 +1477,7 @@ class AppDelegate(NSObject):
                 with self.dec_lock:
                     decision = self.decision
                 if decision == "None_yet":
-                    time.sleep(0.5)
+                    time.sleep(0.75)
                     model_dec = self.makeDecisionFlop()
                     print("I was here flop dec making 3")
                     with self.dec_lock:
@@ -1507,7 +1504,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.5)
+                        time.sleep(0.75)
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
@@ -1666,7 +1663,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.5)
+                        time.sleep(0.75)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
