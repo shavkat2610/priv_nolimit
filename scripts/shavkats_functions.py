@@ -20,7 +20,6 @@ from playsound3 import playsound
 
 
 
-first_start_up = False #todo: remove
 pull_to = [10, 45]
 def_clint = [12, 46] #69, 70
 l_info_read = False
@@ -367,8 +366,7 @@ def login(debug = False):
     if find_cashier('images/chachier_new_year.png'): # when it is january
         return False    
 
-    if find_login_button_and_click():
-        first_start_up = False
+    find_login_button_and_click()
     time.sleep(.3)
     #putting in credentials
     upper_corner = Image.open('images/login_popup_upper_corner.png')
@@ -381,8 +379,7 @@ def login(debug = False):
             upper_corner_pos = imagesearch('images/login_popup_upper_corner.png', precision=0.85, debug=debug, calling_function= 'login')
             time.sleep(.5)
             if upper_corner_pos == [-1, -1]:
-                if find_login_button_and_click():
-                    first_start_up = False
+                find_login_button_and_click()
     time.sleep(1)
     #credentials
     pyautogui.doubleClick(upper_corner_pos[0] + 236 , upper_corner_pos[1] + 120)
@@ -400,14 +397,14 @@ def login(debug = False):
     if compare_img_screenshot(logging_in_button,(569, 455)):
         pyautogui.click(569 + random.randrange(1,100), 455 + random.randrange(1,10))
         time.sleep(.3)
-        return first_start_up
+        return False
     login_button_pos = imagesearch('images/logging_in_button.png', precision=0.9, debug=debug, calling_function= 'login')
     time.sleep(.1)
     if login_button_pos != [-1, -1]:
         pyautogui.click(login_button_pos[0] + random.randrange(1,100), login_button_pos[1] + random.randrange(1,10))
         time.sleep(.3)
         print("second login button clicked.")
-        return first_start_up
+        return False
     print("login did not work, exiting ...")
     exit()
 
@@ -915,10 +912,9 @@ def maximize_client(): # dont even use that I don't think ...
     time.sleep(.5)
 
 
-def read_game_rules(big_blind = "200", first_start_up = False):
-    global first_start_up
+def read_game_rules(big_blind = "200"):
     print("reading game rules, big blind: "+str(big_blind))
-    def click_selection_or_exit(big_blind="200", first_start_up = False): # development game
+    def click_selection_or_exit(big_blind="200"): # development game
         if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
             image_path = 'images/100_200.png'
             if not click_two_times_please(image_path, precision=.8, debug = False):
@@ -929,11 +925,9 @@ def read_game_rules(big_blind = "200", first_start_up = False):
         elif big_blind == "500":
             print("trying to click selection ... ")
             try:
-                if first_start_up:
-                    image_path = 'images/200_500.png' # development game
-                    first_start_up = False
-                else:
-                    image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
+                # image_path = 'images/200_500.png' # development game
+                
+                image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
                 if not click_two_times_please(image_path, precision=.75, debug = True):
                     print("Could not find selection, exiting...")
                     exit()
@@ -944,11 +938,11 @@ def read_game_rules(big_blind = "200", first_start_up = False):
         else:
             pass #todo
     
-    click_selection_or_exit(big_blind, first_start_up=first_start_up)
+    click_selection_or_exit(big_blind)
     reset_client_window()
     if not l_info_read:
         if see_if_there_is_l_info():
-            click_selection_or_exit(big_blind, first_start_up=first_start_up)
+            click_selection_or_exit(big_blind)
     
     while True:
         if click_one_times_please('images/join_table.png', debug=False):
@@ -965,10 +959,10 @@ def read_game_rules(big_blind = "200", first_start_up = False):
     if login_check_agane():
             if not l_info_read:
                 if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind, first_start_up=first_start_up)
+                    click_selection_or_exit(big_blind)
             if not l_info_read:
                 if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind, first_start_up=first_start_up)
+                    click_selection_or_exit(big_blind)
             if not l_info_read:
                 if see_if_there_is_l_info():
                     click_one_times_please('images/join_table.png', debug=False)
@@ -1000,7 +994,7 @@ def read_game_rules(big_blind = "200", first_start_up = False):
         reset_client_window()
         # maximize_client()
         time.sleep(3)
-        return read_game_rules(big_blind=big_blind, first_start_up=False) # , first_start_up=False !!!
+        return read_game_rules(big_blind=big_blind) 
     return False
 
 def crop_wh(img, left, top, width, height):
@@ -1077,10 +1071,10 @@ def run_it_up(big_blind = "200"):
     print("run it up with bb: "+big_blind)
     if not check_if_client_running(waiting=False):
         print("starting up client and logging in...")
-        first_start_up =  start_client_and_login() # always True (see comment on login)
+        start_client_and_login() # always True (see comment on login)
     else:
         reset_client_window()
-        # first_start_up = login() # always false | if client is already running (client needs to be closed for first_start_up to work properly (the first opened game after closing client is no-good and will start up a play-money game in our script, expecting it not to work (so the client need to actually eb closed or visible on the desktop)))
+        # login() 
     time.sleep(1)
     reset_client_window()
     if not l_info_read:
@@ -1091,7 +1085,7 @@ def run_it_up(big_blind = "200"):
             see_if_there_is_l_info()
         time.sleep(.2)
         scroll_to_bottom()
-    return read_game_rules(big_blind=big_blind, first_start_up=first_start_up)
+    return read_game_rules(big_blind=big_blind)
 
 
 
