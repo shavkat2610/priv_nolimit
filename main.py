@@ -1912,18 +1912,18 @@ class AppDelegate(NSObject):
                 with self.game_stage_lock:
                     self.game_stage_current = "flop"
                 secs = time.time()
-                current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
+                # current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
                 try:
                     with self.cards_lock:
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
-                    # print(e)
+                    print(e)
                     time.sleep(0.25)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
-                        # print(e)
+                        print(e)
                         time.sleep(0.25)                    
                         try:
                             with self.cards_lock:
@@ -1935,9 +1935,12 @@ class AppDelegate(NSObject):
                                 self.game_stage_current = "no_decision_to_be_made" 
                             with self.acting_lock:
                                 self.time_to_act = False                                                                                                 
-                                return
+                                current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                                exit()
                 if self.deck_card_4 != "nn":
                     print("model said flop, but found at least four cards, exiting out of gameScreenshot_")
+                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                    exit()
                     with self.game_stage_lock:
                         self.game_stage_current = "no_decision_to_be_made" 
                     with self.acting_lock:
@@ -1996,13 +1999,13 @@ class AppDelegate(NSObject):
                     with self.cards_lock:
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
-                    # print(e)
+                    print(e)
                     time.sleep(0.25)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
-                        # print(e)
+                        print(e)
                         time.sleep(0.25)                    
                         try:
                             with self.cards_lock:
@@ -2010,27 +2013,31 @@ class AppDelegate(NSObject):
                         except Exception as e:
                             print(e) 
                             print("model said flop, but no cards could be read , exiting ... 24")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
                             with self.game_stage_lock:
                                 self.game_stage_current = "no_decision_to_be_made" 
                             with self.acting_lock:
                                 self.time_to_act = False                                                                           
-                                return
+                                exit()
                 with self.cards_lock:
                     if self.deck_card_4 == "nn":
                         print("model said river, but found no four cards, exiting out of gameScreenshot_")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                        exit()
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False                                                                           
-                            return
+                            exit()
                     else:
                         if self.deck_card_5 != "nn":
                             print("model said river, but is turn, exiting out of gameScreenshot_")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
                             with self.game_stage_lock:
                                 self.game_stage_current = "no_decision_to_be_made" 
                             with self.acting_lock:
                                 self.time_to_act = False                                                                           
-                                return
+                                exit()
                     self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
 
 
@@ -2066,7 +2073,7 @@ class AppDelegate(NSObject):
                     with self.cards_lock:
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
-                    # print(e)
+                    print(e)
                     time.sleep(0.75)
                     try:
                         with self.cards_lock:
@@ -2080,19 +2087,19 @@ class AppDelegate(NSObject):
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False
-                            return
+                            exit()
                 with self.cards_lock:
                     if self.deck_card_4 == "nn":
-                        print("model said turn, but found no four cards, returning out of gameScreenshot_")
+                        print("model said turn, but found no four cards, exiting out of gameScreenshot_")
                         current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                         exit()                        
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False    
-                            return
+                            exit()
                     if self.deck_card_5 == "nn":
-                        print("model said turn, but found no four cards, returning out of gameScreenshot_")
+                        print("model said turn, but found no four cards, exiting out of gameScreenshot_")
                         current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                         exit()              
                         print("model said turn, but no five cards, returning out of gameScreenshot_")
@@ -2100,7 +2107,7 @@ class AppDelegate(NSObject):
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
                             self.time_to_act = False                                                                           
-                            return
+                            exit()
                     self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
 
         
@@ -2172,7 +2179,7 @@ class AppDelegate(NSObject):
                                             self.cards_open = True
                                         except Exception as e:
                                             print(e)
-                                            print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ... 222222222222222222") 
+                                            print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ... 222222222222222222") # maybe save screenshot for reclassification purposes
                                             fish_for_own_cards()                                      
                                             with self.game_stage_lock:
                                                 self.game_stage_current = "no_decision_to_be_made"  

@@ -400,7 +400,8 @@ def read_deck_cards(im = None):
     result = red_deck_cards(im=im)
     print("red_deck_cards result: "+str(result))
     if result[0] == "nn" or result[1] == "nn" or result[2] == "nn":
-        raise Exception("Sorry, no deck cards could be read")    
+        raise Exception("Sorry, no deck cards could be read") 
+    print("returning out of read_deack_cards")   
     return result
     
 
