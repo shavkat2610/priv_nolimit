@@ -412,31 +412,38 @@ class AppDelegate(NSObject):
 
     def fold_(self, userInfo):
         with self.dec_lock:
-            self.decision = "fold"
+            if self.decision != "fold":
+                self.decision = "fold"
         
     def call_(self, userInfo):
         with self.dec_lock:
-            self.decision = "call"
+            if self.decision != "call":
+                self.decision = "call"
 
     def raise1_(self, userInfo):
         with self.dec_lock:
-            self.decision = "raise1"
+            if self.decision != "raise1":
+                self.decision = "raise1"
 
     def raise2_(self, userInfo):
         with self.dec_lock:
-            self.decision = "2raise2"
+            if self.decision != "2raise2":
+                self.decision = "2raise2"
 
     def raise3_(self, userInfo):
         with self.dec_lock:
-            self.decision = "3raise3"
+            if self.decision != "3raise3":
+                self.decision = "3raise3"
 
     def raise4_(self, userInfo):
         with self.dec_lock:
-            self.decision = "4raise4"
+            if self.decision != "4raise4":
+                self.decision = "4raise4"
 
     def raise5_(self, userInfo):
         with self.dec_lock:
-            self.decision = "5raise5"
+            if self.decision != "5raise5":
+                self.decision = "5raise5"
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
@@ -1148,6 +1155,7 @@ class AppDelegate(NSObject):
     
 
     def calculateFlopEquity(self):
+        print("calculateFlopEquity called ...")
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right    
@@ -1513,11 +1521,10 @@ class AppDelegate(NSObject):
                 with self.dec_lock:
                     decision = self.decision
                 if decision == "None_yet":
+                    print("debug - decision still None_yet after waiting, now making flop decision ...")
                     time.sleep(0.75)
                     model_dec = self.makeDecisionFlop()
-                    print("I was here flop dec making 3")
                     with self.dec_lock:
-                        print("I was here flop dec making 4")
                         if self.decision == "None_yet":
                             self.decision = model_dec
                     print("I was here flop dec making 5")
