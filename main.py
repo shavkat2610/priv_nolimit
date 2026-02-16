@@ -228,10 +228,10 @@ class AppDelegate(NSObject):
             self.holders_pos = check_holders(current_im)
             # print("holders set ...")
             self.num_active_players = count_holders(self.holders_pos)
-            current_im.save(f"active_hodlers/holders_{self.num_active_players}_{str(time.time()).split('.')[0]}.png") # remove later
             # print("num_active_players set ...")
             with self.d_lock:
                 self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
+            current_im.save(f"active_hodlers/holders_{self.num_active_players}_{self.num_active_players_before_me}_{str(time.time()).split('.')[0]}.png") # remove later
             # print("num_active_players_before_me set .") 
         # print("done with setValuesOurTurn .")
 
@@ -939,6 +939,7 @@ class AppDelegate(NSObject):
 
 
     def makeDecisionPreflop(self):
+        print("makeDecisionPreflop called ...")
         with self.potheight_lock:
             pot_height = self.potheight
             to_call = self.to_call
@@ -1174,10 +1175,13 @@ class AppDelegate(NSObject):
         with self.dec_lock:
             decision = self.decision
 
+        print("flop decision was: "+decision)
+
         if decision == "None_yet":
             time.sleep(1.0)
             with self.dec_lock:
-                decision = self.decision        
+                decision = self.decision    
+            print("flop decision was: "+decision)    
             if decision == "None_yet":
                 return "fold"
             else:
@@ -1346,10 +1350,12 @@ class AppDelegate(NSObject):
         # for now no AI-decision-making
         with self.dec_lock:
             decision = self.decision
+        print("preflop decision was: "+decision)
         if decision == "None_yet":
             time.sleep(1.0)
             with self.dec_lock:
-                decision = self.decision            
+                decision = self.decision    
+            print("preflop decision was: "+decision)        
             if decision == "None_yet":
                 return "fold"
             else:
@@ -1440,10 +1446,12 @@ class AppDelegate(NSObject):
         # for now no AI-decision-making
         with self.dec_lock:
             decision = self.decision
+        print("preflop decision was: "+decision)
         if decision == "None_yet":
             time.sleep(1.0)
             with self.dec_lock:
-                decision = self.decision            
+                decision = self.decision  
+            print("preflop decision was: "+decision)          
             if decision == "None_yet":
                 return "fold"
             else:
@@ -1509,10 +1517,9 @@ class AppDelegate(NSObject):
                     model_dec = self.makeDecisionFlop()
                     print("I was here flop dec making 3")
                     with self.dec_lock:
-                        decision = self.decision
-                    print("I was here flop dec making 4")
-                    if decision == "None_yet":
-                        self.decision = model_dec
+                        print("I was here flop dec making 4")
+                        if self.decision == "None_yet":
+                            self.decision = model_dec
                     print("I was here flop dec making 5")
                 try:
                     self.mkFlopModelInput()
