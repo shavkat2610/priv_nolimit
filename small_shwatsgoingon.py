@@ -396,7 +396,9 @@ def read_own_cards(im=None): # may not be ready to read yet, may need to retake 
 def read_deck_cards(im = None):
     if im == None:
         im = game_screenshot()
+    print("reading deck cards")
     result = red_deck_cards(im=im)
+    print("red_deck_cards result: "+str(result))
     if result[0] == "nn" or result[1] == "nn" or result[2] == "nn":
         raise Exception("Sorry, no deck cards could be read")    
     return result

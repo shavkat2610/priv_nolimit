@@ -1496,6 +1496,7 @@ class AppDelegate(NSObject):
                         print("error 103")
                         print(e)
                         exit()
+            print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
             if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
                 print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT, exiting ...")
                 exit()
@@ -1522,6 +1523,7 @@ class AppDelegate(NSObject):
                 print("I was here flop dec making 6")
                 return
             if self.deck_card_5 == "nn": # that means river
+                print("# that means river    ")
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
                     self.equity_river = set_1_1                    
@@ -1532,6 +1534,7 @@ class AppDelegate(NSObject):
                         decision = self.decision
                     if decision == "None_yet":
                         time.sleep(0.75)
+                        print("I was here river dec making 3")
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
