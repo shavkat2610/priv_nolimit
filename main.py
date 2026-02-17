@@ -2495,7 +2495,7 @@ class AppDelegate(NSObject):
 
         with self.acting_lock:
             self.time_to_act = False  
-        pyautogui.moveTo(15, 55)     
+        # pyautogui.moveTo(15, 55)     
 
 
 
