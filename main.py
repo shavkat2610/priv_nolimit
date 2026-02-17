@@ -451,12 +451,16 @@ class AppDelegate(NSObject):
         if self.setting_monte_caro == True:
             return False
         with self.mk_comte_carlo_decision_lock:
+            print("mk_comte_carlo_decision_lock acquired")
             self.setting_monte_caro = True
             try:
                 boardCards.remove("nn") #river
+                print("river")
                 with self.cards_lock: 
                     self.river_features = river_features(self.own_card_left, self.own_card_right, boardCards)            
-            except: #turn
+            except Exception as e: #turn
+                print("probably turn?")
+                print(e)
                 with self.cards_lock:
                     self.turn_features = turn_features(self.own_card_left, self.own_card_right, boardCards)            
             NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
