@@ -447,6 +447,7 @@ class AppDelegate(NSObject):
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
+        print("startCalculationsOtherThread_ called ...")
         if self.setting_monte_caro == True:
             return False
         with self.mk_comte_carlo_decision_lock:
@@ -458,8 +459,7 @@ class AppDelegate(NSObject):
             except: #turn
                 with self.cards_lock:
                     self.turn_features = turn_features(self.own_card_left, self.own_card_right, boardCards)            
-        NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
-        return True
+            NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
 
 
     def doCalculation_(self, boardCards): # check in decision, if probability_1_1 is set, or use this function on main thread ...
