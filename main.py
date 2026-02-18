@@ -2548,6 +2548,7 @@ def GUI():
     win.setTitle_("GG")
     win.setLevel_(3)  # floating window
     app = NSApplication.sharedApplication()
+    app.activateIgnoringOtherApps_(True)
     delegate = AppDelegate.alloc().init()
     NSApp().setDelegate_(delegate)
     # install_signal_handlers(app)
@@ -2635,6 +2636,7 @@ def GUI():
     foldB.setAction_("fold:")
     foldB.setContentTintColor_(NSColor.redColor())
     foldB.setHidden_(True)
+    foldB.setKeyEquivalent_("f")
     delegate.foldB = foldB
 
     callB = NSButton.alloc().initWithFrame_(((70.0, 260.0), (50.0, 50.0)))
@@ -2644,6 +2646,7 @@ def GUI():
     callB.setTarget_(app.delegate())
     callB.setAction_("call:")
     callB.setHidden_(True)
+    callB.setKeyEquivalent_("c")
     delegate.callB = callB
 
     raiseB1 = NSButton.alloc().initWithFrame_(((130.0, 260.0), (50.0, 50.0)))
@@ -2653,6 +2656,7 @@ def GUI():
     raiseB1.setTarget_(app.delegate())
     raiseB1.setAction_("raise1:")
     raiseB1.setHidden_(True)
+    raiseB1.setKeyEquivalent_("1")
     delegate.raiseB1 = raiseB1
 
     raiseB2 = NSButton.alloc().initWithFrame_(((190.0, 260.0), (50.0, 50.0)))
@@ -2662,6 +2666,7 @@ def GUI():
     raiseB2.setTarget_(app.delegate())
     raiseB2.setAction_("raise2:")
     raiseB2.setHidden_(True)
+    raiseB2.setKeyEquivalent_("2")
     delegate.raiseB2 = raiseB2
 
     raiseB3 = NSButton.alloc().initWithFrame_(((250.0, 260.0), (50.0, 50.0)))
@@ -2671,6 +2676,7 @@ def GUI():
     raiseB3.setTarget_(app.delegate())
     raiseB3.setAction_("raise3:")
     raiseB3.setHidden_(True)
+    raiseB3.setKeyEquivalent_("3")
     delegate.raiseB3 = raiseB3
 
     raiseB4 = NSButton.alloc().initWithFrame_(((310.0, 260.0), (50.0, 50.0)))
@@ -2680,6 +2686,7 @@ def GUI():
     raiseB4.setTarget_(app.delegate())
     raiseB4.setAction_("raise4:")
     raiseB4.setHidden_(True)
+    raiseB4.setKeyEquivalent_("4")
     delegate.raiseB4 = raiseB4
 
 
@@ -2689,6 +2696,7 @@ def GUI():
     raiseB5.setTitle_("16")
     raiseB5.setTarget_(app.delegate())
     raiseB5.setAction_("raise5:")
+    raiseB5.setKeyEquivalent_("5")
     raiseB5.setHidden_(True)
     delegate.raiseB5 = raiseB5
 

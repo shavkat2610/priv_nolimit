@@ -1,1 +1,2 @@
 probability_1_1;potheight;potheight_after_preflop;potheight_after_flop;potheight_after_river;to_call;equity_flop;equity_river;decision;num_active_players;num_active_players_before_me;feat_1;feat_2;feat_3;feat_4;feat_5;feat_6;feat_7;feat_8;feat_9;feat_10;feat_11;feat_12;feat_13;feat_14;feat_15;label
+0.8484848484848485;12.0;3.5;4.0;12.0;0.0;0.7400639;0.7804567413263065;0.0;1;1;0.25;1.0;0.0;0.0;0.4;0.8333333333333334;0.25;0.0;0.5;0.0;0.0;0.5;0.0;0.0;0.21666666666666667;0.05666666666666664
