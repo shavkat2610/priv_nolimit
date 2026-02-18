@@ -395,7 +395,9 @@ class AppDelegate(NSObject):
                 if not self.set_munna_initially():
                     time.sleep(0.15)
                     if not self.set_munna_initially():
-                        exit("could not read own money at start of game")                 
+                        exit("could not read own money at start of game")       
+
+        pyautogui.click(x=1183, y=759)       
 
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
@@ -1881,6 +1883,7 @@ class AppDelegate(NSObject):
                 self.writeToCSVs()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
+                pyautogui.click(x=1183, y=759)    
             with self.cards_lock:
                 if self.cards_open:
                     self.cards_open = False
