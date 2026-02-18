@@ -1,9 +1,7 @@
 import csv
-import os
 import pyautogui
 import time
 import numpy as np
-import cv2
 from chatGPT_XGBRegressor import river_features, turn_features
 from scripts.shavkats_functions import click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
@@ -1527,14 +1525,12 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         if self.decision == "None_yet":
                             self.decision = model_dec
-                    print("I was here flop dec making 5")
                 try:
                     self.mkFlopModelInput()
                 except Exception as e:
                     print("error 104")
                     print(e)
                     exit()
-                print("I was here flop dec making 6")
                 return
             if self.deck_card_5 == "nn": # that means river
                 print("# that means river    ")
