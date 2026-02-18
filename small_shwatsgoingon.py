@@ -121,7 +121,7 @@ def check_holders(im=None, example_img_path_for_card_holder = "card_holders_exam
 
         im5 = crop_wh(im, 42, 314, 101, 64)
         im4 = crop_wh(im, 68, 67, 101, 64) # position 4, counting counterclockwise from my position as 0
-        im3 = crop_wh(im, 374, 7, 101, 64)  # position 4, counting counterclockwise from my position as 0
+        im3 = crop_wh(im, 374, 7, 101, 64)  # position 3, counting counterclockwise from my position as 0
         im2 = crop_wh(im, 679, 67, 101, 64) # position 2, counting counterclockwise from my position as 0
         im1 = crop_wh(im, 706, 314, 101, 64)# position 1, counting counterclockwise from my position as 0
         # im0 = crop_wh(im, 372, 399, 101, 64)

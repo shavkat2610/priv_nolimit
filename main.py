@@ -120,7 +120,7 @@ def count_before_me(dealer_pos, holders_pos):
         return 0
     result = 0
     for i in range(dealer_pos):
-        if holders_pos[i+1]==True:
+        if holders_pos[i]==True:
             result +=1
     return result
 
@@ -456,7 +456,8 @@ class AppDelegate(NSObject):
             try:
                 boardCards.remove("nn") #river
                 print("river")
-                with self.cards_lock: 
+                with self.own_cards_lock: 
+                    print("cards_lock acquired for river features")
                     try: 
                         self.river_features = river_features([self.own_card_left, self.own_card_right], boardCards)     
                     except Exception as e:
@@ -466,7 +467,7 @@ class AppDelegate(NSObject):
             except Exception as e: #turn
                 print("probably turn?")
                 print(e)
-                with self.cards_lock:
+                with self.own_cards_lock:
                     self.turn_features = turn_features([self.own_card_left, self.own_card_right], boardCards)            
             NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
 
