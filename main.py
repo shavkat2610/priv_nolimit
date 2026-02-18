@@ -10,7 +10,6 @@ from scripts.shavkats_functions import click_ok,  game_screenshot, global_cash_g
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
                                             check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds
 import random
-import glob
 from Cocoa import NSObject, NSApplication, NSApp, NSWindow, NSButton, NSSound, NSComboBox, NSTextField, NSFont, NSColor, NSSlider
 from PyObjCTools import AppHelper
 from AppKit import NSScreen
@@ -2274,7 +2273,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610, duration=0.1)
                     time.sleep(0.1)
                     pyautogui.click(670, 610)
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1183, y=759)
                     with self.dec_lock:
                         self.decision = "None_yet"                        
                     # self.to_call = 0.0 # already here
@@ -2282,7 +2281,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(540, 610, duration=0.1)
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.lock:
                         if self.own_money > 99.0:
                             close_game()
@@ -2310,7 +2309,7 @@ class AppDelegate(NSObject):
                 pyautogui.moveTo(670, 610, duration=0.1)
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
-                self.window.makeKeyAndOrderFront_(None)
+                pyautogui.click(x=1283, y=639)
                 print("call was clicked")
                 with self.potheight_lock: 
                     self.to_call = 0.0    
@@ -2328,7 +2327,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2342,7 +2341,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2361,7 +2360,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2375,7 +2374,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2395,7 +2394,7 @@ class AppDelegate(NSObject):
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.dec_lock:
                         self.decision = "None_yet"
                     with self.potheight_lock:
@@ -2409,7 +2408,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2430,7 +2429,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2444,7 +2443,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2465,7 +2464,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2479,7 +2478,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    self.window.makeKeyAndOrderFront_(None)
+                    pyautogui.click(x=1283, y=639)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
