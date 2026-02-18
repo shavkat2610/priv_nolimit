@@ -8,7 +8,6 @@ from scripts.shavkats_functions import click_ok,  game_screenshot, global_cash_g
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
                                             check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds
 import random
-import glob
 from Cocoa import NSObject, NSApplication, NSApp, NSWindow, NSButton, NSSound, NSComboBox, NSTextField, NSFont, NSColor, NSSlider
 from PyObjCTools import AppHelper
 from AppKit import NSScreen
@@ -118,7 +117,7 @@ def count_before_me(dealer_pos, holders_pos):
         return 0
     result = 0
     for i in range(dealer_pos):
-        if holders_pos[i+1]==True:
+        if holders_pos[i]==True:
             result +=1
     return result
 
@@ -394,7 +393,9 @@ class AppDelegate(NSObject):
                 if not self.set_munna_initially():
                     time.sleep(0.15)
                     if not self.set_munna_initially():
-                        exit("could not read own money at start of game")                 
+                        exit("could not read own money at start of game")       
+
+        pyautogui.click(x=1183, y=759)       
 
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
@@ -412,52 +413,69 @@ class AppDelegate(NSObject):
         with self.dec_lock:
             if self.decision != "fold":
                 self.decision = "fold"
+            return
         
     def call_(self, userInfo):
         with self.dec_lock:
             if self.decision != "call":
                 self.decision = "call"
+            return
 
     def raise1_(self, userInfo):
         with self.dec_lock:
             if self.decision != "raise1":
                 self.decision = "raise1"
+            return
 
     def raise2_(self, userInfo):
         with self.dec_lock:
             if self.decision != "2raise2":
                 self.decision = "2raise2"
+            return
 
     def raise3_(self, userInfo):
         with self.dec_lock:
             if self.decision != "3raise3":
                 self.decision = "3raise3"
+            return
 
     def raise4_(self, userInfo):
         with self.dec_lock:
             if self.decision != "4raise4":
                 self.decision = "4raise4"
+            return
 
     def raise5_(self, userInfo):
         with self.dec_lock:
             if self.decision != "5raise5":
                 self.decision = "5raise5"
+            return
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
+        print("startCalculationsOtherThread_ called ...")
         if self.setting_monte_caro == True:
             return False
         with self.mk_comte_carlo_decision_lock:
+            print("mk_comte_carlo_decision_lock acquired")
             self.setting_monte_caro = True
             try:
                 boardCards.remove("nn") #river
-                with self.cards_lock: 
-                    self.river_features = river_features(self.own_card_left, self.own_card_right, boardCards)            
-            except: #turn
-                with self.cards_lock:
-                    self.turn_features = turn_features(self.own_card_left, self.own_card_right, boardCards)            
-        NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
-        return True
+                print("river")
+                with self.own_cards_lock: 
+                    print("cards_lock acquired for river features")
+                    try: 
+                        self.river_features = river_features([self.own_card_left, self.own_card_right], boardCards)     
+                    except Exception as e:
+                        print("problem with river features ?")
+                        print(e)
+                        exit()       
+            except Exception as e: #turn
+                print("probably turn?")
+                print(e)
+                with self.own_cards_lock:
+                    self.turn_features = turn_features([self.own_card_left, self.own_card_right], boardCards)            
+            NSThread.detachNewThreadSelector_toTarget_withObject_("doCalculation:", self, boardCards)
 
 
     def doCalculation_(self, boardCards): # check in decision, if probability_1_1 is set, or use this function on main thread ...
@@ -948,7 +966,6 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
             to_call = self.to_call
-        difference_tocall_n_potheight = to_call/pot_height
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right
@@ -1862,6 +1879,7 @@ class AppDelegate(NSObject):
                 self.writeToCSVs()
                 time.sleep(4) # write loss to model here
                 get_up_stand_up()
+                pyautogui.click(x=1183, y=759)    
             with self.cards_lock:
                 if self.cards_open:
                     self.cards_open = False
@@ -2187,7 +2205,7 @@ class AppDelegate(NSObject):
                                             with self.game_stage_lock:
                                                 self.game_stage_current = "no_decision_to_be_made"  
                                             with self.acting_lock:
-                                                self.time_to_act = False                                                                              
+                                                self.time_to_act =False                                                                              
                                                 return
                             else:
                                 with self.game_stage_lock:
@@ -2260,6 +2278,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610, duration=0.1)
                     time.sleep(0.1)
                     pyautogui.click(670, 610)
+                    pyautogui.click(x=1183, y=759)
                     with self.dec_lock:
                         self.decision = "None_yet"                        
                     # self.to_call = 0.0 # already here
@@ -2267,6 +2286,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(540, 610, duration=0.1)
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
+                    pyautogui.click(x=1183, y=759)
                     with self.lock:
                         if self.own_money > 99.0:
                             close_game()
@@ -2294,6 +2314,7 @@ class AppDelegate(NSObject):
                 pyautogui.moveTo(670, 610, duration=0.1)
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
+                pyautogui.click(x=1183, y=759)
                 print("call was clicked")
                 with self.potheight_lock: 
                     self.to_call = 0.0    
@@ -2311,6 +2332,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2324,6 +2346,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2342,6 +2365,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2355,6 +2379,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2374,6 +2399,7 @@ class AppDelegate(NSObject):
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.dec_lock:
                         self.decision = "None_yet"
                     with self.potheight_lock:
@@ -2387,6 +2413,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2407,6 +2434,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2420,6 +2448,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2440,6 +2469,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2453,6 +2483,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2491,7 +2522,7 @@ class AppDelegate(NSObject):
 
         with self.acting_lock:
             self.time_to_act = False  
-        pyautogui.moveTo(15, 55)     
+        # pyautogui.moveTo(15, 55)     
 
 
 
@@ -2534,6 +2565,7 @@ def GUI():
     win.setTitle_("GG")
     win.setLevel_(3)  # floating window
     app = NSApplication.sharedApplication()
+    app.activateIgnoringOtherApps_(True)
     delegate = AppDelegate.alloc().init()
     NSApp().setDelegate_(delegate)
     # install_signal_handlers(app)
@@ -2621,6 +2653,7 @@ def GUI():
     foldB.setAction_("fold:")
     foldB.setContentTintColor_(NSColor.redColor())
     foldB.setHidden_(True)
+    foldB.setKeyEquivalent_("f")
     delegate.foldB = foldB
 
     callB = NSButton.alloc().initWithFrame_(((70.0, 260.0), (50.0, 50.0)))
@@ -2630,6 +2663,7 @@ def GUI():
     callB.setTarget_(app.delegate())
     callB.setAction_("call:")
     callB.setHidden_(True)
+    callB.setKeyEquivalent_("c")
     delegate.callB = callB
 
     raiseB1 = NSButton.alloc().initWithFrame_(((130.0, 260.0), (50.0, 50.0)))
@@ -2639,6 +2673,7 @@ def GUI():
     raiseB1.setTarget_(app.delegate())
     raiseB1.setAction_("raise1:")
     raiseB1.setHidden_(True)
+    raiseB1.setKeyEquivalent_("1")
     delegate.raiseB1 = raiseB1
 
     raiseB2 = NSButton.alloc().initWithFrame_(((190.0, 260.0), (50.0, 50.0)))
@@ -2648,6 +2683,7 @@ def GUI():
     raiseB2.setTarget_(app.delegate())
     raiseB2.setAction_("raise2:")
     raiseB2.setHidden_(True)
+    raiseB2.setKeyEquivalent_("2")
     delegate.raiseB2 = raiseB2
 
     raiseB3 = NSButton.alloc().initWithFrame_(((250.0, 260.0), (50.0, 50.0)))
@@ -2657,6 +2693,7 @@ def GUI():
     raiseB3.setTarget_(app.delegate())
     raiseB3.setAction_("raise3:")
     raiseB3.setHidden_(True)
+    raiseB3.setKeyEquivalent_("3")
     delegate.raiseB3 = raiseB3
 
     raiseB4 = NSButton.alloc().initWithFrame_(((310.0, 260.0), (50.0, 50.0)))
@@ -2666,6 +2703,7 @@ def GUI():
     raiseB4.setTarget_(app.delegate())
     raiseB4.setAction_("raise4:")
     raiseB4.setHidden_(True)
+    raiseB4.setKeyEquivalent_("4")
     delegate.raiseB4 = raiseB4
 
 
@@ -2675,6 +2713,7 @@ def GUI():
     raiseB5.setTitle_("16")
     raiseB5.setTarget_(app.delegate())
     raiseB5.setAction_("raise5:")
+    raiseB5.setKeyEquivalent_("5")
     raiseB5.setHidden_(True)
     delegate.raiseB5 = raiseB5
 

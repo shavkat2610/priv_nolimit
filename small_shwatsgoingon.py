@@ -121,7 +121,7 @@ def check_holders(im=None, example_img_path_for_card_holder = "card_holders_exam
 
         im5 = crop_wh(im, 42, 314, 101, 64)
         im4 = crop_wh(im, 68, 67, 101, 64) # position 4, counting counterclockwise from my position as 0
-        im3 = crop_wh(im, 374, 7, 101, 64)  # position 4, counting counterclockwise from my position as 0
+        im3 = crop_wh(im, 374, 7, 101, 64)  # position 3, counting counterclockwise from my position as 0
         im2 = crop_wh(im, 679, 67, 101, 64) # position 2, counting counterclockwise from my position as 0
         im1 = crop_wh(im, 706, 314, 101, 64)# position 1, counting counterclockwise from my position as 0
         # im0 = crop_wh(im, 372, 399, 101, 64)
@@ -1178,6 +1178,18 @@ def handle_all_in(im = None):
     if pixels[760, 490][1] >= 80:
         print("\nrun three times clicked (need to switch to two I think, they dont play three around here ...)")
         pyautogui.click(760, 590)
+        # pixels[760, 490] = (255, 0, 0, 255)
+        pixels[761, 491] = (255, 0, 0, 255)
+        pixels[761, 489] = (255, 0, 0, 255)
+        pixels[759, 491] = (255, 0, 0, 255)
+        pixels[759, 489] = (255, 0, 0, 255)
+        pixels[761, 490] = (255, 0, 0, 255)
+        pixels[760, 491] = (255, 0, 0, 255)
+        pixels[759, 490] = (255, 0, 0, 255)
+        pixels[760, 489] = (255, 0, 0, 255)
+        pixels[762, 490] = (255, 0, 0, 255)
+        pixels[760, 492] = (255, 0, 0, 255)
+        im.save(f"clicking_images/run_three_times_{str(pixels[760, 490][1])}.png")
         return False
     else:
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
