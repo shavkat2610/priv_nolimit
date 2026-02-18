@@ -1178,6 +1178,14 @@ def handle_all_in(im = None):
     if pixels[760, 490][1] >= 80:
         print("\nrun three times clicked (need to switch to two I think, they dont play three around here ...)")
         pyautogui.click(760, 590)
+        pixels[760, 490] = (255, 0, 0, 255)
+        pixels[761, 490] = (255, 0, 0, 255)
+        pixels[760, 491] = (255, 0, 0, 255)
+        pixels[759, 490] = (255, 0, 0, 255)
+        pixels[760, 489] = (255, 0, 0, 255)
+        pixels[762, 490] = (255, 0, 0, 255)
+        pixels[760, 492] = (255, 0, 0, 255)
+        im.save(f"clicking_images/run_three_times_{str(pixels[760, 490][1])}.png")
         return False
     else:
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
