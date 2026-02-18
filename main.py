@@ -413,36 +413,43 @@ class AppDelegate(NSObject):
         with self.dec_lock:
             if self.decision != "fold":
                 self.decision = "fold"
+            return
         
     def call_(self, userInfo):
         with self.dec_lock:
             if self.decision != "call":
                 self.decision = "call"
+            return
 
     def raise1_(self, userInfo):
         with self.dec_lock:
             if self.decision != "raise1":
                 self.decision = "raise1"
+            return
 
     def raise2_(self, userInfo):
         with self.dec_lock:
             if self.decision != "2raise2":
                 self.decision = "2raise2"
+            return
 
     def raise3_(self, userInfo):
         with self.dec_lock:
             if self.decision != "3raise3":
                 self.decision = "3raise3"
+            return
 
     def raise4_(self, userInfo):
         with self.dec_lock:
             if self.decision != "4raise4":
                 self.decision = "4raise4"
+            return
 
     def raise5_(self, userInfo):
         with self.dec_lock:
             if self.decision != "5raise5":
                 self.decision = "5raise5"
+            return
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
@@ -959,7 +966,6 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
             to_call = self.to_call
-        difference_tocall_n_potheight = to_call/pot_height
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right
@@ -2200,7 +2206,7 @@ class AppDelegate(NSObject):
                                             with self.game_stage_lock:
                                                 self.game_stage_current = "no_decision_to_be_made"  
                                             with self.acting_lock:
-                                                self.time_to_act = False                                                                              
+                                                self.time_to_act =False                                                                              
                                                 return
                             else:
                                 with self.game_stage_lock:
