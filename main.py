@@ -2133,6 +2133,8 @@ class AppDelegate(NSObject):
 
         
         elif game_stage == "preflop":
+            if self.number_of_the_universe%50==0:
+                current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
             if current_game_stage != "preflop":
