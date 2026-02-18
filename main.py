@@ -1973,7 +1973,7 @@ class AppDelegate(NSObject):
                 
 
         elif game_stage == "no_decision_to_be_made":
-            if self.number_of_the_universe%20==0:
+            if self.number_of_the_universe%50==0:
                 current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
             with self.cards_lock:
                 self.cards_open = False
