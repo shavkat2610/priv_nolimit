@@ -2281,7 +2281,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(540, 610, duration=0.1)
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.lock:
                         if self.own_money > 99.0:
                             close_game()
@@ -2309,7 +2309,7 @@ class AppDelegate(NSObject):
                 pyautogui.moveTo(670, 610, duration=0.1)
                 time.sleep(0.1)                     
                 pyautogui.click(670, 610)
-                pyautogui.click(x=1283, y=639)
+                pyautogui.click(x=1183, y=759)
                 print("call was clicked")
                 with self.potheight_lock: 
                     self.to_call = 0.0    
@@ -2327,7 +2327,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2341,7 +2341,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2360,7 +2360,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2374,7 +2374,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2394,7 +2394,7 @@ class AppDelegate(NSObject):
                     pyautogui.click(800, 610)
                     pyautogui.moveTo(670, 610)
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.dec_lock:
                         self.decision = "None_yet"
                     with self.potheight_lock:
@@ -2408,7 +2408,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2429,7 +2429,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2443,7 +2443,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2464,7 +2464,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)             
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
@@ -2478,7 +2478,7 @@ class AppDelegate(NSObject):
                     pyautogui.moveTo(670, 610)
                     time.sleep(0.1)            
                     pyautogui.click(670, 610) # call click
-                    pyautogui.click(x=1283, y=639)
+                    pyautogui.click(x=1183, y=759)
                     with self.potheight_lock:
                         self.to_call = 0.0
                     with self.dec_lock:
