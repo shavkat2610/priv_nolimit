@@ -2635,7 +2635,7 @@ def GUI():
     slider = NSSlider.alloc().initWithFrame_(((10, 100), (280, 30)))
     slider.setMinValue_(-10.0)
     slider.setMaxValue_(10.0)
-    slider.setDoubleValue_(3.0)  # Startwert
+    slider.setDoubleValue_(0.0)  # Startwert
     slider.setTarget_(delegate)
     slider.setAction_("sliderChanged:")
     # Füge den Slider zum Fenster hinzu
