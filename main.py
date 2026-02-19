@@ -859,7 +859,6 @@ class AppDelegate(NSObject):
 
     def makeAIDecision_(self, outputs): # make decision based on model outputs
 
-        
         # outputs from model prediction
         with self.confidence_lock:
             confidence = self.confidence    
