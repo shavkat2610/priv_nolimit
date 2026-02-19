@@ -864,7 +864,7 @@ class AppDelegate(NSObject):
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
         for i in range(len(outputs)):
-            outputs[i] = outputs[i] + (0.02575 * confidence) 
+            outputs[i] = outputs[i] + (0.03575 * confidence) 
         if len(outputs) == 2:
             call_equity = outputs[0]
             bet_equity = outputs[1]
@@ -922,6 +922,19 @@ class AppDelegate(NSObject):
 
             if random.randrange(2) == 0:
                 print("random decision mode")
+                with self.mk_comte_carlo_decision_lock:
+                    if self.probability_1_1 > 0.75:
+                        with self.confidence_lock:
+                            self.confidence += 2.5
+                        return "3raise3"
+                    if self.probability_1_1 > 0.85:
+                        with self.confidence_lock:
+                            self.confidence += 3.5
+                        return "4raise4"
+                    if self.probability_1_1 > 0.95:
+                        with self.confidence_lock:
+                            self.confidence += 4.5
+                        return "5raise5"
                 if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
                 elif random.randrange(2) == 0 and raise2_equity > 0.0: # swap these maybe later
