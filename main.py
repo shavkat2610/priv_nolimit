@@ -2120,7 +2120,7 @@ class AppDelegate(NSObject):
                             self.time_to_act = False    
                             exit()
                     if self.deck_card_5 == "nn":
-                        print("model said turn, but found no four cards, exiting out of gameScreenshot_")
+                        print("model said turn, but found no five cards, exiting out of gameScreenshot_")
                         current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                         exit()              
                         print("model said turn, but no five cards, returning out of gameScreenshot_")
