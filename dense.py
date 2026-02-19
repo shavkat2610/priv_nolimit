@@ -766,4 +766,4 @@ model.save("model.keras")
 #               loss=keras.losses.BinaryCrossentropy(from_logits=True),
 #               metrics=[keras.metrics.BinaryAccuracy()])
 # make_datasets()
-model.fit(new_dataset, epochs=20, callbacks=..., validation_data=...)
+# model.fit(train_ds, epochs=20, callbacks=..., validation_data=validation_ds)
