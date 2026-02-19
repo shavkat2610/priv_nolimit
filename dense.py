@@ -79,9 +79,9 @@ x = keras.layers.LayerNormalization()(x)
 outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
 model = keras.Model(inputs, outputs)
 
-old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+# old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
-model.set_weights(old_model.get_weights()) 
+# model.set_weights(old_model.get_weights()) 
 
 model.summary()
 

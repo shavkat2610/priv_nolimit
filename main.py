@@ -552,7 +552,9 @@ class AppDelegate(NSObject):
             else:
                 decision_temp = 1.0       
         elif decision == "5raise5":
-            decision_temp = 2.0                        
+            decision_temp = 2.0   
+        with self.confidence_lock:
+            self.confidence += decision_temp                                 
         with self.mod_writing_lock:
             if not self.made_flop_model_input:
                 self.made_flop_model_input = True
@@ -633,6 +635,8 @@ class AppDelegate(NSObject):
                 decision_temp = 1.0       
         elif decision == "5raise5":
             decision_temp = 2.0  
+        with self.confidence_lock:
+            self.confidence += decision_temp            
         with self.mod_writing_lock:
             if not self.made_river_model_input:
                 self.made_river_model_input = True
@@ -700,6 +704,8 @@ class AppDelegate(NSObject):
                 decision_temp = 1.0       
         elif decision == "5raise5":
             decision_temp = 2.0  
+        with self.confidence_lock:
+            self.confidence += decision_temp
         with self.mod_writing_lock:
             if not self.made_turn_model_input:
                 self.made_turn_model_input = True
@@ -858,18 +864,9 @@ class AppDelegate(NSObject):
         with self.confidence_lock:
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
-        for output in outputs:
-            # print(f"Model output: {output}")
-            output = output + (0.175 * confidence) 
-            # print(f"Adjusted Model output: {output}")
+        for i in range(len(outputs)):
+            outputs[i] = outputs[i] + (0.02575 * confidence) 
         if len(outputs) == 2:
-            print("someone bet ... no check possible")
-            print() 
-            print("call equity before confidence: "+str(outputs[0]))
-            print("bet equity before confidence: "+str(outputs[1]))    
-            print()        
-            for output in outputs:
-                output = output + (0.175 * confidence) 
             call_equity = outputs[0]
             bet_equity = outputs[1]
             print("call equity: "+str(call_equity))
@@ -884,16 +881,19 @@ class AppDelegate(NSObject):
                         print("this scenario is very unlikely but ok")
                         return "raise1"
                     else:
-                        if call_equity > -0.015: # fixing folding too much issue, but actually this is sus (too low value)
+                        if call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
                             print("call equity decent enough to call")
                             return "call"
                         else:
+                            if random.randrange(2) == 0 and call_equity > -0.265: # fixing folding too much issue, but actually this is sus (too low value)
+                                print("rando-call")
+                                return "call"
                             print("call equity too low to call")
                             return "fold"
             else:
                 if call_equity - bet_equity > 0.075:
                     print("bet equity lower than call equity")
-                    if call_equity < -0.015:
+                    if call_equity < -0.15:
                         print("call equity too low to call")
                         return "fold"
                     else:
@@ -901,7 +901,7 @@ class AppDelegate(NSObject):
                         return "call"
                 else:
                     print("call equity and bet equity similar")
-                    if call_equity > -0.0165:
+                    if call_equity > -0.165:
                         return "call"
                     else:
                         print("call equity too low to call")
@@ -936,13 +936,16 @@ class AppDelegate(NSObject):
                 else:
                     return "fold"           
             else:
-                if raise5_equity - raise1_equity > 0.76 :
+                if raise1_equity < -0.15:
+                    print("raise1 equity is negative")
+                    return "call"
+                if raise5_equity - raise1_equity > 0.57 :
                     return "5raise5"
                 else:
-                    if raise4_equity - raise1_equity > 0.57 :
+                    if raise4_equity - raise1_equity > 0.43 :
                         return "4raise4"
                     else:
-                        if raise3_equity - raise1_equity > 0.35:
+                        if raise3_equity - raise1_equity > 0.32:
                             return "3raise3"
                         else:
                             if raise2_equity - raise1_equity > 0.17:
@@ -960,7 +963,7 @@ class AppDelegate(NSObject):
                                 elif raise1_equity> 0.0015:
                                     return "raise1"
                                 else:
-                                    return "fold"
+                                    return "call"
 
 
     def makeDecisionPreflop(self):
@@ -1195,26 +1198,6 @@ class AppDelegate(NSObject):
     def makeDecisionFlop(self):
 
         print("makeDecisionFlop called ...")
-
-        # for now no AI-decision-making
-        with self.dec_lock:
-            decision = self.decision
-
-        print("flop decision was: "+decision)
-
-        if decision == "None_yet":
-            time.sleep(1.5)
-            with self.dec_lock:
-                decision = self.decision    
-            print("flop decision was: "+decision)    
-            if decision == "None_yet":
-                return "fold"
-            else:
-                print("decision was made while waiting: "+decision)
-                return decision
-        else:
-            print("decision already made before flop model prediction, maybe preflop decision, maybe something else ... "+decision)
-            return decision
                             
         with self.potheight_lock:
             to_call = self.to_call      
@@ -1372,22 +1355,6 @@ class AppDelegate(NSObject):
     def makeDecisionRiver(self):
         print("makeDecisionRiver called")
 
-        # for now no AI-decision-making
-        with self.dec_lock:
-            decision = self.decision
-        print("preflop decision was: "+decision)
-        if decision == "None_yet":
-            time.sleep(1.5)
-            with self.dec_lock:
-                decision = self.decision    
-            print("preflop decision was: "+decision)        
-            if decision == "None_yet":
-                return "fold"
-            else:
-                return decision
-        else:
-            return decision
-
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
         print("set_1_1 at river-time: "+str(set_1_1))
@@ -1410,8 +1377,6 @@ class AppDelegate(NSObject):
         if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 3.5                        
-        # print("makeDecisionRiver probability_1_1: "+str(set_1_1))
-        difference_tocall_n_potheight = to_call/pot_height
         if to_call > 0.0:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([1.0, 2.0]))
         else:
@@ -1430,60 +1395,10 @@ class AppDelegate(NSObject):
                 elif decision.startswith("4") or decision.startswith("5"):
                     self.confidence += 0.5                    
         return decision 
-        # if set_1_1 > 0.53 and pot_height >= 5 and to_call < 1:
-        #     decision = "raise1"        
-        # if set_1_1 > 0.675 and to_call > 3:
-        #     decision = "call"
-        # else:
-        #     if set_1_1 > .65 and difference_tocall_n_potheight<0.4:
-        #         if pot_height >= 7 and to_call <= 5:
-        #             decision = "call"
-        #         if pot_height < 7 and to_call <= 3:
-        #             decision = "raise1"
-        #     elif set_1_1 > .70 and  difference_tocall_n_potheight<0.35:
-        #         decision = "call"
-        #     elif set_1_1 > .70 and to_call<=15:
-        #         decision = "call"     
-        #     elif set_1_1 > .70 and to_call<=2 and pot_height <= 4:
-        #         decision = "raise1"                     
-        #     if set_1_1 > .80 and to_call<=2:
-        #         decision = "raise1"                                       
-        #     elif set_1_1 > .80 and to_call<10:
-        #         decision = "4raise4"   
-        #     elif set_1_1 > .80 and to_call<=20:
-        #         decision = "call"     
-        #     elif set_1_1 > .80 and difference_tocall_n_potheight<=0.3:
-        #         decision = "call"                   
-        #     if set_1_1 > .85 and to_call<80:
-        #         decision = "3raise3"                          
-              
-            # else:
-            #     if set_1_1 > 0.71:
-            #         decision = "call"
-            #     else:
-            #         decision = "fold"
     
 
     def makeDecisionTurn(self):
         print("makeDecisionTurn called")
-
-
-        # for now no AI-decision-making
-        with self.dec_lock:
-            decision = self.decision
-        print("preflop decision was: "+decision)
-        if decision == "None_yet":
-            time.sleep(1.5)
-            with self.dec_lock:
-                decision = self.decision  
-            print("preflop decision was: "+decision)          
-            if decision == "None_yet":
-                return "fold"
-            else:
-                return decision
-        else:
-            return decision
-
 
         with self.potheight_lock:
             to_call = self.to_call
@@ -1901,7 +1816,8 @@ class AppDelegate(NSObject):
 
 
         if game_stage == "flop":
-            print("flop")
+            if self.number_of_the_universe%52==0:
+                current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
             with self.cards_lock:
                 self.cards_open = False
             with self.game_stage_lock:
@@ -1966,7 +1882,7 @@ class AppDelegate(NSObject):
                 
 
         elif game_stage == "no_decision_to_be_made":
-            if self.number_of_the_universe%50==0:
+            if self.number_of_the_universe%53==0:
                 current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
             with self.cards_lock:
                 self.cards_open = False
