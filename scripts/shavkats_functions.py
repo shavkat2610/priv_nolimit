@@ -1107,7 +1107,7 @@ def read_D(im = None):
         if is_yellow(pixels[area[0], area[1]]): # (239, 193, 36, 255)
             return i
         i += 1
-    im.save(f"d_minus_one{str(time.time())[:12]}.png")
+    # im.save(f"d_minus_one{str(time.time())[:12]}.png")
     return -1
 
 

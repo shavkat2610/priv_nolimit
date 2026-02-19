@@ -182,6 +182,7 @@ class AppDelegate(NSObject):
 
     dec_lock = Lock() # for decision attribute
     decision = "None_yet"
+    dec_taken = "None_yet"
 
     mk_comte_carlo_decision_lock = Lock()
     probability_1_1 = -1
@@ -1202,7 +1203,7 @@ class AppDelegate(NSObject):
         print("flop decision was: "+decision)
 
         if decision == "None_yet":
-            time.sleep(1.0)
+            time.sleep(1.5)
             with self.dec_lock:
                 decision = self.decision    
             print("flop decision was: "+decision)    
@@ -1376,7 +1377,7 @@ class AppDelegate(NSObject):
             decision = self.decision
         print("preflop decision was: "+decision)
         if decision == "None_yet":
-            time.sleep(1.0)
+            time.sleep(1.5)
             with self.dec_lock:
                 decision = self.decision    
             print("preflop decision was: "+decision)        
@@ -1472,7 +1473,7 @@ class AppDelegate(NSObject):
             decision = self.decision
         print("preflop decision was: "+decision)
         if decision == "None_yet":
-            time.sleep(1.0)
+            time.sleep(1.5)
             with self.dec_lock:
                 decision = self.decision  
             print("preflop decision was: "+decision)          
@@ -1931,13 +1932,13 @@ class AppDelegate(NSObject):
                         [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                 except Exception as e:
                     print(e)
-                    time.sleep(0.25)
+                    time.sleep(0.75)
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
                         print(e)
-                        time.sleep(0.25)                    
+                        time.sleep(0.75)                    
                         try:
                             with self.cards_lock:
                                 [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
@@ -2278,6 +2279,7 @@ class AppDelegate(NSObject):
 
             with self.dec_lock:
                 self_dec = self.decision
+                self.dec_taken = self_dec
             if self_dec == "fold":
                 if to_call < 0.1:
                     print("checking here !!!")
