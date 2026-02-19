@@ -230,7 +230,7 @@ class AppDelegate(NSObject):
             # print("num_active_players set ...")
             with self.d_lock:
                 self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
-            current_im.save(f"active_hodlers/holders_{self.num_active_players}_{self.num_active_players_before_me}_{str(time.time()).split('.')[0]}.png") # remove later
+            # current_im.save(f"active_hodlers/holders_{self.num_active_players}_{self.num_active_players_before_me}_{str(time.time()).split('.')[0]}.png") # remove later
             # print("num_active_players_before_me set .") 
         # print("done with setValuesOurTurn .")
 
@@ -817,6 +817,21 @@ class AppDelegate(NSObject):
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
                             writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), self.model_output])                 
+
+
+    def foldErase(self): # when folding, erase model inputs for that hand, since they are not useful for training 
+        with self.mod_writing_lock:
+            if self.made_turn_model_input:
+                self.made_turn_model_input = False 
+                self.turn_model_inputs = []
+            if self.made_river_model_input:
+                self.made_turn_model_input = False 
+                self.river_model_inputs = []
+            if self.made_flop_model_input:
+                self.made_flop_model_input = False 
+                self.flop_model_inputs = []                
+            # self.made_model_output = False   
+            # self.wrote_to_csv_s = False
 
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
@@ -2217,6 +2232,8 @@ class AppDelegate(NSObject):
                     time.sleep(0.1)                    
                     pyautogui.click(540, 610) # folding, reset values
                     pyautogui.click(x=1183, y=759)
+                    # self.resetValues()
+                    self.foldErase()
                     with self.lock:
                         if self.own_money > 99.0:
                             close_game()
