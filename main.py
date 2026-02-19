@@ -1429,6 +1429,7 @@ class AppDelegate(NSObject):
         print("makeDecision called")
         set_1_1 = -1
         if self.deck_card_1 == "nn":  # that means its preflop
+            print("makeDecision: preflop detected")
             with self.dec_lock:
                 if self.decision == "None_yet":
                     self.decision = self.makeDecisionPreflop()
