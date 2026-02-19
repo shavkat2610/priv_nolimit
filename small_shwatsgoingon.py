@@ -1138,7 +1138,7 @@ def general_whats_going_on_model(im = None):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=8.6:
+    if (prob/(sec_prob+0.01))<=9.6:
         # print(str(model_output))
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
