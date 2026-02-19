@@ -178,6 +178,7 @@ class AppDelegate(NSObject):
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
+    misred = False
 
     dec_lock = Lock() # for decision attribute
     decision = "None_yet"
@@ -2124,6 +2125,13 @@ class AppDelegate(NSObject):
 
         
         elif game_stage == "preflop":
+            with self.d_lock:
+                if self.misred:
+                    self.d_position = read_D(current_im)
+                    if self.d_position == -1:
+                        self.misred = True
+                    else:
+                        self.misred = False
             if self.number_of_the_universe%50==0:
                 current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
             with self.game_stage_lock:
@@ -2134,6 +2142,10 @@ class AppDelegate(NSObject):
                     self.game_stage_current = "preflop"                
                 with self.d_lock: # only once after turn or once every preflop
                     self.d_position = read_D(current_im)
+                    if self.d_position == -1:
+                        self.misred = True
+                    else:
+                        self.misred = False
                 self.roundswap_(current_im)
                 print("preflop")
                 with self.cards_lock:
@@ -2210,11 +2222,12 @@ class AppDelegate(NSObject):
                 with self.cards_lock:   
                     if not self.cards_open:
                         print("SOMETHING WENT WRONG preflop - 21 - exiting")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/preflop_{str(time.time()).split('.')[0]}.png")
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made"  
                         with self.acting_lock:
                             self.time_to_act = False                                                                              
-                            return
+                            exit()
                         
                 
 

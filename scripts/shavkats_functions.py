@@ -1108,8 +1108,7 @@ def read_D(im = None):
             return i
         i += 1
     im.save(f"d_minus_one{str(time.time())[:12]}.png")
-    print("could not read D, saved screenshot as d_minus_one.png for debugging, exiting ...")
-    exit()
+    return -1
 
 
 
