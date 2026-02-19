@@ -2092,16 +2092,16 @@ class AppDelegate(NSObject):
                 current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")     
                 try:
                     with self.cards_lock:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
                 except Exception as e:
                     print(e)
                     time.sleep(0.75)
                     try:
                         with self.cards_lock:
-                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
                     except Exception as e:
                         print(e) 
-                        print("model said flop, but no cards could be read , exiting ... 24")
+                        print("model said turn, but no cards could be read , exiting ... 24")
                         current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                         exit()                          
                         with self.game_stage_lock:

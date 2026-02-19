@@ -393,7 +393,7 @@ def read_own_cards(im=None): # may not be ready to read yet, may need to retake 
 
 
 
-def read_deck_cards(im = None):
+def read_deck_cards(game_stage="flop", im=None):
     if im == None:
         im = game_screenshot()
     print("reading deck cards")
@@ -401,6 +401,12 @@ def read_deck_cards(im = None):
     print("red_deck_cards result: "+str(result))
     if result[0] == "nn" or result[1] == "nn" or result[2] == "nn":
         raise Exception("Sorry, no deck cards could be read") 
+    if (game_stage == "river" or game_stage == "turn") and (result[3] == "nn"):
+        raise Exception("Sorry, no")
+    if game_stage == "turn" and (result[4] == "nn"):
+        raise Exception("Sorry, no 2")
+    if game_stage == "river" and (result[4] != "nn"):
+        raise Exception("Sorry, no 3")
     print("returning out of read_deack_cards")   
     return result
     
