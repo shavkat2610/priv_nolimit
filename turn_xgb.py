@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
 
-inputs = ['probability_1_1','potheight','potheight_after_preflop','potheight_after_flop','potheight_after_river','to_call','equity_flop','equity_river','decision','num_active_players','num_active_players_before_me','feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8','feat_9','feat_10','feat_11','feat_12','feat_13','feat_14']
+inputs = ['probability_1_1','potheight','potheight_after_preflop','potheight_after_flop','potheight_after_river','to_call','equity_flop','equity_river','decision','num_active_players','num_active_players_before_me','feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8','feat_9','feat_10','feat_11','feat_12','feat_13','feat_14', 'feat_15']
 # Load data
 df = pd.read_csv('csv_s/turnModel.csv', sep=';')
 X = df[inputs].values
