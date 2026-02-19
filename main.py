@@ -938,18 +938,18 @@ class AppDelegate(NSObject):
             if random.randrange(2) == 0:
                 print("random decision mode")
                 with self.mk_comte_carlo_decision_lock:
-                    if self.probability_1_1 > 0.75:
-                        with self.confidence_lock:
-                            self.confidence += 2.5
-                        return "3raise3"
-                    if self.probability_1_1 > 0.85:
-                        with self.confidence_lock:
-                            self.confidence += 3.5
-                        return "4raise4"
                     if self.probability_1_1 > 0.95:
                         with self.confidence_lock:
                             self.confidence += 4.5
                         return "5raise5"
+                    if self.probability_1_1 > 0.85:
+                        with self.confidence_lock:
+                            self.confidence += 3.5
+                        return "4raise4"
+                    if self.probability_1_1 > 0.75:
+                        with self.confidence_lock:
+                            self.confidence += 2.5
+                        return "3raise3"
                 if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
                 elif random.randrange(2) == 0 and raise2_equity > 0.0: # swap these maybe later
