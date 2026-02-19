@@ -950,6 +950,14 @@ class AppDelegate(NSObject):
                         with self.confidence_lock:
                             self.confidence += 2.5
                         return "3raise3"
+                    if self.probability_1_1 > 0.65:
+                        with self.confidence_lock:
+                            self.confidence += 1.5
+                        return "2raise2"
+                    if self.probability_1_1 > 0.55:
+                        with self.confidence_lock:
+                            self.confidence += 0.5
+                        return "raise1"
                 if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
                 elif random.randrange(2) == 0 and raise2_equity > 0.0: # swap these maybe later
@@ -1219,6 +1227,7 @@ class AppDelegate(NSObject):
                 exit(1)
             print("debug - extracted flop features: "+str(self.flop_features))
             self.equity_flop = flop_equity_model_predict(self.flop_features)
+            self.probability_1_1 = self.equity_flop
             print("debug - calculated flop equity: "+str(self.equity_flop))
 
 
@@ -1389,7 +1398,7 @@ class AppDelegate(NSObject):
             pot_height = self.potheight            
         with self.potheight_lock:
             to_call = self.to_call    
-        if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
+        if set_1_1 > 0.6: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 1.7              
         if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
