@@ -2190,14 +2190,14 @@ class AppDelegate(NSObject):
                 self_dec = self.decision
                 self.dec_taken = self_dec
             if self_dec == "fold":
+                with self.dec_lock:
+                    self.decision = "None_yet"     
                 if to_call < 0.1:
                     print("checking here !!!")
                     pyautogui.moveTo(670, 610, duration=0.1)
                     time.sleep(0.1)
                     pyautogui.click(670, 610)
                     pyautogui.click(x=1183, y=759)
-                    with self.dec_lock:
-                        self.decision = "None_yet"                        
                     # self.to_call = 0.0 # already here
                 else :
                     pyautogui.moveTo(540, 610, duration=0.1)
@@ -2211,7 +2211,6 @@ class AppDelegate(NSObject):
                             print("exiting program bc own money > 99.0")
                             # open_game()
                             exit()        
-                    self.resetValues() 
 
                     # with self.potheight_lock:
                     #     self.to_call = 0.0
