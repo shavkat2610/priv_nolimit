@@ -1433,6 +1433,8 @@ class AppDelegate(NSObject):
             with self.dec_lock:
                 if self.decision == "None_yet":
                     self.decision = self.makeDecisionPreflop()
+                else:
+                    print("debug - preflop decision already made: "+self.decision)
                 return
         else:
             print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
