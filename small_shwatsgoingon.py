@@ -399,13 +399,13 @@ def read_deck_cards(game_stage="flop", im=None):
     print("reading deck cards")
     result = red_deck_cards(im=im)
     print("red_deck_cards result: "+str(result))
-    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn":
+    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn": # assert first three cards generally
         raise Exception("Sorry, no deck cards could be read") 
-    if (game_stage == "river" or game_stage == "turn") and (result[3] == "nn"):
+    if (game_stage == "river" or game_stage == "turn") and (result[3] == "nn"): # assert fourth card in turn and river
         raise Exception("Sorry, no")
-    if game_stage == "turn" and (result[4] == "nn"):
+    if game_stage == "turn" and (result[4] == "nn"): # assert fifth card in turn
         raise Exception("Sorry, no 2")
-    if game_stage == "river" and (result[4] != "nn"):
+    if game_stage == "river" and (result[4] != "nn"): # assert no fifth card in river
         raise Exception("Sorry, no 3")
     print("returning out of read_deack_cards")   
     return result

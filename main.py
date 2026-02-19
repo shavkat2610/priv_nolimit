@@ -1518,15 +1518,6 @@ class AppDelegate(NSObject):
                     self.decision = self.makeDecisionPreflop()
                 return
         else:
-            if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
-                print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT")
-                with self.lock:
-                    try:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
-                    except Exception as e:
-                        print("error 103")
-                        print(e)
-                        exit()
             print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
             if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
                 print("!!!!!!!!!!!!!!! FIRST DECK CARD WAS READ ; AT LEAST ONE OTHER NOT, exiting ...")
@@ -2018,22 +2009,22 @@ class AppDelegate(NSObject):
                 current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
                 try:
                     with self.cards_lock:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
                 except Exception as e:
                     print(e)
                     time.sleep(0.25)
                     try:
                         with self.cards_lock:
-                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
                     except Exception as e:
                         print(e)
                         time.sleep(0.25)                    
                         try:
                             with self.cards_lock:
-                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
                         except Exception as e:
                             print(e) 
-                            print("model said flop, but no cards could be read , exiting ... 24")
+                            print("model said river, but no cards could be read , exiting ... 24")
                             current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
                             with self.game_stage_lock:
                                 self.game_stage_current = "no_decision_to_be_made" 
