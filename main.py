@@ -2017,8 +2017,8 @@ class AppDelegate(NSObject):
                             current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                             exit()
                 if current_game_stage != "river" and current_game_stage != "connectivity_issues":
-                    print("\n \n!!! \nmodel said turn, but game stage was not river, probably a wrong classification happened\n!!!\n \n")
-                    current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                    print("\n \n!!! \nmodel said turn, but game stage was not river before, probably a wrong classification happened\n!!!\n \n")
+                    current_im.save(f"shmol_model_not_sure/exiting_images/turn_after_{current_game_stage}_{str(time.time()).split('.')[0]}.png")
                     print("exiting")
                     exit()
                 with self.potheight_lock:
