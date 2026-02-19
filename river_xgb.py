@@ -10,8 +10,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
 
-
-inputs = ['probability_1_1', 'potheight', 'average_pot_2', 'average_pot_3', 'average_pot_4', 'average_pot_5', 'average_pot_6', 'average_pot_7', 'average_pot_9', 'average_pot_11', 'average_pot_13', 'average_pot_16', 'average_pot_20', 'average_pot_30', 'average_pot_50', 'to_call', 'equity_flop', 'decision', 'difference_tocall_n_potheight']
+inputs = ['probability_1_1','potheight','potheight_after_preflop','potheight_after_flop','to_call','equity_flop','decision','num_active_players','num_active_players_before_me','feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8','feat_9','feat_10','feat_11','feat_12','feat_13','feat_14']
 # Load data
 df = pd.read_csv('csv_s/riverModel.csv', sep=';')
 X = df[inputs].values

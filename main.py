@@ -1529,8 +1529,6 @@ class AppDelegate(NSObject):
                 with self.dec_lock:
                     decision = self.decision
                 if decision == "None_yet":
-                    print("debug - decision still None_yet after waiting, now making flop decision ...")
-                    time.sleep(0.75)
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
                         if self.decision == "None_yet":
@@ -1553,8 +1551,6 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.75)
-                        print("I was here river dec making 3")
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
                             decision = self.decision
@@ -1713,7 +1709,6 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.75)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1730,7 +1725,6 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1747,7 +1741,6 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -1764,7 +1757,6 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         decision = self.decision
                     if decision == "None_yet":
-                        time.sleep(0.5)
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
                             decision = self.decision
@@ -2274,8 +2266,6 @@ class AppDelegate(NSObject):
             except Exception as e:
                 print(f"Exception in makeDecision: {e}")
                 exit()
-            print("debug I was here 21")
-            time.sleep(0.5)
 
             with self.dec_lock:
                 self_dec = self.decision
