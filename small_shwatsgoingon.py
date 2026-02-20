@@ -1436,7 +1436,7 @@ if __name__ == "__main__":
                 print("found one ! "+str(pth))
             # time.sleep(0.1)
     print("done with all images !")
-    print("filenames with own money reading of -1: \n"+str(filenames))
+    print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
     # print(path)
     # simulate_gss()
 
