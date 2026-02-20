@@ -124,11 +124,13 @@ def count_before_me(dealer_pos, holders_pos):
 
 class AppDelegate(NSObject):
 
-    big_blind = "200"
+    
+    
     evaluator = Evaluator()
     
     confidence_lock = Lock()
     confidence = 3.0
+    big_blind = "200"
 
 
 
@@ -224,19 +226,28 @@ class AppDelegate(NSObject):
 
     def setValuesOurTurn_(self, current_im):
         with self.our_turn_lock:
-            self.holders_pos = check_holders(current_im)
+            h_pos_current = check_holders(current_im)
+            if self.holders_pos != h_pos_current:
+                self.holders_pos = h_pos_current
             # print("holders set ...")
-            self.num_active_players = count_holders(self.holders_pos)
+            holder_current = count_holders(self.holders_pos)
+            if self.num_active_players != holder_current:
+                self.num_active_players = holder_current
             # print("num_active_players set ...")
             with self.d_lock:
-                self.num_active_players_before_me = count_before_me(self.d_position, self.holders_pos)
+                num_a_b_me_current = count_before_me(self.d_position, self.holders_pos)
+                if self.num_active_players_before_me != num_a_b_me_current:
+                    self.num_active_players_before_me = num_a_b_me_current
+                return
             # current_im.save(f"active_hodlers/holders_{self.num_active_players}_{self.num_active_players_before_me}_{str(time.time()).split('.')[0]}.png") # remove later
             # print("num_active_players_before_me set .") 
         # print("done with setValuesOurTurn .")
 
     def changeStateMonteCaro(self):
         with self.mk_comte_carlo_decision_lock:
-            self.probability_1_1 = -1
+            if self.probability_1_1 != -1:
+                self.probability_1_1 = -1
+            return
 
     def updateOwnMoney_(self, current_im = None): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
         # print("setting own money ...")
@@ -245,7 +256,8 @@ class AppDelegate(NSObject):
             print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None:
                 with self.lock:
-                    self.own_money = own_money_current                    
+                    if self.own_money != own_money_current:
+                        self.own_money = own_money_current                    
                 with self.valset_lock:
                     if not self.values_set:
                         self.values_set = True                    
@@ -259,25 +271,31 @@ class AppDelegate(NSObject):
     def applicationDidFinishLaunching_(self, aNotification):
         if prod:
             NSThread.detachNewThreadSelector_toTarget_withObject_("startSong:", self, "hello")
+        return
 
     def sayHello_(self, sender):
         print("Hello again, World!")
+        return
 
     def hide_(self, sender):
         print("Hiding buttons ...")
         if self.hello is not None:
             self.hello.setHidden_(True)
         sender.setHidden_(True)
+        return
 
     def dropdownSelectionChanged_(self, sender):
         selected_index = sender.indexOfSelectedItem()
         selected_value = sender.objectValueOfSelectedItem()
         print(f"Dropdown selection changed: index={selected_index}, value='{selected_value}'")
         if selected_value in ["200", "500"]:
-            self.big_blind = selected_value
+            with self.confidence_lock:
+                if self.big_blind != selected_value:
+                    self.big_blind = selected_value
             if self.bb_info is not None:
                 self.bb_info.setStringValue_(f"Big Blind: {self.big_blind}")
             # bb_info.setNeedsDisplay_(True)
+            return
         else:
             # sender.deselectItemAtIndex_(selected_index)
             sender.setStringValue_(self.big_blind)
@@ -285,11 +303,13 @@ class AppDelegate(NSObject):
             # sender.setStringValue_(big_blind)
             # sender.setNeedsDisplay_(True)
             print(f"Invalid selection. Reverting to previous big blind: '{self.big_blind}'")
+            return
 
     def startSong_(self, sender):
         # self.performSelectorOnMainThread_withObject_waitUntilDone_("seeIfThisPrints:", None, False)
         playsound('acoustic.mp3')
         # self.performSelectorOnMainThread_withObject_waitUntilDone_("didFinish:", None, False)
+        return
 
     def updatePlayerData(self):
         return
@@ -348,7 +368,9 @@ class AppDelegate(NSObject):
                 if not self.set_munna_initially():
                     time.sleep(0.35)
                     if not self.set_munna_initially():
-                        exit("could not read own money at start of game")                     
+                        exit("could not read own money at start of game")       
+        pyautogui.click(x=1183, y=759)   
+        return           
 
 
 
@@ -406,6 +428,7 @@ class AppDelegate(NSObject):
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
         print("game screenshot timer started")
+        return
 
 
     # def gSSOtherThread_(self, userInfo):
@@ -484,12 +507,13 @@ class AppDelegate(NSObject):
         print("doCalculation_ called ...")
 
 
-        with self.cards_lock:
+        with self.own_cards_lock:
             hero_cards=[self.own_card_left, self.own_card_right]
         
         board_cards = boardCards
         with self.mk_comte_carlo_decision_lock:
-            self.probability_1_1 = -1  
+            if self.probability_1_1 != -1:
+                self.probability_1_1 = -1  
 
         # try:
         #     board_cards.remove("nn")
@@ -499,7 +523,6 @@ class AppDelegate(NSObject):
         if "nn" in board_cards:
             print("not enough board cards read for monte carlo, exiting, something went wrong ...")
             with self.mk_comte_carlo_decision_lock:
-                self.probability_1_1 = -1
                 exit()         
 
         monte_caro = exact_win_probability(hero_cards=hero_cards, board_cards=board_cards)
@@ -573,6 +596,7 @@ class AppDelegate(NSObject):
                                                 self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
                                                 self.flop_features[29], self.flop_features[30], self.flop_features[31]]
                         self.flop_model_inputs.append(flop_model_input)
+                        return
 
 
     def mkFlopModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
@@ -650,6 +674,7 @@ class AppDelegate(NSObject):
                                             self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]
                                             ]
                     self.river_model_inputs.append(river_model_input)
+                    return
 
     
     def mkRiverModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
@@ -719,6 +744,7 @@ class AppDelegate(NSObject):
                                             self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
                                             ]
                     self.turn_model_inputs.append(turn_model_input)
+                    return
 
 
     def mkTurnModelInputs_(self, decs): # decs could be [0.0, 0.25, 0.5, 0.75, 1.0, 2.0] (check possible) or [0.0, 1.0, 2.0] (when someone bet before me)
@@ -740,7 +766,11 @@ class AppDelegate(NSObject):
     def mkModelOutput(self): # #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
         print("mkModelOutput called ...")
         with self.mod_writing_lock:
-            self.made_model_output = True
+            if not self.made_model_output:
+                self.made_model_output = True
+            else:
+                print("model output already made, exiting ...")
+                exit()
             with self.lock:    
                 diff = self.own_money - self.own_money_before_last_preflop
                 if diff >= 60.0 :
@@ -787,7 +817,11 @@ class AppDelegate(NSObject):
     def mkModelOutputAllInHandled(self): #read , compare new and old money here (after reading cards) , write down win or lose for ai-models
         print("I think we just lost")
         with self.mod_writing_lock:
-            self.made_model_output   = True
+            if not self.made_model_output:
+                self.made_model_output = True
+            else:
+                print("model output already made (all-in), exiting ...")
+                exit()
             with self.lock:
                 self.model_output = -self.own_money_before_last_preflop/30.0
                 return
@@ -817,6 +851,7 @@ class AppDelegate(NSObject):
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
                             writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), self.model_output])                 
+            return
 
 
     def foldErase(self): # when folding, erase model inputs for that hand, since they are not useful for training 
@@ -832,20 +867,29 @@ class AppDelegate(NSObject):
                 self.flop_model_inputs = []                
             # self.made_model_output = False   
             # self.wrote_to_csv_s = False
+            return
 
 
     def resetValues(self): # preflop after reading cards ( when it's definitely new round )
         with self.potheight_lock:
-            self.potheight_after_preflop = -1
-            self.potheight_after_flop = -1   
-            self.potheight_after_river = -1         
+            if self.potheight != -1:
+                self.potheight = -1
+            if self.potheight_after_preflop != -1:
+                self.potheight_after_preflop = -1
+            if self.potheight_after_flop != -1:
+                self.potheight_after_flop = -1   
+            if self.potheight_after_river != -1:
+                self.potheight_after_river = -1         
         with self.mk_comte_carlo_decision_lock:
-            self.probability_1_1 = -1
-            self.equity_flop = -1
-            self.equity_river = -1
-            self.flop_features = np.zeros(32)
-            self.river_features = np.zeros(14)
-            self.turn_features = np.zeros(15)
+            if self.probability_1_1 != -1:
+                self.probability_1_1 = -1
+            if self.equity_flop != -1:
+                self.equity_flop = -1
+            if self.equity_river != -1:
+                self.equity_river = -1
+            # self.flop_features = np.zeros(32)
+            # self.river_features = np.zeros(14)
+            # self.turn_features = np.zeros(15)
         with self.mod_writing_lock:
             if self.made_turn_model_input:
                 self.made_turn_model_input = False 
@@ -856,20 +900,31 @@ class AppDelegate(NSObject):
             if self.made_flop_model_input:
                 self.made_flop_model_input = False 
                 self.flop_model_inputs = []                
-            self.made_model_output = False   
-            self.wrote_to_csv_s = False  
+            if self.made_model_output:
+                self.made_model_output = False   
+            if self.wrote_to_csv_s:
+                self.wrote_to_csv_s = False  
         with self.cards_lock:
             if self.cards_open:
-                self.cards_open = False            
-            self.deck_card_1 = "nn"
-            self.deck_card_2 = "nn"
-            self.deck_card_3 = "nn"
-            self.deck_card_4 = "nn"
-            self.deck_card_5 = "nn"    
+                if self.cards_open:
+                    self.cards_open = False       
+            if self.deck_card_1 != "nn":
+                self.deck_card_1 = "nn"
+            if self.deck_card_2 != "nn":
+                self.deck_card_2 = "nn"    
+            if self.deck_card_3 != "nn":
+                self.deck_card_3 = "nn"
+            if self.deck_card_4 != "nn":
+                self.deck_card_4 = "nn"
+            if self.deck_card_5 != "nn":
+                self.deck_card_5 = "nn"    
         with self.lock:
             self.own_money_before_last_preflop = self.own_money       
         with self.confidence_lock:
-            self.confidence = self.slider.doubleValue()
+            slider_val = self.slider.doubleValue()
+            if self.confidence != slider_val:
+                self.confidence = slider_val
+            return
         
 
     def makeAIDecision_(self, outputs): # make decision based on model outputs
@@ -879,7 +934,7 @@ class AppDelegate(NSObject):
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
         for i in range(len(outputs)):
-            outputs[i] = outputs[i] + (0.03575 * confidence) 
+            outputs[i] = outputs[i] + (0.04575 * confidence) 
         if len(outputs) == 2:
             call_equity = outputs[0]
             bet_equity = outputs[1]
@@ -938,25 +993,26 @@ class AppDelegate(NSObject):
             if random.randrange(2) == 0:
                 print("random decision mode")
                 with self.mk_comte_carlo_decision_lock:
-                    if self.probability_1_1 > 0.95:
-                        with self.confidence_lock:
-                            self.confidence += 4.5
+                    p_1_1 = self.probability_1_1
+                if p_1_1 > 0.95:
+                    with self.confidence_lock:
+                        self.confidence += 4.5
                         return "5raise5"
-                    if self.probability_1_1 > 0.85:
-                        with self.confidence_lock:
-                            self.confidence += 3.5
+                if p_1_1 > 0.85:
+                    with self.confidence_lock:
+                        self.confidence += 3.5
                         return "4raise4"
-                    if self.probability_1_1 > 0.75:
-                        with self.confidence_lock:
-                            self.confidence += 2.5
+                if p_1_1 > 0.75:
+                    with self.confidence_lock:
+                        self.confidence += 2.5
                         return "3raise3"
-                    if self.probability_1_1 > 0.65:
-                        with self.confidence_lock:
-                            self.confidence += 1.5
+                if p_1_1 > 0.65:
+                    with self.confidence_lock:
+                        self.confidence += 1.5
                         return "2raise2"
-                    if self.probability_1_1 > 0.55:
-                        with self.confidence_lock:
-                            self.confidence += 0.5
+                if p_1_1 > 0.55:
+                    with self.confidence_lock:
+                        self.confidence += 0.5
                         return "raise1"
                 if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
@@ -1228,10 +1284,10 @@ class AppDelegate(NSObject):
             except Exception as e:
                 print(e)
                 exit(1)
-            print("debug - extracted flop features: "+str(self.flop_features))
+            # print("debug - extracted flop features: "+str(self.flop_features))
             self.equity_flop = flop_equity_model_predict(self.flop_features)
             self.probability_1_1 = self.equity_flop
-            print("debug - calculated flop equity: "+str(self.equity_flop))
+            # print("debug - calculated flop equity: "+str(self.equity_flop))
 
 
     def makeDecisionFlop(self):
@@ -1273,37 +1329,37 @@ class AppDelegate(NSObject):
                     self.confidence += 0.7                              
             if self.equity_flop > 0.85: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7               
+                    self.confidence += 0.725               
             if self.equity_flop > 0.86: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7             
+                    self.confidence += 0.8             
             if self.equity_flop > 0.875: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                                                    
+                    self.confidence += 0.8                                                    
             if self.equity_flop > 0.9: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7    
+                    self.confidence += 0.8    
             if self.equity_flop > 0.91: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                       
+                    self.confidence += 0.8                       
             if self.equity_flop > 0.92: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                       
+                    self.confidence += 0.9                       
             if self.equity_flop > 0.93: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                       
+                    self.confidence += 1.0                       
             if self.equity_flop > 0.94: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                               
+                    self.confidence += 1.1                               
             if self.equity_flop > 0.95: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                                      
+                    self.confidence += 1.2                                      
             if self.equity_flop > 0.96: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7             
+                    self.confidence += 1.3             
             if self.equity_flop > 0.97: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
-                    self.confidence += 0.7                  
+                    self.confidence += 1.7                  
             if self.equity_flop > 0.98: # need to adjust confidence, while still learning ...
                 with self.confidence_lock:
                     self.confidence += 1.7      
@@ -1320,9 +1376,9 @@ class AppDelegate(NSObject):
             with self.confidence_lock:
                 self.confidence += 1.2
                 if to_call > 5.0:
-                    self.confidence += 1.5    
+                    self.confidence += 2.5    
                 elif decision.startswith("4") or decision.startswith("5"):
-                    self.confidence += 1.5                                    
+                    self.confidence += 2.5                                    
         return decision 
         decision = "fold"
         if set_1_1 > 0.89:
@@ -1428,11 +1484,11 @@ class AppDelegate(NSObject):
             
         if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
-                self.confidence += 1.2
+                self.confidence += 2.6
                 if to_call > 5.0:
-                    self.confidence += 1.5
+                    self.confidence += 8.5
                 elif decision.startswith("4") or decision.startswith("5"):
-                    self.confidence += 0.5                    
+                    self.confidence += 8.5                    
         return decision 
     
 
