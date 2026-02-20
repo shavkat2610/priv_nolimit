@@ -1018,7 +1018,7 @@ class AppDelegate(NSObject):
         rigth_above = own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")
         if left_above and rigth_above:
             print("debug : both seven or above")
-            if to_call <= 2.5:
+            if to_call <= 3.5:
                 decision = "call"
             if own_card_left[0] == own_card_right[0]: # suited
                 print("debug : suited")
