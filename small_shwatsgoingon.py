@@ -887,8 +887,9 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
     if read_3 > 1.35 and read_3 < 1.67:   
         return {"result": read_3, "im": im}
     print("both methods do not agree enough, returning 0.001 for now, saving image for tesseract training")
-    im.save(f"tesseract_training/gss/manual_{str(result)}_{str(time.time())[:12].replace('.', '_')}.png")
-    im2.save(f"tesseract_training/raw_data/n_{str(read_3)}_{str(result)}_{str(time.time())[:12].replace('.', '_')}.png")
+    id_ = str(time.time())[:10]
+    im.save(f"tesseract_training/gss/n_{str(read_3)}_{str(result)}_{id_}.png")
+    im2.save(f"tesseract_training/raw_data/n_{str(read_3)}_{str(result)}_{id_}.png")
     return {"result": 0.001, "im": im}
 
 
