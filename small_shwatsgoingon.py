@@ -1138,7 +1138,9 @@ def general_whats_going_on_model(im = None):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=9.6:
+    if (prob/(sec_prob+0.01))<=7.6:
+        global filenames
+        filenames.append(im.filename)
         # print(str(model_output))
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
@@ -1412,7 +1414,7 @@ def simulate_gss(im=None):
         # print("no red buttons ...")
 
 
-
+filenames = []
 
 
 import glob
@@ -1433,8 +1435,8 @@ if __name__ == "__main__":
             if simulate_gss(im=im):
                 print("found one ! "+str(pth))
             # time.sleep(0.1)
-    # print("done with all images !")
-    # print("filenames with own money reading of -1: \n"+str(filenames))
+    print("done with all images !")
+    print("filenames with own money reading of -1: \n"+str(filenames))
     # print(path)
     # simulate_gss()
 
