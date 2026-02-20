@@ -1006,11 +1006,14 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
             to_call = self.to_call
+        decision = "fold" 
+        if to_call <= 2.5:
+            decision = "call"
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right
+        
         print('own cards in preflop: '+own_card_left+" "+own_card_right)
-        decision = "fold" 
         left_above = own_card_left.startswith("A") or own_card_left.startswith("K") or own_card_left.startswith("Q") or own_card_left.startswith("J") or own_card_left.startswith("T") or own_card_left.startswith("9") or own_card_left.startswith("8") or own_card_left.startswith("7")
         rigth_above = own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")
         if left_above and rigth_above:
