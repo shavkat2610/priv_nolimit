@@ -1138,7 +1138,7 @@ def general_whats_going_on_model(im = None):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=4.6:
+    if (prob/(sec_prob+0.01))<=7.6:
         global filenames
         filenames.append(im.filename)
         # print(str(model_output))
