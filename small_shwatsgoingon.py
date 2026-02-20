@@ -521,8 +521,10 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
 def check_if_included(new_img_array, existing_arrays, debug = False):
     for arr in existing_arrays:
         if np.array_equal(new_img_array, arr):
+            print("check_if_included found an exact match")
             return True
         elif compare_num(new_img_array, arr, debug=debug):
+            print("check_if_included found a match by compare_num")
             return True
     return False            
 
@@ -542,6 +544,8 @@ def read_total_pot_money_manually(im = None):
         im2 = crop_wh(im1, i_i+69, 16, 60, 10) 
         im2.save(f"tesseract_training/raw_data/over_100_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
+    
+
     
     im2 = crop_wh(im1, i_i+69, 16, 6, 10) # first digit
     pixels = im2.load() # create the pixel map
@@ -883,7 +887,7 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
     if read_3 > 1.35 and read_3 < 1.67:   
         return {"result": read_3, "im": im}
     print("both methods do not agree enough, returning 0.001 for now, saving image for tesseract training")
-
+    im.save(f"tesseract_training/gss/manual_{str(result)}_{str(time.time())[:12].replace('.', '_')}.png")
     im2.save(f"tesseract_training/raw_data/n_{str(read_3)}_{str(result)}_{str(time.time())[:12].replace('.', '_')}.png")
     return {"result": 0.001, "im": im}
 
@@ -1346,7 +1350,7 @@ def simulate_gss(im=None):
     # handle_all_in(im=im):
 
     # read_total_pot_money(im=im)
-    # read_total_pot_money_manually(im=im)
+    read_total_pot_money_manually(im=im)
     # read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
@@ -1359,7 +1363,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    print(general_whats_going_on_model(im))
+    # print(general_whats_going_on_model(im))
 
     return False
 
@@ -1422,23 +1426,23 @@ import glob
 if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
-    load_smol_watsgoingon_model()
-    # prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    # load_smol_watsgoingon_model()
+    prepare_pot_digits()
+    # path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
-    for pth in path :
-        if pth.endswith(".png"):
-            im = Image.open(pth)
-            # tess_read(im=im)
-            # im = Image.open("gsss/game_screenshot1764690404.png")
-            if simulate_gss(im=im):
-                print("found one ! "+str(pth))
+    # for pth in path :
+    #     if pth.endswith(".png"):
+    #         im = Image.open(pth)
+    #         # tess_read(im=im)
+    #         # im = Image.open("gsss/game_screenshot1764690404.png")
+    #         if simulate_gss(im=im):
+    #             print("found one ! "+str(pth))
             # time.sleep(0.1)
     print("done with all images !")
     print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
     # print(path)
-    # simulate_gss()
+    simulate_gss()
 
     # load_flop_equity_model()
     # print("start")
