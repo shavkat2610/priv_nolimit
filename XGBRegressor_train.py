@@ -209,12 +209,12 @@ if __name__ == "__main__":
     # print("Predicted equity:", equity)    
     # exit()
     
-    # model = train_xgb()
+    model = train_xgb()
     # features = extract_flop_features(hole, flop)
     # equity = model.predict([features])[0]
     # print("Predicted flop equity:", round(equity, 7))
 
-    # dump(model, "flop_equity_xgb_1.joblib")    
+    dump(model, "flop_equity_xgb_1.joblib")    
 
     xgb_loaded = load("flop_equity_xgb_1.joblib")
 
