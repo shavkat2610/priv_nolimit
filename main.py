@@ -1460,16 +1460,16 @@ class AppDelegate(NSObject):
                 self.confidence += 1.7              
         if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.7               
+                self.confidence += 3.7               
         if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.7   
+                self.confidence += 5.7   
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 3.5       
+                self.confidence += 6.7       
         if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 4.5                        
+                self.confidence += 8.9                        
         if to_call > 0.0:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([1.0, 2.0]))
         else:
