@@ -1428,7 +1428,7 @@ import glob
 if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
-    # load_smol_watsgoingon_model()
+    load_smol_watsgoingon_model()
     # prepare_pot_digits()
     path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
@@ -1444,7 +1444,7 @@ if __name__ == "__main__":
     print("done with all images !")
     print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
     # print(path)
-    simulate_gss()
+    # simulate_gss()
 
     # load_flop_equity_model()
     # print("start")
