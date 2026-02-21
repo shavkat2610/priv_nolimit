@@ -1125,7 +1125,7 @@ def load_smol_watsgoingon_model():
 
 
 
-def general_whats_going_on_model(im = None):
+def general_whats_going_on_model(im = None, debug = False):
     if im == None:
         im = game_screenshot()
     nim = im.convert("RGB")
@@ -1144,8 +1144,9 @@ def general_whats_going_on_model(im = None):
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
     if (prob/(sec_prob+0.01))<=9.6:
-        global filenames
-        filenames.append(im.filename)
+        if debug:
+            global filenames
+            filenames.append(im.filename)
         # print(str(model_output))
         print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
         secs = time.time()
@@ -1364,7 +1365,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    # print(general_whats_going_on_model(im))
+    # print(general_whats_going_on_model(im=im, debug=True))
 
     return False
 
