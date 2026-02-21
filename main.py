@@ -1513,13 +1513,13 @@ class AppDelegate(NSObject):
                 self.confidence += 2.5                
         if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 2.78                
+                self.confidence += 4.78                
         if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 3.5       
+                self.confidence += 7.5       
         if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 3.5                 
+                self.confidence += 13.5                 
         return self.makeAIDecision_(outputs)
     
 
