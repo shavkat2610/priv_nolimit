@@ -2564,21 +2564,21 @@ class AppDelegate(NSObject):
                         with self.potheight_lock: # regularly 
                             self.potheight = result["result"]
                             print("debug potheight set to: "+str(self.potheight))
-                # if current_game_stage != "no_decision_to_be_made" and current_game_stage != "connectivity_issues" and game_stage != "connectivity_issues": 
-                #     time.sleep(0.375)
-                #     with self.valset_lock:
-                #         need_set = False
-                #         if not self.values_set: # own money value not set after it changed 
-                #             need_set = True
-                #     if need_set:
-                #         if not self.updateOwnMoney_(current_im=None):
-                #             time.sleep(0.25)
-                #             if not self.updateOwnMoney_(current_im=None):
-                #                 time.sleep(0.25)
-                #                 if not self.updateOwnMoney_(current_im=None):
-                #                     time.sleep(0.25)
-                #                     self.updateOwnMoney_(current_im=None)
-                            # print("\nread own money failed gss ... \n")    
+            if game_stage != "no_decision_to_be_made" and game_stage != "connectivity_issues": 
+                time.sleep(0.375)
+                with self.valset_lock:
+                    need_set = False
+                    if not self.values_set: # own money value not set after it changed 
+                        need_set = True
+                if need_set:
+                    if not self.updateOwnMoney_(current_im=None):
+                        time.sleep(0.74)
+                        if not self.updateOwnMoney_(current_im=None):
+                            time.sleep(0.74)
+                            if not self.updateOwnMoney_(current_im=None):
+                                time.sleep(0.74)
+                                if not self.updateOwnMoney_(current_im=None):
+                                    print("\nread own money failed gss ... \n")                   
 
             with self.acting_lock:
                 self.time_to_act = False  

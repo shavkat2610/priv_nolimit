@@ -1218,7 +1218,7 @@ def handle_all_in(im = None):
                 pyautogui.moveTo(576, 420, duration=0.3)
                 time.sleep(0.5)
                 pyautogui.click(576, 420) # hehe :D
-                print("\nclick open fourth ...")
+                print("\nclick open fifth ...")
                 return False
             else:
                 # im0 = crop_wh(im, 320, 420, 100, 100)
