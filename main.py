@@ -1073,22 +1073,33 @@ class AppDelegate(NSObject):
             if own_card_left[0] == own_card_right[0]: # suited
                 print("debug : suited")
                 if own_card_left.startswith("A") and own_card_right.startswith("A"):
-                    decision = "3raise3"
+                    if pot_height <= 35.0:
+                        if to_call <= 8.0: 
+                            decision = "3raise3"          
+                        elif to_call <= 20.0: 
+                            decision = "raise1"  
+                        else:
+                            decision = "call"
                 elif own_card_left.startswith("K") and own_card_right.startswith("K"):
-                    if to_call <= 6.0: 
-                        print("debug : both K")
-                        decision = "3raise3"          
-                    elif to_call <= 20.0: 
-                        decision = "raise1"  
-                    elif to_call <= 35.0:
-                        decision = "call"                  
-                elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
-                    if to_call <= 1.5:
-                        decision = "3raise3"
-                    elif to_call <= 8.0: 
-                        decision = "2raise2"
+                    if pot_height <= 35.0:
+                        if to_call <= 6.0: 
+                            decision = "3raise3"          
+                        elif to_call <= 20.0: 
+                            decision = "raise1"  
+                        else:
+                            decision = "call"     
                     else:
-                        decision = "call" 
+                        decision = "call"             
+                elif own_card_left.startswith("Q") and own_card_right.startswith("Q"):
+                    if pot_height <= 35.0:
+                        if to_call <= 1.5:
+                            decision = "3raise3"
+                        elif to_call <= 8.0: 
+                            decision = "2raise2"
+                        else:
+                            decision = "call" 
+                    else:
+                        decision = "call"           
                 elif own_card_left.startswith("J") and own_card_right.startswith("J"):
                     if to_call <= 5.7:
                         decision = "raise1"      
