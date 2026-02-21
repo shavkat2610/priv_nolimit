@@ -946,7 +946,7 @@ class AppDelegate(NSObject):
                         print("this scenario is very unlikely but ok")
                         return "raise1"
                     else:
-                        if call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
+                        if call_equity > -0.15 or bet_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
                             print("call equity decent enough to call")
                             return "call"
                         else:
