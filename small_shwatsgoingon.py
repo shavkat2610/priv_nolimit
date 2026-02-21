@@ -1143,7 +1143,7 @@ def general_whats_going_on_model(im = None, debug = False):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
-    if (prob/(sec_prob+0.01))<=9.6:
+    if (prob/(sec_prob+0.01))<=7.6:
         if debug:
             global filenames
             filenames.append(im.filename)
@@ -1352,7 +1352,7 @@ def simulate_gss(im=None):
     # handle_all_in(im=im):
 
     # read_total_pot_money(im=im)
-    read_total_pot_money_manually(im=im)
+    # read_total_pot_money_manually(im=im)
     # read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
@@ -1365,7 +1365,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    # print(general_whats_going_on_model(im=im, debug=True))
+    print(general_whats_going_on_model(im=im, debug=True))
 
     return False
 
@@ -1429,17 +1429,17 @@ if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
-    prepare_pot_digits()
-    # path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    # prepare_pot_digits()
+    path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
-    # for pth in path :
-    #     if pth.endswith(".png"):
-    #         im = Image.open(pth)
-    #         # tess_read(im=im)
-    #         # im = Image.open("gsss/game_screenshot1764690404.png")
-    #         if simulate_gss(im=im):
-    #             print("found one ! "+str(pth))
+    for pth in path :
+        if pth.endswith(".png"):
+            im = Image.open(pth)
+            # tess_read(im=im)
+            # im = Image.open("gsss/game_screenshot1764690404.png")
+            if simulate_gss(im=im):
+                print("found one ! "+str(pth))
             # time.sleep(0.1)
     print("done with all images !")
     print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))

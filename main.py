@@ -2034,6 +2034,8 @@ class AppDelegate(NSObject):
                     
             
             elif game_stage == "river":
+                if self.number_of_the_universe%27==0:
+                    current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
                 print("river")
                 if current_game_stage != "river":
                     with self.own_cards_lock:
@@ -2106,6 +2108,8 @@ class AppDelegate(NSObject):
 
 
             elif game_stage == "turn":
+                if self.number_of_the_universe%18==0:
+                    current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
                 if current_game_stage != "turn":
                     with self.own_cards_lock:
                         if self.own_card_left == "nn" or self.own_card_right == "nn":
@@ -2551,14 +2555,8 @@ class AppDelegate(NSObject):
                         #     if not self.updateOwnMoney_(current_im=None):
                         #         print("\nread own money failed after clicking ... 20\n")                                                 
                 else: # no red button to push
-                    with self.valset_lock:
-                        self.number_of_the_universe += 1
-                    try:
-                        result = read_total_pot_money(current_im)
-                    except Exception as e:
-                        print("exiting here 27")
-                        print(e)
-                        exit()
+                    
+                    result = read_total_pot_money(current_im)
                 
                     if result["result"] > 0.1:
                         with self.potheight_lock: # regularly 
@@ -2580,6 +2578,8 @@ class AppDelegate(NSObject):
                                 if not self.updateOwnMoney_(current_im=None):
                                     print("\nread own money failed gss ... \n")                   
 
+            with self.valset_lock:
+                self.number_of_the_universe += 1
             with self.acting_lock:
                 self.time_to_act = False  
             # pyautogui.moveTo(15, 55)     
