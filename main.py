@@ -1835,354 +1835,325 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
-        with self.acting_lock:
-            if self.time_to_act:
-                print("time_to_act active during game screenshot 24")
-                return
-            else:
-                self.time_to_act = True
 
-        # with self.lock2:
-        #     if self.busy_ticking:
-        #         print("busy ticking")
-        #         return # already in tick, reading player info
-
-        self.mutex_screenshot.acquire()
         try:
-            self.im = game_screenshot(save=False)
-        except Exception as e:
-            print(e)
-            self.mutex_screenshot.release()
-            with self.acting_lock:
-                self.time_to_act = False
-            return
-        current_im = self.im
-        self.mutex_screenshot.release()
-        
 
-        with self.lock:
-            own_money = self.own_money
-        if own_money == -1: # todo: save images when clicking for debugging
-            print("\n all in ... \n")
-            with self.valset_lock: # reset own money please
-                self.values_set = False
-            if handle_all_in(current_im):
-                print("ALL IN HANDLED NICELY")
-                self.mkModelOutputAllInHandled()
-                self.writeToCSVs()
-                time.sleep(4) # write loss to model here
-                get_up_stand_up()
-                pyautogui.click(x=1183, y=759)    
-            with self.cards_lock:
-                if self.cards_open:
-                    self.cards_open = False
-            with self.game_stage_lock:     
-                if self.game_stage_current != "no_decision_to_be_made":
-                    # print("no decision to be made")
-                    self.game_stage_current = "no_decision_to_be_made"
-            secs = time.time()
-            # current_im.save(f"shmol_model_not_sure/all_in/all_in_{str(secs).split(".")[0]}.png")
-            time.sleep(0.25)
-            if not self.updateOwnMoney_(current_im=None):
-                time.sleep(0.35)
+
+            with self.acting_lock:
+                if self.time_to_act:
+                    print("time_to_act active during game screenshot 24")
+                    return
+                else:
+                    self.time_to_act = True
+
+            # with self.lock2:
+            #     if self.busy_ticking:
+            #         print("busy ticking")
+            #         return # already in tick, reading player info
+
+            self.mutex_screenshot.acquire()
+            try:
+                self.im = game_screenshot(save=False)
+            except Exception as e:
+                print(e)
+                self.mutex_screenshot.release()
+                with self.acting_lock:
+                    self.time_to_act = False
+                return
+            current_im = self.im
+            self.mutex_screenshot.release()
+            
+
+            with self.lock:
+                own_money = self.own_money
+            if own_money == -1: # todo: save images when clicking for debugging
+                print("\n all in ... \n")
+                with self.valset_lock: # reset own money please
+                    self.values_set = False
+                if handle_all_in(current_im):
+                    print("ALL IN HANDLED NICELY")
+                    self.mkModelOutputAllInHandled()
+                    self.writeToCSVs()
+                    time.sleep(4) # write loss to model here
+                    get_up_stand_up()
+                    pyautogui.click(x=1183, y=759)    
+                with self.cards_lock:
+                    if self.cards_open:
+                        self.cards_open = False
+                with self.game_stage_lock:     
+                    if self.game_stage_current != "no_decision_to_be_made":
+                        # print("no decision to be made")
+                        self.game_stage_current = "no_decision_to_be_made"
+                secs = time.time()
+                # current_im.save(f"shmol_model_not_sure/all_in/all_in_{str(secs).split(".")[0]}.png")
+                time.sleep(0.25)
                 if not self.updateOwnMoney_(current_im=None):
                     time.sleep(0.35)
                     if not self.updateOwnMoney_(current_im=None):
                         time.sleep(0.35)
                         if not self.updateOwnMoney_(current_im=None):
-                            print("\nread own money failed at all in\n")        
-            with self.acting_lock:
-                self.time_to_act = False
-                return
-        
+                            time.sleep(0.35)
+                            if not self.updateOwnMoney_(current_im=None):
+                                print("\nread own money failed at all in\n")        
+                with self.acting_lock:
+                    self.time_to_act = False
+                    return
+            
 
-        game_stage = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
-        with self.game_stage_lock:
-            current_game_stage = self.game_stage_current
+            game_stage = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
+            with self.game_stage_lock:
+                current_game_stage = self.game_stage_current
 
 
-        if game_stage == "flop":
-            if self.number_of_the_universe%52==0:
-                current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
-            with self.cards_lock:
-                self.cards_open = False
-            if current_game_stage != "flop":
-                with self.own_cards_lock:
-                    if self.own_card_left == "nn" or self.own_card_right == "nn":
-                        print("model said flop, but own cards not read, exiting out of gameScreenshot_")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                                                 
-                            current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
-                            exit()                
-                if current_game_stage != "preflop" and current_game_stage != "connectivity_issues":
-                    print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
-                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
-                    print("exiting")
-                    exit()
-                with self.potheight_lock:
-                    self.potheight_after_preflop = self.potheight
-                with self.game_stage_lock:
-                    self.game_stage_current = "flop"
-                secs = time.time()
-                # current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
-                try:
-                    with self.cards_lock:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
-                except Exception as e:
-                    print(e)
-                    time.sleep(0.75)
+            if game_stage == "flop":
+                print("flop")
+                if self.number_of_the_universe%52==0:
+                    current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
+                with self.cards_lock:
+                    self.cards_open = False
+                if current_game_stage != "flop":
+                    with self.own_cards_lock:
+                        if self.own_card_left == "nn" or self.own_card_right == "nn":
+                            print("model said flop, but own cards not read, exiting out of gameScreenshot_")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                                                 
+                                current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
+                                exit()                
+                    if current_game_stage != "preflop" and current_game_stage != "connectivity_issues":
+                        print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                        print("exiting")
+                        exit()
+                    with self.potheight_lock:
+                        self.potheight_after_preflop = self.potheight
+                    with self.game_stage_lock:
+                        self.game_stage_current = "flop"
+                    secs = time.time()
+                    # current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                     except Exception as e:
                         print(e)
-                        time.sleep(0.75)                    
+                        time.sleep(0.75)
                         try:
                             with self.cards_lock:
                                 [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
                         except Exception as e:
-                            print(e) 
-                            print("model said flop, but no cards could be read , exiting ... 24")
-                            with self.game_stage_lock:
-                                self.game_stage_current = "no_decision_to_be_made" 
-                            with self.acting_lock:
-                                self.time_to_act = False                                                                                                 
-                                current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
-                                exit()
-                if self.deck_card_4 != "nn":
-                    print("model said flop, but found at least four cards, exiting out of gameScreenshot_")
-                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
-                    exit()
-                    with self.game_stage_lock:
-                        self.game_stage_current = "no_decision_to_be_made" 
-                    with self.acting_lock:
-                        self.time_to_act = False                                                                             
-                        return   
-                self.calculateFlopEquity()     
-                print("flop equity: "+str(self.equity_flop))             
-
-                
-
-        elif game_stage == "no_decision_to_be_made":
-            if self.number_of_the_universe%53==0:
-                current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
-            with self.cards_lock:
-                self.cards_open = False
-            secs = time.time()
-            # self.im.save(f"shmol_new_data/no_decision_to_be_made_{str(secs).split(".")[0]}.png")   
-            with self.game_stage_lock:     
-                if self.game_stage_current != "no_decision_to_be_made":
-                    print("no decision to be made")
-                    self.game_stage_current = "no_decision_to_be_made"
-                # with self.acting_lock:
-                #     self.time_to_act = False
-                #     return
-                
-        
-        elif game_stage == "river":
-            print("river")
-            if current_game_stage != "river":
-                with self.own_cards_lock:
-                    if self.own_card_left == "nn" or self.own_card_right == "nn":
-                        print("model said river, but own cards not read, exiting out of gameScreenshot_")
+                            print(e)
+                            time.sleep(0.75)                    
+                            try:
+                                with self.cards_lock:
+                                    [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                            except Exception as e:
+                                print(e) 
+                                print("model said flop, but no cards could be read , exiting ... 24")
+                                with self.game_stage_lock:
+                                    self.game_stage_current = "no_decision_to_be_made" 
+                                with self.acting_lock:
+                                    self.time_to_act = False                                                                                                 
+                                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                                    exit()
+                    if self.deck_card_4 != "nn":
+                        print("model said flop, but found at least four cards, exiting out of gameScreenshot_")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                        exit()
                         with self.game_stage_lock:
                             self.game_stage_current = "no_decision_to_be_made" 
                         with self.acting_lock:
-                            self.time_to_act = False  
-                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")                                                                         
-                            exit()
-                if current_game_stage != "flop" and current_game_stage != "connectivity_issues":
-                    print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
-                    current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                    print("exiting")
-                    exit()  
-                with self.potheight_lock:
-                    self.potheight_after_flop = self.potheight                          
-                self.changeStateMonteCaro()
-                with self.game_stage_lock:
-                    self.game_stage_current = "river"
+                            self.time_to_act = False                                                                             
+                            return   
+                    self.calculateFlopEquity()     
+                    print("flop equity: "+str(self.equity_flop))             
+
+                    
+
+            elif game_stage == "no_decision_to_be_made":
+                if self.number_of_the_universe%53==0:
+                    current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
                 with self.cards_lock:
                     self.cards_open = False
                 secs = time.time()
-                current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
-                try:
+                # self.im.save(f"shmol_new_data/no_decision_to_be_made_{str(secs).split(".")[0]}.png")   
+                with self.game_stage_lock:     
+                    if self.game_stage_current != "no_decision_to_be_made":
+                        print("no decision to be made")
+                        self.game_stage_current = "no_decision_to_be_made"
+                    # with self.acting_lock:
+                    #     self.time_to_act = False
+                    #     return
+                    
+            
+            elif game_stage == "river":
+                print("river")
+                if current_game_stage != "river":
+                    with self.own_cards_lock:
+                        if self.own_card_left == "nn" or self.own_card_right == "nn":
+                            print("model said river, but own cards not read, exiting out of gameScreenshot_")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False  
+                                current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")                                                                         
+                                exit()
+                    if current_game_stage != "flop" and current_game_stage != "connectivity_issues":
+                        print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                        print("exiting")
+                        exit()  
+                    with self.potheight_lock:
+                        self.potheight_after_flop = self.potheight                          
+                    self.changeStateMonteCaro()
+                    with self.game_stage_lock:
+                        self.game_stage_current = "river"
                     with self.cards_lock:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
-                except Exception as e:
-                    print(e)
-                    time.sleep(0.25)
+                        self.cards_open = False
+                    secs = time.time()
+                    current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
                     except Exception as e:
                         print(e)
-                        time.sleep(0.25)                    
+                        time.sleep(0.25)
                         try:
                             with self.cards_lock:
                                 [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
                         except Exception as e:
-                            print(e) 
-                            print("model said river, but no cards could be read , exiting ... 24")
-                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                            with self.game_stage_lock:
-                                self.game_stage_current = "no_decision_to_be_made" 
-                            with self.acting_lock:
-                                self.time_to_act = False                                                                           
-                                exit()
-                with self.cards_lock:
-                    if self.deck_card_4 == "nn":
-                        print("model said river, but found no four cards, exiting out of gameScreenshot_")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                        exit()
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            exit()
-                    else:
-                        if self.deck_card_5 != "nn":
-                            print("model said river, but is turn, exiting out of gameScreenshot_")
-                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                            with self.game_stage_lock:
-                                self.game_stage_current = "no_decision_to_be_made" 
-                            with self.acting_lock:
-                                self.time_to_act = False                                                                           
-                                exit()
-                    self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
-
-
-        elif game_stage == "turn":
-            if current_game_stage != "turn":
-                with self.own_cards_lock:
-                    if self.own_card_left == "nn" or self.own_card_right == "nn":
-                        print("model said turn, but own cards not read, exiting out of gameScreenshot_")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
-                            exit()
-                if current_game_stage != "river" and current_game_stage != "connectivity_issues":
-                    print("\n \n!!! \nmodel said turn, but game stage was not river before, probably a wrong classification happened\n!!!\n \n")
-                    current_im.save(f"shmol_model_not_sure/exiting_images/turn_after_{current_game_stage}_{str(time.time()).split('.')[0]}.png")
-                    print("exiting")
-                    exit()
-                with self.potheight_lock:
-                    self.potheight_after_river = self.potheight
-                with self.game_stage_lock:
-                    self.game_stage_current = "turn"
-                self.changeStateMonteCaro()
-                print("turn")
-                with self.cards_lock:
-                    self.cards_open = False
-                secs = time.time()
-                current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")     
-                try:
+                            print(e)
+                            time.sleep(0.25)                    
+                            try:
+                                with self.cards_lock:
+                                    [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
+                            except Exception as e:
+                                print(e) 
+                                print("model said river, but no cards could be read , exiting ... 24")
+                                current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                                with self.game_stage_lock:
+                                    self.game_stage_current = "no_decision_to_be_made" 
+                                with self.acting_lock:
+                                    self.time_to_act = False                                                                           
+                                    exit()
                     with self.cards_lock:
-                        [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
-                except Exception as e:
-                    print(e)
-                    time.sleep(0.75)
+                        if self.deck_card_4 == "nn":
+                            print("model said river, but found no four cards, exiting out of gameScreenshot_")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                            exit()
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                           
+                                exit()
+                        else:
+                            if self.deck_card_5 != "nn":
+                                print("model said river, but is turn, exiting out of gameScreenshot_")
+                                current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
+                                with self.game_stage_lock:
+                                    self.game_stage_current = "no_decision_to_be_made" 
+                                with self.acting_lock:
+                                    self.time_to_act = False                                                                           
+                                    exit()
+                        self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
+
+
+            elif game_stage == "turn":
+                if current_game_stage != "turn":
+                    with self.own_cards_lock:
+                        if self.own_card_left == "nn" or self.own_card_right == "nn":
+                            print("model said turn, but own cards not read, exiting out of gameScreenshot_")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                           
+                                current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                                exit()
+                    if current_game_stage != "river" and current_game_stage != "connectivity_issues":
+                        print("\n \n!!! \nmodel said turn, but game stage was not river before, probably a wrong classification happened\n!!!\n \n")
+                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_after_{current_game_stage}_{str(time.time()).split('.')[0]}.png")
+                        print("exiting")
+                        exit()
+                    with self.potheight_lock:
+                        self.potheight_after_river = self.potheight
+                    with self.game_stage_lock:
+                        self.game_stage_current = "turn"
+                    self.changeStateMonteCaro()
+                    print("turn")
+                    with self.cards_lock:
+                        self.cards_open = False
+                    secs = time.time()
+                    current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")     
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
                     except Exception as e:
-                        print(e) 
-                        print("model said turn, but no cards could be read , returning out of gameScreenshot_ ... 24")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
-                                             
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False
-                            return
-                with self.cards_lock:
-                    if self.deck_card_4 == "nn":
-                        print("model said turn, but found no four cards, exiting out of gameScreenshot_")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
-                        exit()                        
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False    
-                            exit()
-                    if self.deck_card_5 == "nn":
-                        print("model said turn, but found no five cards, exiting out of gameScreenshot_")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
-                        exit()              
-                        print("model said turn, but no five cards, returning out of gameScreenshot_")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            exit()
-                    self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
+                        print(e)
+                        time.sleep(0.75)
+                        try:
+                            with self.cards_lock:
+                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
+                        except Exception as e:
+                            print(e) 
+                            print("model said turn, but no cards could be read , returning out of gameScreenshot_ ... 24")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                                                
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False
+                                return
+                    with self.cards_lock:
+                        if self.deck_card_4 == "nn":
+                            print("model said turn, but found no four cards, exiting out of gameScreenshot_")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                            exit()                        
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False    
+                                exit()
+                        if self.deck_card_5 == "nn":
+                            print("model said turn, but found no five cards, exiting out of gameScreenshot_")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
+                            exit()              
+                            print("model said turn, but no five cards, returning out of gameScreenshot_")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made" 
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                           
+                                exit()
+                        self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
 
-        
-        elif game_stage == "preflop":
-            with self.d_lock:
-                if self.misred:
-                    self.d_position = read_D(current_im)
-                    if self.d_position == -1:
-                        self.misred = True
-                    else:
-                        self.misred = False
-            if self.number_of_the_universe%50==0:
-                current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
-            if current_game_stage != "preflop":
-                
-                with self.game_stage_lock:
-                    self.game_stage_current = "preflop"                
-                with self.d_lock: # only once after turn or once every preflop
-                    self.d_position = read_D(current_im)
-                    if self.d_position == -1:
-                        self.misred = True
-                    else:
-                        self.misred = False
-                self.roundswap_(current_im)
-                print("preflop")
-                with self.cards_lock:
-                    if self.cards_open == False:
-                        secs = time.time()
-                        # current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
-                        if check_if_we_holdin_yet(current_im):
-                            print("I was here 9")
-                            try:
-                                [self.own_card_left, self.own_card_right] = read_own_cards()
-                                self.cards_open = True
-                            except Exception as e:
-                                # print(e)
-                                time.sleep(0.25)
-                                try:
-                                    [self.own_card_left, self.own_card_right] = read_own_cards()
-                                    self.cards_open = True
-                                except Exception as e:
-                                    # print(e)
-                                    time.sleep(0.25)                                
-                                    try:
-                                        [self.own_card_left, self.own_card_right] = read_own_cards()
-                                        self.cards_open = True
-                                    except Exception as e:
-                                        # print(e)
-                                        time.sleep(0.25)
-                                        try:
-                                            [self.own_card_left, self.own_card_right] = read_own_cards()
-                                            self.cards_open = True
-                                        except Exception as e:
-                                            print(e)
-                                            print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ...")  
-                                            fish_for_own_cards()   
-                                            with self.game_stage_lock:
-                                                self.game_stage_current = "no_decision_to_be_made" 
-                                            with self.acting_lock:
-                                                self.time_to_act = False                                                                           
-                                                return
+            
+            elif game_stage == "preflop":
+                with self.d_lock:
+                    if self.misred:
+                        self.d_position = read_D(current_im)
+                        if self.d_position == -1:
+                            self.misred = True
                         else:
-                            print("check_if_we_holdin_yet failed, model said preflop ...")
-                            time.sleep(1)
+                            self.misred = False
+                if self.number_of_the_universe%50==0:
+                    current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
+                if current_game_stage != "preflop":
+                    
+                    with self.game_stage_lock:
+                        self.game_stage_current = "preflop"                
+                    with self.d_lock: # only once after turn or once every preflop
+                        self.d_position = read_D(current_im)
+                        if self.d_position == -1:
+                            self.misred = True
+                        else:
+                            self.misred = False
+                    self.roundswap_(current_im)
+                    print("preflop")
+                    with self.cards_lock:
+                        if self.cards_open == False:
+                            secs = time.time()
+                            # current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
                             if check_if_we_holdin_yet(current_im):
+                                print("I was here 9")
                                 try:
                                     [self.own_card_left, self.own_card_right] = read_own_cards()
                                     self.cards_open = True
@@ -2194,343 +2165,380 @@ class AppDelegate(NSObject):
                                         self.cards_open = True
                                     except Exception as e:
                                         # print(e)
+                                        time.sleep(0.25)                                
+                                        try:
+                                            [self.own_card_left, self.own_card_right] = read_own_cards()
+                                            self.cards_open = True
+                                        except Exception as e:
+                                            # print(e)
+                                            time.sleep(0.25)
+                                            try:
+                                                [self.own_card_left, self.own_card_right] = read_own_cards()
+                                                self.cards_open = True
+                                            except Exception as e:
+                                                print(e)
+                                                print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ...")  
+                                                fish_for_own_cards()   
+                                                with self.game_stage_lock:
+                                                    self.game_stage_current = "no_decision_to_be_made" 
+                                                with self.acting_lock:
+                                                    self.time_to_act = False                                                                           
+                                                    return
+                            else:
+                                print("check_if_we_holdin_yet failed, model said preflop ...")
+                                time.sleep(1)
+                                if check_if_we_holdin_yet(current_im):
+                                    try:
+                                        [self.own_card_left, self.own_card_right] = read_own_cards()
+                                        self.cards_open = True
+                                    except Exception as e:
+                                        # print(e)
                                         time.sleep(0.25)
                                         try:
                                             [self.own_card_left, self.own_card_right] = read_own_cards()
                                             self.cards_open = True
                                         except Exception as e:
-                                            print(e)
-                                            print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ... 222222222222222222") # maybe save screenshot for reclassification purposes
-                                            fish_for_own_cards()                                      
-                                            with self.game_stage_lock:
-                                                self.game_stage_current = "no_decision_to_be_made"  
-                                            with self.acting_lock:
-                                                self.time_to_act =False                                                                              
-                                                return
-                            else:
-                                with self.game_stage_lock:
-                                    self.game_stage_current = "no_decision_to_be_made"  
-                                with self.acting_lock:
-                                    self.time_to_act = False                                                                              
-                                    return                                
+                                            # print(e)
+                                            time.sleep(0.25)
+                                            try:
+                                                [self.own_card_left, self.own_card_right] = read_own_cards()
+                                                self.cards_open = True
+                                            except Exception as e:
+                                                print(e)
+                                                print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ... 222222222222222222") # maybe save screenshot for reclassification purposes
+                                                fish_for_own_cards()                                      
+                                                with self.game_stage_lock:
+                                                    self.game_stage_current = "no_decision_to_be_made"  
+                                                with self.acting_lock:
+                                                    self.time_to_act =False                                                                              
+                                                    return
+                                else:
+                                    with self.game_stage_lock:
+                                        self.game_stage_current = "no_decision_to_be_made"  
+                                    with self.acting_lock:
+                                        self.time_to_act = False                                                                              
+                                        return                                
 
-                with self.cards_lock:   
-                    if not self.cards_open:
-                        print("SOMETHING WENT WRONG preflop - 21 - exiting")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/preflop_{str(time.time()).split('.')[0]}.png")
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made"  
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                              
-                            exit()
-                        
+                    with self.cards_lock:   
+                        if not self.cards_open:
+                            print("SOMETHING WENT WRONG preflop - 21 - exiting")
+                            current_im.save(f"shmol_model_not_sure/exiting_images/preflop_{str(time.time()).split('.')[0]}.png")
+                            with self.game_stage_lock:
+                                self.game_stage_current = "no_decision_to_be_made"  
+                            with self.acting_lock:
+                                self.time_to_act = False                                                                              
+                                exit()
+                            
+                    
+
+            
+
+            elif game_stage == "connectivity_issues":
+                print("connectivity_issues") 
+                secs = time.time()
+                current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
+                time.sleep(1)
+                if handle_all_in(current_im):
+                    print("ALL IN HANDLED NICELY")
+                    self.mkModelOutputAllInHandled()
+                    self.writeToCSVs()
+                    time.sleep(4) # write loss to model here
+                    get_up_stand_up()
+                with self.acting_lock:
+                    self.time_to_act = False            
+                    return
+
+
+            # print("pix (where red button might be): "+ str(pix))
+            if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
+                pix = current_im.getpixel((530, 500)) 
+                if is_red(pix):
+                    # pyautogui.moveTo(25, 45)
+                    # time to cat logic :
+                    with self.potheight_lock:
+                        result = read_total_pot_money(current_im)
+                        if result["result"] > 0.1:
+                            self.potheight = result["result"]
+                        # if self.potheight > 0.2:
+                        #     pot_rescaled = ((self.potheight/8)**2)
                 
 
-        
+                    with self.potheight_lock:
+                        self.to_call = how_much(im=current_im)
+                        to_call = self.to_call
+                        print(f"to_call is : {str(to_call)}")
+                    self.setValuesOurTurn_(current_im=current_im)
+                    # print("debug I was here 20")
+                    try:
+                        self.makeDecision()
+                    except Exception as e:
+                        print(f"Exception in makeDecision: {e}")
+                        exit()
 
-        elif game_stage == "connectivity_issues":
-            print("connectivity_issues") 
-            secs = time.time()
-            current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
-            time.sleep(1)
-            if handle_all_in(current_im):
-                print("ALL IN HANDLED NICELY")
-                self.mkModelOutputAllInHandled()
-                self.writeToCSVs()
-                time.sleep(4) # write loss to model here
-                get_up_stand_up()
-            with self.acting_lock:
-                self.time_to_act = False            
-                return
-
-
-        # print("pix (where red button might be): "+ str(pix))
-        if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
-            pix = current_im.getpixel((530, 500)) 
-            if is_red(pix):
-                # pyautogui.moveTo(25, 45)
-                # time to cat logic :
-                with self.potheight_lock:
-                    result = read_total_pot_money(current_im)
-                    if result["result"] > 0.1:
-                        self.potheight = result["result"]
-                    # if self.potheight > 0.2:
-                    #     pot_rescaled = ((self.potheight/8)**2)
-            
-
-                with self.potheight_lock:
-                    self.to_call = how_much(im=current_im)
-                    to_call = self.to_call
-                    print(f"to_call is : {str(to_call)}")
-                self.setValuesOurTurn_(current_im=current_im)
-                # print("debug I was here 20")
-                try:
-                    self.makeDecision()
-                except Exception as e:
-                    print(f"Exception in makeDecision: {e}")
-                    exit()
-
-                with self.dec_lock:
-                    self_dec = self.decision
-                    self.dec_taken = self_dec
-                if self_dec == "fold":
                     with self.dec_lock:
-                        self.decision = "None_yet"     
-                    if to_call < 0.1:
-                        print("checking here !!!")
+                        self_dec = self.decision
+                        self.dec_taken = self_dec
+                    if self_dec == "fold":
+                        with self.dec_lock:
+                            self.decision = "None_yet"     
+                        if to_call < 0.1:
+                            print("checking here !!!")
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            # self.to_call = 0.0 # already here
+                        else :
+                            pyautogui.moveTo(540, 610, duration=0.1)
+                            time.sleep(0.1)                    
+                            pyautogui.click(540, 610) # folding, reset values
+                            pyautogui.click(x=1183, y=759)
+                            # self.resetValues()
+                            self.foldErase()
+                            with self.lock:
+                                if self.own_money > 99.0:
+                                    close_game()
+                                    time.sleep(2)
+                                    print("exiting program bc own money > 99.0")
+                                    # open_game()
+                                    exit()        
+
+                            # with self.potheight_lock:
+                            #     self.to_call = 0.0
+                            # with self.cards_lock:
+                            #     self.own_card_left = "nn"
+                            #     self.own_card_right = "nn"
+                            #     self.deck_card_1 = "nn"
+                            #     self.deck_card_2 = "nn"
+                            #     self.deck_card_3 = "nn"
+                            #     self.deck_card_4 = "nn"
+                            #     self.deck_card_5 = "nn"
+                            # with self.dec_lock:
+                            #     self.decision = "None_yet"
+                    if self_dec.startswith("c"):
+                        with self.dec_lock:
+                            self.decision = "None_yet"
                         pyautogui.moveTo(670, 610, duration=0.1)
-                        time.sleep(0.1)
+                        time.sleep(0.1)                     
                         pyautogui.click(670, 610)
                         pyautogui.click(x=1183, y=759)
-                        # self.to_call = 0.0 # already here
-                    else :
-                        pyautogui.moveTo(540, 610, duration=0.1)
-                        time.sleep(0.1)                    
-                        pyautogui.click(540, 610) # folding, reset values
-                        pyautogui.click(x=1183, y=759)
-                        # self.resetValues()
-                        self.foldErase()
-                        with self.lock:
-                            if self.own_money > 99.0:
-                                close_game()
-                                time.sleep(2)
-                                print("exiting program bc own money > 99.0")
-                                # open_game()
-                                exit()        
-
-                        # with self.potheight_lock:
-                        #     self.to_call = 0.0
-                        # with self.cards_lock:
-                        #     self.own_card_left = "nn"
-                        #     self.own_card_right = "nn"
-                        #     self.deck_card_1 = "nn"
-                        #     self.deck_card_2 = "nn"
-                        #     self.deck_card_3 = "nn"
-                        #     self.deck_card_4 = "nn"
-                        #     self.deck_card_5 = "nn"
-                        # with self.dec_lock:
-                        #     self.decision = "None_yet"
-                if self_dec.startswith("c"):
-                    with self.dec_lock:
-                        self.decision = "None_yet"
-                    pyautogui.moveTo(670, 610, duration=0.1)
-                    time.sleep(0.1)                     
-                    pyautogui.click(670, 610)
-                    pyautogui.click(x=1183, y=759)
-                    print("call was clicked")
-                    with self.potheight_lock: 
-                        self.to_call = 0.0    
+                        print("call was clicked")
+                        with self.potheight_lock: 
+                            self.to_call = 0.0    
+                        with self.valset_lock:
+                            self.values_set = False # own money value only in this                         
+                    elif self_dec.startswith("r"):
+                        if to_call < 1.0:
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)     
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("1")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this        
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this                                              
+                    elif self_dec.startswith("2"):
+                        if to_call < 1:
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)     
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("2")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this                                                           
+                    elif self_dec.startswith("3"):
+                        if to_call < 2:
+                            print("raise3 was clicked")
+                            # todo click text field, type 3, hit (800, 610)
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)     
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("4")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this     
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this                                                       
+                    elif self_dec.startswith("4"):
+                        if to_call < 2:
+                            print("raise4 was clicked")
+                            # click text field, type 4, hit (800, 610)
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)              
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("8")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)              
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)             
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this     
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this            
+                    elif self_dec.startswith("5"):
+                        if to_call < 8:
+                            print("raise5 was clicked")
+                            # click text field, type 4, hit (800, 610)
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)              
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("16")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)              
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)             
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this     
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this                               
+                                    
+                        # time.sleep(1.4)
+                        # if not self.updateOwnMoney_(current_im=None):
+                        #     time.sleep(0.45)
+                        #     if not self.updateOwnMoney_(current_im=None):
+                        #         print("\nread own money failed after clicking ... 20\n")                                                 
+                else: # no red button to push
                     with self.valset_lock:
-                        self.values_set = False # own money value only in this                         
-                elif self_dec.startswith("r"):
-                    if to_call < 1.0:
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("1")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this        
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                              
-                elif self_dec.startswith("2"):
-                    if to_call < 1:
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("2")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this    
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                                           
-                elif self_dec.startswith("3"):
-                    if to_call < 2:
-                        print("raise3 was clicked")
-                        # todo click text field, type 3, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)     
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("4")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                                                       
-                elif self_dec.startswith("4"):
-                    if to_call < 2:
-                        print("raise4 was clicked")
-                        # click text field, type 4, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)              
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("8")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)              
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)             
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this            
-                elif self_dec.startswith("5"):
-                    if to_call < 8:
-                        print("raise5 was clicked")
-                        # click text field, type 4, hit (800, 610)
-                        pyautogui.moveTo(730, 557, duration=0.1)
-                        time.sleep(0.1)              
-                        pyautogui.click(730, 557)
-                        pyautogui.typewrite("16")
-                        pyautogui.moveTo(800, 610)
-                        time.sleep(0.1)              
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)             
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this     
-                    else: # simply clicking the raise button
-                        pyautogui.moveTo(800, 610, duration=0.1)
-                        time.sleep(0.1)                  
-                        pyautogui.click(800, 610)
-                        pyautogui.moveTo(670, 610)
-                        time.sleep(0.1)            
-                        pyautogui.click(670, 610) # call click
-                        pyautogui.click(x=1183, y=759)
-                        with self.potheight_lock:
-                            self.to_call = 0.0
-                        with self.dec_lock:
-                            self.decision = "None_yet"
-                        with self.valset_lock:
-                            self.values_set = False # own money value only in this                               
-                                
-                    # time.sleep(1.4)
-                    # if not self.updateOwnMoney_(current_im=None):
-                    #     time.sleep(0.45)
-                    #     if not self.updateOwnMoney_(current_im=None):
-                    #         print("\nread own money failed after clicking ... 20\n")                                                 
-            else: # no red button to push
-                with self.valset_lock:
-                    self.number_of_the_universe += 1
-                try:
-                    result = read_total_pot_money(current_im)
-                except Exception as e:
-                    print("exiting here 27")
-                    print(e)
-                    exit()
-            
-                if result["result"] > 0.1:
-                    with self.potheight_lock: # regularly 
-                        self.potheight = result["result"]
-                        print("debug potheight set to: "+str(self.potheight))
-            # if current_game_stage != "no_decision_to_be_made" and current_game_stage != "connectivity_issues" and game_stage != "connectivity_issues": 
-            #     time.sleep(0.375)
-            #     with self.valset_lock:
-            #         need_set = False
-            #         if not self.values_set: # own money value not set after it changed 
-            #             need_set = True
-            #     if need_set:
-            #         if not self.updateOwnMoney_(current_im=None):
-            #             time.sleep(0.25)
-            #             if not self.updateOwnMoney_(current_im=None):
-            #                 time.sleep(0.25)
-            #                 if not self.updateOwnMoney_(current_im=None):
-            #                     time.sleep(0.25)
-            #                     self.updateOwnMoney_(current_im=None)
-                        # print("\nread own money failed gss ... \n")    
+                        self.number_of_the_universe += 1
+                    try:
+                        result = read_total_pot_money(current_im)
+                    except Exception as e:
+                        print("exiting here 27")
+                        print(e)
+                        exit()
+                
+                    if result["result"] > 0.1:
+                        with self.potheight_lock: # regularly 
+                            self.potheight = result["result"]
+                            print("debug potheight set to: "+str(self.potheight))
+                # if current_game_stage != "no_decision_to_be_made" and current_game_stage != "connectivity_issues" and game_stage != "connectivity_issues": 
+                #     time.sleep(0.375)
+                #     with self.valset_lock:
+                #         need_set = False
+                #         if not self.values_set: # own money value not set after it changed 
+                #             need_set = True
+                #     if need_set:
+                #         if not self.updateOwnMoney_(current_im=None):
+                #             time.sleep(0.25)
+                #             if not self.updateOwnMoney_(current_im=None):
+                #                 time.sleep(0.25)
+                #                 if not self.updateOwnMoney_(current_im=None):
+                #                     time.sleep(0.25)
+                #                     self.updateOwnMoney_(current_im=None)
+                            # print("\nread own money failed gss ... \n")    
 
-        with self.acting_lock:
-            self.time_to_act = False  
-        # pyautogui.moveTo(15, 55)     
+            with self.acting_lock:
+                self.time_to_act = False  
+            # pyautogui.moveTo(15, 55)     
+        except Exception as e:
+            print(f"Exception in main loop: {e}")
+            exit()
 
 
 
