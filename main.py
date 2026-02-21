@@ -166,7 +166,7 @@ class AppDelegate(NSObject):
     potheight_after_river = 4.5
     potheight = 0.1
     to_call = 0.0
-    difference_tocall_n_potheight = to_call/potheight # important for early decision making , and also for ai models possibly
+    invested_in_preflop = 0.0
 
     lock = Lock() #
     own_money = 0.0
@@ -1056,12 +1056,23 @@ class AppDelegate(NSObject):
         with self.potheight_lock:
             pot_height = self.potheight
             to_call = self.to_call
+            invested = self.invested_in_preflop
         decision = "fold" 
         if to_call <= 2.5:
             decision = "call"
         with self.own_cards_lock:
             own_card_left = self.own_card_left
             own_card_right = self.own_card_right
+
+        if invested > 0.0:
+            print("already invested in preflop, calling if not too much")
+            if to_call <= 2.5:
+                decision = "call"
+            elif invested >= 2.5 and to_call <= invested:
+                decision = "call"
+            elif invested >= 5.0 and to_call <= invested*2:
+                decision = "call"
+
         
         print('own cards in preflop: '+own_card_left+" "+own_card_right)
         left_above = own_card_left.startswith("A") or own_card_left.startswith("K") or own_card_left.startswith("Q") or own_card_left.startswith("J") or own_card_left.startswith("T") or own_card_left.startswith("9") or own_card_left.startswith("8") or own_card_left.startswith("7")
@@ -1232,7 +1243,7 @@ class AppDelegate(NSObject):
                                          
         else:
             print("debug : one is six or under")
-            if (own_card_left.startswith("A") or own_card_left.startswith("K") or own_card_left.startswith("Q") or own_card_left.startswith("J") or own_card_left.startswith("T") or own_card_left.startswith("9") or own_card_left.startswith("8") or own_card_left.startswith("7") or own_card_left.startswith("6")) or (own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7") or own_card_right.startswith("6")):
+            if (own_card_left.startswith("A") or own_card_left.startswith("K") or own_card_left.startswith("Q") or own_card_left.startswith("J") or own_card_left.startswith("T") or own_card_left.startswith("9") or own_card_left.startswith("8") or own_card_left.startswith("7")) or (own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")):
                 if to_call <= 2.0 and pot_height >= 6.5: # funny move maybe ?
                     decision = "call"
                 elif to_call <= 1.0 and pot_height >= 3.5: # funny move maybe ?
@@ -1269,7 +1280,22 @@ class AppDelegate(NSObject):
                         decision = "call"
                 elif own_card_left.startswith("2") and own_card_right.startswith("2"):
                     if to_call <= 4.5:
-                        decision = "call"                                                                                
+                        decision = "call"    
+        with self.potheight_lock:
+            if decision != "fold":   
+                if decision != "call":
+                    if to_call > 0.0:
+                        self.invested_in_preflop += to_call*2.0 # since raise to double of to-call
+                    else:
+                        if decision != "raise1":
+                            self.invested_in_preflop += float(decision[0]) # since raise to double of to-call, but to-call is zero, so adding zero here
+                        else:
+                            self.invested_in_preflop += 1.0 # since raise to 2.5 when to-call is zero
+                else:
+                    if to_call > 0.0:
+                        self.invested_in_preflop += to_call 
+                    
+                                                                                    
         return decision
     
 
