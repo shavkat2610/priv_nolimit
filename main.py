@@ -928,7 +928,7 @@ class AppDelegate(NSObject):
             confidence = self.confidence    
         print(f"Confidence: {confidence}")
         for i in range(len(outputs)):
-            outputs[i] = outputs[i] + (0.04575 * confidence) 
+            outputs[i] = outputs[i] + (0.02575 * confidence) 
         if len(outputs) == 2:
             call_equity = outputs[0]
             bet_equity = outputs[1]
