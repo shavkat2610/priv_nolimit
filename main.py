@@ -1370,8 +1370,12 @@ class AppDelegate(NSObject):
             with self.confidence_lock:
                 self.confidence += 1.2
                 if to_call > 5.0:
-                    self.confidence += 2.5    
+                    self.confidence += 2.5  
                 elif decision.startswith("4") or decision.startswith("5"):
+                    self.confidence += 8.5          
+                elif decision.startswith("2") or decision.startswith("3"):
+                    self.confidence += 4.5
+                elif decision.startswith("raise1"):
                     self.confidence += 2.5                                    
         return decision 
         decision = "fold"
@@ -1482,7 +1486,11 @@ class AppDelegate(NSObject):
                 if to_call > 5.0:
                     self.confidence += 8.5
                 elif decision.startswith("4") or decision.startswith("5"):
-                    self.confidence += 8.5                    
+                    self.confidence += 8.5          
+                elif decision.startswith("2") or decision.startswith("3"):
+                    self.confidence += 4.5
+                elif decision.startswith("raise1"):
+                    self.confidence += 2.5          
         return decision 
     
 
