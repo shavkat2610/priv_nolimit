@@ -873,7 +873,9 @@ class AppDelegate(NSObject):
             if self.potheight_after_flop != -1:
                 self.potheight_after_flop = -1   
             if self.potheight_after_river != -1:
-                self.potheight_after_river = -1         
+                self.potheight_after_river = -1    
+            if self.invested_in_preflop != 0.0:
+                self.invested_in_preflop = 0.0     
         with self.mk_comte_carlo_decision_lock:
             if self.probability_1_1 != -1:
                 self.probability_1_1 = -1
