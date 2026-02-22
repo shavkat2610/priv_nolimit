@@ -1085,7 +1085,10 @@ class AppDelegate(NSObject):
         rigth_above = own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")
         if left_above and rigth_above:
             print("debug : both seven or above")
+
             if to_call <= 3.5: # 2.5 initially
+                decision = "call"
+            elif to_call <= 7.5 and (own_card_left[1] == own_card_right[1]): # 2.5 and 10.0 initially
                 decision = "call"
             if own_card_left[0] == own_card_right[0]: # suited
                 print("debug : suited")
@@ -1154,7 +1157,9 @@ class AppDelegate(NSObject):
                         print("funny lil raise here 3")
                         decision = "raise1"     
                     elif to_call < 7.5:
-                        decision = "call"                                     
+                        decision = "call"   
+                    elif to_call <= 9.5 and (own_card_left[1] == own_card_right[1]): 
+                        decision = "call"                                  
                 else:                                   #                              
                     if own_card_left.startswith("Q") or own_card_right.startswith("Q"): #  ace # queen
                         print("debug : ace and queen")
@@ -1254,6 +1259,8 @@ class AppDelegate(NSObject):
                     decision = "call"
                 elif to_call <= 1.0 and pot_height >= 3.5: # funny move maybe ?
                     decision = "call"
+                elif to_call <= 6.7 and (own_card_left[1] == own_card_right[1]): # suited
+                    decision = "call"
                 elif own_card_left.startswith("A") or own_card_right.startswith("A"):
                     # decision = "call"
                     if to_call <= 4.6:
@@ -1272,6 +1279,8 @@ class AppDelegate(NSObject):
                             decision = "call"
             else:
                 print("both cards six or under")
+                if to_call <= 5.7 and (own_card_left[1] == own_card_right[1]): # suited
+                    decision = "call"
                 if own_card_left.startswith("6") and own_card_right.startswith("6"):
                     if to_call <= 6.0:
                         decision = "call"  
