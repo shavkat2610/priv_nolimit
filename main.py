@@ -69,6 +69,7 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
+# make decision buttons work again
 # close_game-button 
 # emoji-button
 # unwait button
@@ -178,7 +179,8 @@ class AppDelegate(NSObject):
 
     dec_lock = Lock() # for decision attribute
     decision = "None_yet"
-    dec_taken = "None_yet"
+    user_decision = "None_yet"
+
 
     mk_comte_carlo_decision_lock = Lock()
     probability_1_1 = -1
@@ -430,44 +432,44 @@ class AppDelegate(NSObject):
 
     def fold_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "fold":
-                self.decision = "fold"
+            if self.user_decision != "fold":
+                self.user_decision = "fold"
             return
         
     def call_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "call":
-                self.decision = "call"
+            if self.user_decision != "call":
+                self.user_decision = "call"
             return
 
     def raise1_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "raise1":
-                self.decision = "raise1"
+            if self.user_decision != "raise1":
+                self.user_decision = "raise1"
             return
 
     def raise2_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "2raise2":
-                self.decision = "2raise2"
+            if self.user_decision != "raise2":
+                self.user_decision = "raise2"
             return
 
     def raise3_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "3raise3":
-                self.decision = "3raise3"
+            if self.user_decision != "raise3":
+                self.user_decision = "raise3"
             return
 
     def raise4_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "4raise4":
-                self.decision = "4raise4"
+            if self.user_decision != "raise4":
+                self.user_decision = "raise4"
             return
 
     def raise5_(self, userInfo):
         with self.dec_lock:
-            if self.decision != "5raise5":
-                self.decision = "5raise5"
+            if self.user_decision != "raise5":
+                self.user_decision = "raise5"
             return
 
 
@@ -1569,11 +1571,11 @@ class AppDelegate(NSObject):
         if self.deck_card_1 == "nn":  # that means its preflop
             print("makeDecision: preflop detected")
             with self.dec_lock:
-                if self.decision == "None_yet":
-                    self.decision = self.makeDecisionPreflop()
-                else:
-                    print("debug - preflop decision already made: "+self.decision)
-                    exit()
+                # if self.user_decision == "None_yet":
+                #     self.decision = self.makeDecisionPreflop()
+                # else:
+                #     self.decision = self.user_decision
+                self.decision = self.makeDecisionPreflop() # force bot decision in preflop
                 return
         else:
             print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
@@ -1583,7 +1585,7 @@ class AppDelegate(NSObject):
             if self.deck_card_4 == "nn": # that means flop      
                 print("# that means flop    ")
                 with self.dec_lock:
-                    decision = self.decision
+                    decision = self.user_decision
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
@@ -2329,10 +2331,11 @@ class AppDelegate(NSObject):
 
                     with self.dec_lock:
                         self_dec = self.decision
-                        self.dec_taken = self_dec
                     if self_dec == "fold":
                         with self.dec_lock:
-                            self.decision = "None_yet"     
+                            self.decision = "None_yet"   
+                            if self.user_decision != "None_yet":
+                                self.user_decision = "None_yet"  
                         if to_call < 0.1:
                             print("checking here !!!")
                             pyautogui.moveTo(670, 610, duration=0.1)
@@ -2370,6 +2373,8 @@ class AppDelegate(NSObject):
                     if self_dec.startswith("c"):
                         with self.dec_lock:
                             self.decision = "None_yet"
+                            if self.user_decision != "None_yet":
+                                self.user_decision = "None_yet"  
                         pyautogui.moveTo(670, 610, duration=0.1)
                         time.sleep(0.1)                     
                         pyautogui.click(670, 610)
@@ -2396,6 +2401,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this        
                         else: # simply clicking the raise button
@@ -2410,6 +2417,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this                                              
                     elif self_dec.startswith("2"):
@@ -2429,6 +2438,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this    
                         else: # simply clicking the raise button
@@ -2443,6 +2454,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this                                                           
                     elif self_dec.startswith("3"):
@@ -2461,6 +2474,8 @@ class AppDelegate(NSObject):
                             pyautogui.click(x=1183, y=759)
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.potheight_lock:
                                 self.to_call = 0.0
                             with self.valset_lock:
@@ -2477,6 +2492,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this                                                       
                     elif self_dec.startswith("4"):
@@ -2498,6 +2515,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
                         else: # simply clicking the raise button
@@ -2512,6 +2531,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this            
                     elif self_dec.startswith("5"):
@@ -2533,6 +2554,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
                         else: # simply clicking the raise button
@@ -2547,6 +2570,8 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.dec_lock:
                                 self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this                               
                                     
