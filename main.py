@@ -53,14 +53,14 @@ from PIL import Image
 # # feed in how many card holders there is still before me and after me, before big_blind - done
 # # pot_20 etc. into I raised at preflop, flop, river, turn, how much I had to call at ... and potheight at ... - done
 # open last card ... - done i think
-
+# make decisions based off of collected values - done in a very basic way, need to adjust and test a lot, but at least it is something to start with
+# new bug somewhere (maybe always at all in?) - done
 
 
 
 # todo:
 
-# make decisions based off of collected values - in works, but runnning i think
-# new bug somewhere (maybe always at all in?)
+
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
