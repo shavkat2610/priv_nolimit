@@ -55,12 +55,14 @@ from PIL import Image
 # open last card ... - done i think
 # make decisions based off of collected values - done in a very basic way, need to adjust and test a lot, but at least it is something to start with
 # new bug somewhere (maybe always at all in?) - done
+# make decision buttons work again - done
 
 
 
 # todo:
 
 
+# clicking_images everywhere nd works from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
@@ -69,7 +71,6 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
-# make decision buttons work again
 # close_game-button 
 # emoji-button
 # unwait button
