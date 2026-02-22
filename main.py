@@ -949,14 +949,17 @@ class AppDelegate(NSObject):
                         print("this scenario is very unlikely but ok")
                         return "raise1"
                     else:
-                        if call_equity > -0.15 or bet_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
+                        if call_equity > -0.015 or bet_equity > -0.015: # fixing folding too much issue, but actually this is sus (too low value)
                             print("call equity decent enough to call")
                             return "call"
                         else:
                             if not prod:
-                                if random.randrange(2) == 0 and (call_equity > -0.265 or bet_equity > -0.265): # fixing folding too much issue, but actually this is sus (too low value)
+                                if random.randrange(2) == 0 and call_equity > -0.15: # fixing folding too much issue, but actually this is sus (too low value)
                                     print("rando-call")
                                     return "call"
+                                elif random.randrange(2) == 0 and bet_equity > -0.15:
+                                    print("rando-raise")
+                                    return "raise1"
                             print("call equity too low to call")
                             return "fold"
             else:
