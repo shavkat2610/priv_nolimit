@@ -451,26 +451,26 @@ class AppDelegate(NSObject):
 
     def raise2_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise2":
-                self.user_decision = "raise2"
+            if self.user_decision != "2raise2":
+                self.user_decision = "2raise2"
             return
 
     def raise3_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise3":
-                self.user_decision = "raise3"
+            if self.user_decision != "3raise3":
+                self.user_decision = "3raise3"
             return
 
     def raise4_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise4":
-                self.user_decision = "raise4"
+            if self.user_decision != "4raise4":
+                self.user_decision = "4raise4"
             return
 
     def raise5_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise5":
-                self.user_decision = "raise5"
+            if self.user_decision != "5raise5":
+                self.user_decision = "5raise5"
             return
 
 
