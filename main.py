@@ -2162,7 +2162,7 @@ class AppDelegate(NSObject):
                     
             
             elif game_stage == "river":
-                if self.number_of_the_universe%27==0:
+                if self.number_of_the_universe%37==0:
                     current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
                 print("river")
                 if current_game_stage != "river":
