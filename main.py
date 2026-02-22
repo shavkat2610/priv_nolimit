@@ -55,12 +55,14 @@ from PIL import Image
 # open last card ... - done i think
 # make decisions based off of collected values - done in a very basic way, need to adjust and test a lot, but at least it is something to start with
 # new bug somewhere (maybe always at all in?) - done
+# make decision buttons work again - done
 
 
 
 # todo:
 
 
+# clicking_images everywhere nd works from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
@@ -69,7 +71,6 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
-# make decision buttons work again
 # close_game-button 
 # emoji-button
 # unwait button
@@ -450,26 +451,26 @@ class AppDelegate(NSObject):
 
     def raise2_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise2":
-                self.user_decision = "raise2"
+            if self.user_decision != "2raise2":
+                self.user_decision = "2raise2"
             return
 
     def raise3_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise3":
-                self.user_decision = "raise3"
+            if self.user_decision != "3raise3":
+                self.user_decision = "3raise3"
             return
 
     def raise4_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise4":
-                self.user_decision = "raise4"
+            if self.user_decision != "4raise4":
+                self.user_decision = "4raise4"
             return
 
     def raise5_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "raise5":
-                self.user_decision = "raise5"
+            if self.user_decision != "5raise5":
+                self.user_decision = "5raise5"
             return
 
 
@@ -1084,7 +1085,10 @@ class AppDelegate(NSObject):
         rigth_above = own_card_right.startswith("A") or own_card_right.startswith("K") or own_card_right.startswith("Q") or own_card_right.startswith("J") or own_card_right.startswith("T") or own_card_right.startswith("9") or own_card_right.startswith("8") or own_card_right.startswith("7")
         if left_above and rigth_above:
             print("debug : both seven or above")
+
             if to_call <= 3.5: # 2.5 initially
+                decision = "call"
+            elif to_call <= 7.5 and (own_card_left[1] == own_card_right[1]): # 2.5 and 10.0 initially
                 decision = "call"
             if own_card_left[0] == own_card_right[0]: # suited
                 print("debug : suited")
@@ -1153,7 +1157,9 @@ class AppDelegate(NSObject):
                         print("funny lil raise here 3")
                         decision = "raise1"     
                     elif to_call < 7.5:
-                        decision = "call"                                     
+                        decision = "call"   
+                    elif to_call <= 9.5 and (own_card_left[1] == own_card_right[1]): 
+                        decision = "call"                                  
                 else:                                   #                              
                     if own_card_left.startswith("Q") or own_card_right.startswith("Q"): #  ace # queen
                         print("debug : ace and queen")
@@ -1253,6 +1259,8 @@ class AppDelegate(NSObject):
                     decision = "call"
                 elif to_call <= 1.0 and pot_height >= 3.5: # funny move maybe ?
                     decision = "call"
+                elif to_call <= 6.7 and (own_card_left[1] == own_card_right[1]): # suited
+                    decision = "call"
                 elif own_card_left.startswith("A") or own_card_right.startswith("A"):
                     # decision = "call"
                     if to_call <= 4.6:
@@ -1271,6 +1279,8 @@ class AppDelegate(NSObject):
                             decision = "call"
             else:
                 print("both cards six or under")
+                if to_call <= 5.7 and (own_card_left[1] == own_card_right[1]): # suited
+                    decision = "call"
                 if own_card_left.startswith("6") and own_card_right.startswith("6"):
                     if to_call <= 6.0:
                         decision = "call"  
