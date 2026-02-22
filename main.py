@@ -62,7 +62,7 @@ from PIL import Image
 # todo:
 
 
-# clicking_images everywhere nd works from there
+# clicking_images everywhere and works from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
