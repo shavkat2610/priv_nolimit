@@ -432,8 +432,8 @@ class AppDelegate(NSObject):
 
     def fold_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "fold":
-                self.user_decision = "fold"
+            if self.user_decision != "None_yet":
+                self.user_decision = "None_yet"
             return
         
     def call_(self, userInfo):
@@ -1589,8 +1589,13 @@ class AppDelegate(NSObject):
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
-                        if self.decision == "None_yet":
+                        if self.user_decision == "None_yet":
                             self.decision = model_dec
+                        else:
+                            self.decision = self.user_decision
+                else:
+                    with self.dec_lock:
+                        self.decision = decision
                 try:
                     self.mkFlopModelInput()
                 except Exception as e:
@@ -1607,13 +1612,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
                     return
                 time.sleep(0.35) 
@@ -1623,14 +1636,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
-                        time.sleep(0.5)
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
                     return
                 time.sleep(0.35) 
@@ -1640,16 +1660,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
-                        time.sleep(0.5)
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
-                    return       
+                    return     
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1657,13 +1684,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
                     return
                 time.sleep(0.35) 
@@ -1673,15 +1708,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
-                    return                
+                    return              
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1689,15 +1732,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
-                    return    
+                    return  
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1705,15 +1756,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
-                    return                
+                    return               
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1721,15 +1780,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
-                    return                            
+                    return                          
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1737,13 +1804,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionRiver()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkRiverModelInput()
                     return
                 time.sleep(0.35)                     
@@ -1765,13 +1840,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionTurn()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkTurnModelInput()
                     return
                 time.sleep(0.7) 
@@ -1781,13 +1864,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionTurn()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkTurnModelInput()
                     return
                 time.sleep(0.7) 
@@ -1797,15 +1888,23 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionTurn()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkTurnModelInput()
-                    return      
+                    return   
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1813,13 +1912,21 @@ class AppDelegate(NSObject):
                     pass
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionTurn()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkTurnModelInput()
                     return
                 time.sleep(0.7) 
@@ -1830,15 +1937,23 @@ class AppDelegate(NSObject):
                     exit()
                 else:
                     with self.dec_lock:
-                        decision = self.decision
-                    if decision == "None_yet":
+                        decision = self.user_decision
+                    if decision == "None_yet" or decision == "call":
                         model_dec = self.makeDecisionTurn()
-                        with self.dec_lock:
-                            decision = self.decision
                         if decision == "None_yet":
-                            self.decision = model_dec
+                            with self.dec_lock:
+                                self.decision = model_dec
+                        elif decision == "call" and model_dec == "fold":
+                            with self.dec_lock:
+                                self.decision = "call"
+                        else:
+                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
+                                self.decision = model_dec
+                    else:
+                        with self.dec_lock:
+                            self.decision = decision
                     self.mkTurnModelInput()
-                    return                 
+                    return               
     
 
     def sliderChanged_(self, sender):
