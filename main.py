@@ -62,6 +62,7 @@ from PIL import Image
 # todo:
 
 
+# check all inputs for correctness
 # clicking_images everywhere and works from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
@@ -69,7 +70,7 @@ from PIL import Image
 # adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
-# all-in logic : check if it still says so,, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
+# all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
 # close_game-button 
 # emoji-button
@@ -2477,7 +2478,7 @@ class AppDelegate(NSObject):
                             pyautogui.click(540, 610) # folding, reset values
                             pyautogui.click(x=1183, y=759)
                             # self.resetValues()
-                            self.foldErase()
+                            self.foldErase() # remove later, when folds can be involved into feature set. maybe after experts_say_fold model is implemented.
                             with self.lock:
                                 if self.own_money > 99.0:
                                     close_game()
