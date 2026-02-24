@@ -488,6 +488,9 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                     text = text[:-1]                
                 try:
                     result = float(text)
+                    if result == 0.0:
+                        print("probably read 0 instead of Check, returning 0.001 for now")
+                        return -1.0
                     # if result > 22.0:
                     #     saving = True
                     if saving:
