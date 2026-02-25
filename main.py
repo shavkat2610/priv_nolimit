@@ -61,7 +61,7 @@ from PIL import Image
 
 # todo:
 
-
+# i_bet
 # check all inputs for correctness
 # clicking_images everywhere and works from there
 # run it three times, accept opponents request
