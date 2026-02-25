@@ -56,10 +56,12 @@ from PIL import Image
 # make decisions based off of collected values - done in a very basic way, need to adjust and test a lot, but at least it is something to start with
 # new bug somewhere (maybe always at all in?) - done
 # make decision buttons work again - done
+# close_game-button - done
 
 
 
 # todo:
+
 
 # regain chips when lower 20 maybe
 # i_bet
@@ -76,10 +78,13 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
-# close_game-button
 # emoji-button
 # unwait button
-# run it back up button (with possibly another big blind)
+# stand up button
+# rebuy button
+# raise32 button (32x big blind)
+
+
 
 
 
@@ -351,29 +356,14 @@ class AppDelegate(NSObject):
             return False
 
 
-    def runItUpAgane(self):
-        # start poker client and game
-        if not run_it_up(big_blind = self.big_blind):
-            print("run it up did not work")
-            exit() # is this the right way to exit the app?
-        # todo: read player data here
-        try:
-            self.updatePlayerData()
-        except Exception as e:
-            print(e)   
-        # set own money initially
-        time.sleep(0.35)
-        if not self.set_munna_initially():
-            time.sleep(0.35)
-            if not self.set_munna_initially():
-                time.sleep(0.35)
-                if not self.set_munna_initially():
-                    time.sleep(0.35)
-                    if not self.set_munna_initially():
-                        exit("could not read own money at start of game")       
-        pyautogui.click(x=1183, y=759)   
-        return           
 
+    def closeGame_(self, sender):
+        with self.acting_lock:
+            close_game()
+            self.timer2.invalidate() # stop game screenshot timer
+            self.hideButtons()
+            print('done closing game')
+            return
 
 
     def runitup_(self, sender):
@@ -478,6 +468,12 @@ class AppDelegate(NSObject):
                 self.user_decision = "5raise5"
             return
 
+    def raise6_(self, userInfo):
+        with self.dec_lock:
+            if self.user_decision != "6raise6":
+                self.user_decision = "6raise6"
+            return
+
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time
         print("startCalculationsOtherThread_ called ...")
@@ -548,36 +544,23 @@ class AppDelegate(NSObject):
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
-                return # no need to write to table, when folding.  
+                decision_temp = -1.0
             else:
                 decision_temp = 0.0 # checking when there is nothing to call                                
         elif decision == "call":
-            if to_call >= 1.0:
-                decision_temp = 1.0    
-            else:
-                decision_temp = 0.0                            
+            decision_temp = to_call/8.0                           
         elif decision == "raise1":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.25
+            decision_temp = max(to_call/4.0, 1.0/8.0)
         elif decision == "2raise2":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.5
+            decision_temp = max(to_call/4.0, 2.0/8.0)
         elif decision == "3raise3":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.75
+            decision_temp = max(to_call/4.0, 4.0/8.0)
         elif decision == "4raise4":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 1.0       
+            decision_temp = max(to_call/4.0, 1.0) 
         elif decision == "5raise5":
             decision_temp = 2.0   
+        elif decision == "6raise6":
+            decision_temp = 4.0   
         with self.confidence_lock:
             self.confidence += decision_temp                                 
         with self.mod_writing_lock:
@@ -631,36 +614,23 @@ class AppDelegate(NSObject):
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
-                return # no need to write to table, when folding.  
+                decision_temp = -1.0
             else:
                 decision_temp = 0.0 # checking when there is nothing to call                                
         elif decision == "call":
-            if to_call >= 1.0:
-                decision_temp = 1.0    
-            else:
-                decision_temp = 0.0                            
+            decision_temp = to_call/8.0                           
         elif decision == "raise1":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.25
+            decision_temp = max(to_call/4.0, 1.0/8.0)
         elif decision == "2raise2":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.5
+            decision_temp = max(to_call/4.0, 2.0/8.0)
         elif decision == "3raise3":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.75
+            decision_temp = max(to_call/4.0, 4.0/8.0)
         elif decision == "4raise4":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 1.0       
+            decision_temp = max(to_call/4.0, 1.0) 
         elif decision == "5raise5":
-            decision_temp = 2.0  
+            decision_temp = 2.0   
+        elif decision == "6raise6":
+            decision_temp = 4.0  
         with self.confidence_lock:
             self.confidence += decision_temp            
         with self.mod_writing_lock:
@@ -701,36 +671,23 @@ class AppDelegate(NSObject):
             to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
-                return # no need to write to table, when folding.  
+                decision_temp = -1.0 
             else:
                 decision_temp = 0.0 # checking when there is nothing to call                                
         elif decision == "call":
-            if to_call >= 1.0:
-                decision_temp = 1.0    
-            else:
-                decision_temp = 0.0                            
+            decision_temp = to_call/8.0                           
         elif decision == "raise1":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.25
+            decision_temp = max(to_call/4.0, 1.0/8.0)
         elif decision == "2raise2":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.5
+            decision_temp = max(to_call/4.0, 2.0/8.0)
         elif decision == "3raise3":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 0.75
+            decision_temp = max(to_call/4.0, 4.0/8.0)
         elif decision == "4raise4":
-            if to_call >= 1.0:
-                decision_temp = 2.0    
-            else:
-                decision_temp = 1.0       
+            decision_temp = max(to_call/4.0, 1.0) 
         elif decision == "5raise5":
-            decision_temp = 2.0  
+            decision_temp = 2.0   
+        elif decision == "6raise6":
+            decision_temp = 4.0  
         with self.confidence_lock:
             self.confidence += decision_temp
         with self.mod_writing_lock:
@@ -1005,23 +962,23 @@ class AppDelegate(NSObject):
                 if p_1_1 > 0.95:
                     with self.confidence_lock:
                         self.confidence += 4.5
-                        return "5raise5"
+                        # return "5raise5"
                 if p_1_1 > 0.85:
                     with self.confidence_lock:
                         self.confidence += 3.5
-                        return "4raise4"
+                        # return "4raise4"
                 if p_1_1 > 0.75:
                     with self.confidence_lock:
                         self.confidence += 2.5
-                        return "3raise3"
+                        # return "3raise3"
                 if p_1_1 > 0.65:
                     with self.confidence_lock:
                         self.confidence += 1.5
-                        return "2raise2"
+                        # return "2raise2"
                 if p_1_1 > 0.55:
                     with self.confidence_lock:
                         self.confidence += 0.5
-                        return "raise1"
+                        # return "raise1"
                 if random.randrange(2) == 0 and raise3_equity > 0.0: # swap these maybe later
                     return "3raise3"
                 elif random.randrange(2) == 0 and raise2_equity > 0.0: # swap these maybe later
@@ -2016,6 +1973,26 @@ class AppDelegate(NSObject):
         self.resetValues()
 
 
+
+    def hideButtons(self):
+        self.foldB.setHidden_(True)
+        self.callB.setHidden_(True)
+        self.raiseB1.setHidden_(True)
+        self.raiseB2.setHidden_(True)
+        self.raiseB3.setHidden_(True)
+        self.raiseB4.setHidden_(True)
+        self.raiseB5.setHidden_(True)
+
+        # show start-up controls
+        if self.dropdown is not None:
+            self.dropdown.setHidden_(False)
+        if self.bb_info is not None:
+            self.bb_info.setHidden_(False)
+        if self.gg_poker_button is not None:
+            self.gg_poker_button.setHidden_(False)
+
+
+
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
 
@@ -2484,12 +2461,15 @@ class AppDelegate(NSObject):
                             # self.resetValues()
                             self.foldErase() # remove later, when folds can be involved into feature set. maybe after experts_say_fold model is implemented.
                             with self.lock:
-                                if self.own_money > 99.0:
+                                if self.own_money > 199.0:
+
                                     close_game()
-                                    time.sleep(2)
-                                    print("exiting program bc own money > 99.0")
+                                    self.timer2.invalidate()
+                                    self.hideButtons()
+                                    print('money > 199, game closed')
+                                    # time.sleep(2)
                                     # open_game()
-                                    exit()        
+                                    
 
                             # with self.potheight_lock:
                             #     self.to_call = 0.0
@@ -2858,15 +2838,15 @@ def GUI():
     gg_poker_button.setAction_("runitup:")
     delegate.gg_poker_button = gg_poker_button
 
-    hello = NSButton.alloc().initWithFrame_(((10.0, 10.0), (80.0, 80.0)))
-    win.contentView().addSubview_(hello)
-    hello.setBezelStyle_(4)
-    hello.setTitle_("Hello!")
-    hello.setTarget_(app.delegate())
-    hello.setAction_("sayHello:")
-    delegate.hello = hello
+    # hello = NSButton.alloc().initWithFrame_(((10.0, 10.0), (80.0, 80.0)))
+    # win.contentView().addSubview_(hello)
+    # hello.setBezelStyle_(4)
+    # hello.setTitle_("Hello!")
+    # hello.setTarget_(app.delegate())
+    # hello.setAction_("sayHello:")
+    # delegate.hello = hello
 
-    close_game_btn = NSButton.alloc().initWithFrame_(((100.0, 10.0), (80.0, 80.0)))
+    close_game_btn = NSButton.alloc().initWithFrame_(((280.0, 10.0), (80.0, 80.0)))
     win.contentView().addSubview_(close_game_btn)
     close_game_btn.setBezelStyle_(4)
     close_game_btn.setTitle_("Close Game")
@@ -2947,6 +2927,16 @@ def GUI():
     raiseB5.setHidden_(True)
     delegate.raiseB5 = raiseB5
 
+    raiseB6 = NSButton.alloc().initWithFrame_(((430.0, 260.0), (50.0, 50.0)))
+    win.contentView().addSubview_(raiseB6)
+    raiseB6.setBezelStyle_(4)
+    raiseB6.setTitle_("32")
+    raiseB6.setTarget_(app.delegate())
+    raiseB6.setAction_("raise6:")
+    raiseB6.setKeyEquivalent_("6")
+    raiseB6.setHidden_(True)
+    delegate.raiseB6 = raiseB6
+
     # Erstelle einen Slider
     slider = NSSlider.alloc().initWithFrame_(((10, 100), (280, 30)))
     slider.setMinValue_(-10.0)
@@ -2964,7 +2954,7 @@ def GUI():
     # beep.initWithContentsOfFile_byReference_("/System/Library/Sounds/Tink.Aiff", 1)
     # hello.setSound_(beep)
 
-    bye = NSButton.alloc().initWithFrame_(((100.0, 10.0), (80.0, 80.0)))
+    bye = NSButton.alloc().initWithFrame_(((10.0, 10.0), (80.0, 80.0)))
     win.contentView().addSubview_(bye)
     bye.setBezelStyle_(4)
     bye.setTarget_(app)
@@ -2973,13 +2963,13 @@ def GUI():
     # bye.setHidden_(True)
     bye.setTitle_("Goodbye!")
 
-    hide = NSButton.alloc().initWithFrame_(((190.0, 10.0), (80.0, 80.0)))
-    win.contentView().addSubview_(hide)
-    hide.setBezelStyle_(4)
-    hide.setTarget_(app.delegate())
-    hide.setAction_("hide:")
-    hide.setEnabled_(1)
-    hide.setTitle_("Hide!")
+    # hide = NSButton.alloc().initWithFrame_(((190.0, 10.0), (80.0, 80.0)))
+    # win.contentView().addSubview_(hide)
+    # hide.setBezelStyle_(4)
+    # hide.setTarget_(app.delegate())
+    # hide.setAction_("hide:")
+    # hide.setEnabled_(1)
+    # hide.setTitle_("Hide!")
 
     # adios = NSSound.alloc()
     # adios.initWithContentsOfFile_byReference_("/System/Library/Sounds/Basso.aiff", 1)
