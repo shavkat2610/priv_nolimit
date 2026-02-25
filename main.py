@@ -61,9 +61,13 @@ from PIL import Image
 
 # todo:
 
+# regain chips when lower 20 maybe
 # i_bet
+# I_raise
+# i_call
+# playerinfo
 # check all inputs for correctness
-# clicking_images everywhere and works from there
+# clicking_images everywhere and work from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
@@ -72,7 +76,7 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 ########## buttons to add:
-# close_game-button 
+# close_game-button
 # emoji-button
 # unwait button
 # run it back up button (with possibly another big blind)
@@ -2861,6 +2865,14 @@ def GUI():
     hello.setTarget_(app.delegate())
     hello.setAction_("sayHello:")
     delegate.hello = hello
+
+    close_game_btn = NSButton.alloc().initWithFrame_(((100.0, 10.0), (80.0, 80.0)))
+    win.contentView().addSubview_(close_game_btn)
+    close_game_btn.setBezelStyle_(4)
+    close_game_btn.setTitle_("Close Game")
+    close_game_btn.setTarget_(app.delegate())
+    close_game_btn.setAction_("closeGame:")
+    delegate.close_game_btn = close_game_btn
 
     # holdm btns
     foldB = NSButton.alloc().initWithFrame_(((10.0, 260.0), (50.0, 50.0)))
