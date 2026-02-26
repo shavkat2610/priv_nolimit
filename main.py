@@ -82,7 +82,7 @@ from PIL import Image
 # unwait button
 # stand up button
 # rebuy button
-# raise32 button (32x big blind)
+# raise32 button (32x big blind) - needs testing
 
 
 
@@ -280,16 +280,6 @@ class AppDelegate(NSObject):
             NSThread.detachNewThreadSelector_toTarget_withObject_("startSong:", self, "hello")
         return
 
-    def sayHello_(self, sender):
-        print("Hello again, World!")
-        return
-
-    def hide_(self, sender):
-        print("Hiding buttons ...")
-        if self.hello is not None:
-            self.hello.setHidden_(True)
-        sender.setHidden_(True)
-        return
 
     def dropdownSelectionChanged_(self, sender):
         selected_index = sender.indexOfSelectedItem()
@@ -948,12 +938,14 @@ class AppDelegate(NSObject):
             raise3_equity = outputs[3]
             raise4_equity = outputs[4]
             raise5_equity = outputs[5]
+            raise6_equity = outputs[6]
             print("check equity: "+str(check_equity))
             print("raise1 equity: "+str(raise1_equity))
             print("raise2 equity: "+str(raise2_equity))
             print("raise3 equity: "+str(raise3_equity))
             print("raise4 equity: "+str(raise4_equity))   
             print("raise5 equity: "+str(raise5_equity))
+            print("raise6 equity: "+str(raise6_equity))
 
             if random.randrange(2) == 0:
                 print("random decision mode")
@@ -987,6 +979,8 @@ class AppDelegate(NSObject):
                     return "4raise4"
                 elif random.randrange(2) == 0 and raise5_equity > 0.0: # swap these maybe later
                     return "5raise5"
+                elif random.randrange(2) == 0 and raise6_equity > 0.0: # swap these maybe later
+                    return "6raise6"
                 elif raise1_equity > 0.0: # swap these maybe later
                     return "raise1"
                 else:
@@ -995,7 +989,9 @@ class AppDelegate(NSObject):
                 if raise1_equity < -0.15:
                     print("raise1 equity is negative")
                     return "call"
-                if raise5_equity - raise1_equity > 0.57 :
+                if raise6_equity - raise1_equity > 0.75:
+                    return "6raise6"
+                elif raise5_equity - raise1_equity > 0.57 :
                     return "5raise5"
                 else:
                     if raise4_equity - raise1_equity > 0.43 :
@@ -1008,6 +1004,8 @@ class AppDelegate(NSObject):
                                 return "2raise2"
                             else:
                                 print("else ...")
+                                if raise6_equity> 0.45:
+                                    return "6raise6"
                                 if raise5_equity> 0.35:
                                     return "5raise5"
                                 elif raise4_equity> 0.25:
@@ -1312,7 +1310,7 @@ class AppDelegate(NSObject):
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         else:
-            temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0])
+            temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
         with self.mk_comte_carlo_decision_lock:   
@@ -1388,6 +1386,8 @@ class AppDelegate(NSObject):
                 self.confidence += 1.2
                 if to_call > 5.0:
                     self.confidence += 2.5  
+                elif decision.startswith("6"):
+                    self.confidence += 10.0
                 elif decision.startswith("4") or decision.startswith("5"):
                     self.confidence += 8.5          
                 elif decision.startswith("2") or decision.startswith("3"):
@@ -1490,7 +1490,7 @@ class AppDelegate(NSObject):
         if to_call > 0.0:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([1.0, 2.0]))
         else:
-            outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))        
+            outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0]))        
         decision = self.makeAIDecision_(outputs)
         # with self.mk_comte_carlo_decision_lock:
         #     set_1_1 = self.equity_flop
@@ -1502,7 +1502,7 @@ class AppDelegate(NSObject):
                 self.confidence += 2.6
                 if to_call > 5.0:
                     self.confidence += 8.5
-                elif decision.startswith("4") or decision.startswith("5"):
+                elif decision.startswith("4") or decision.startswith("5") or decision.startswith("6"):
                     self.confidence += 8.5          
                 elif decision.startswith("2") or decision.startswith("3"):
                     self.confidence += 4.5
@@ -1524,7 +1524,7 @@ class AppDelegate(NSObject):
         if to_call > 0.0:
             outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([1.0, 2.0]))
         else:
-            outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0]))
+            outputs = turn_model_predict_multiple(self.mkTurnModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0]))
         if set_1_1 > 0.7: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
                 self.confidence += 2.5                
@@ -1564,10 +1564,7 @@ class AppDelegate(NSObject):
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
-                        if self.user_decision == "None_yet":
-                            self.decision = model_dec
-                        else:
-                            self.decision = self.user_decision
+                        self.decision = model_dec
                 else:
                     with self.dec_lock:
                         self.decision = decision
@@ -1588,17 +1585,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1612,17 +1602,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1636,17 +1619,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1660,17 +1636,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1684,17 +1653,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1708,17 +1670,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1732,17 +1687,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1756,17 +1704,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1780,17 +1721,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1816,17 +1750,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1840,17 +1767,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1864,17 +1784,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1888,17 +1801,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -1913,17 +1819,10 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         decision = self.user_decision
-                    if decision == "None_yet" or decision == "call":
+                    if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
-                        if decision == "None_yet":
-                            with self.dec_lock:
-                                self.decision = model_dec
-                        elif decision == "call" and model_dec == "fold":
-                            with self.dec_lock:
-                                self.decision = "call"
-                        else:
-                            with self.dec_lock: # user wants to call but model wants to raise maybe, we let the model raise 
-                                self.decision = model_dec
+                        with self.dec_lock:
+                            self.decision = model_dec
                     else:
                         with self.dec_lock:
                             self.decision = decision
@@ -2692,7 +2591,47 @@ class AppDelegate(NSObject):
                         # if not self.updateOwnMoney_(current_im=None):
                         #     time.sleep(0.45)
                         #     if not self.updateOwnMoney_(current_im=None):
-                        #         print("\nread own money failed after clicking ... 20\n")                                                 
+                        #         print("\nread own money failed after clicking ... 20\n")     
+                        # 
+                    elif self_dec.startswith("6"):
+                        if to_call < 16:
+                            print("raise6 was clicked")
+                            # click text field, type 4, hit (800, 610)
+                            pyautogui.moveTo(730, 557, duration=0.1)
+                            time.sleep(0.1)              
+                            pyautogui.click(730, 557)
+                            pyautogui.typewrite("32")
+                            pyautogui.moveTo(800, 610)
+                            time.sleep(0.1)              
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)             
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this     
+                        else: # simply clicking the raise button
+                            pyautogui.moveTo(800, 610, duration=0.1)
+                            time.sleep(0.1)                  
+                            pyautogui.click(800, 610)
+                            pyautogui.moveTo(670, 610)
+                            time.sleep(0.1)            
+                            pyautogui.click(670, 610) # call click
+                            pyautogui.click(x=1183, y=759)
+                            with self.potheight_lock:
+                                self.to_call = 0.0
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "call"  
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this                             
                 else: # no red button to push
                     
                     result = read_total_pot_money(current_im)
