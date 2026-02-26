@@ -376,6 +376,7 @@ class AppDelegate(NSObject):
         self.raiseB3.setHidden_(False)
         self.raiseB4.setHidden_(False)
         self.raiseB5.setHidden_(False)
+        self.close_game_btn.setHidden_(False)
 
 
         # start poker client and game
@@ -1881,6 +1882,7 @@ class AppDelegate(NSObject):
         self.raiseB3.setHidden_(True)
         self.raiseB4.setHidden_(True)
         self.raiseB5.setHidden_(True)
+        self.close_game_btn.setHidden_(True)
 
         # show start-up controls
         if self.dropdown is not None:
@@ -2791,6 +2793,7 @@ def GUI():
     close_game_btn.setTitle_("Close Game")
     close_game_btn.setTarget_(app.delegate())
     close_game_btn.setAction_("closeGame:")
+    close_game_btn.setHidden_(True)
     delegate.close_game_btn = close_game_btn
 
     # holdm btns
@@ -2800,7 +2803,7 @@ def GUI():
     foldB.setTitle_("fikd")
     foldB.setTarget_(app.delegate())
     foldB.setAction_("fold:")
-    foldB.setContentTintColor_(NSColor.redColor())
+    # foldB.setContentTintColor_(NSColor.redColor())
     foldB.setHidden_(True)
     foldB.setKeyEquivalent_("f")
     delegate.foldB = foldB
