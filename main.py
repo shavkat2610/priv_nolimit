@@ -377,6 +377,8 @@ class AppDelegate(NSObject):
         self.raiseB4.setHidden_(False)
         self.raiseB5.setHidden_(False)
         self.close_game_btn.setHidden_(False)
+        self.w8_btn.setHidden_(False)
+        self.slider.setHidden_(False)
 
 
         # start poker client and game
@@ -1883,6 +1885,8 @@ class AppDelegate(NSObject):
         self.raiseB4.setHidden_(True)
         self.raiseB5.setHidden_(True)
         self.close_game_btn.setHidden_(True)
+        self.w8_btn.setHidden_(True)
+        self.slider.setHidden_(True)
 
         # show start-up controls
         if self.dropdown is not None:
@@ -2796,11 +2800,21 @@ def GUI():
     close_game_btn.setHidden_(True)
     delegate.close_game_btn = close_game_btn
 
+    # unsit button
+    w8_btn = NSButton.alloc().initWithFrame_(((280.0, 100.0), (80.0, 80.0)))
+    win.contentView().addSubview_(w8_btn)
+    w8_btn.setBezelStyle_(4)
+    w8_btn.setTitle_("sit/unsit")
+    w8_btn.setTarget_(app.delegate())
+    w8_btn.setAction_("standUp:")
+    w8_btn.setHidden_(True)
+    delegate.w8_btn = w8_btn
+
     # holdm btns
     foldB = NSButton.alloc().initWithFrame_(((10.0, 260.0), (50.0, 50.0)))
     win.contentView().addSubview_(foldB)
     foldB.setBezelStyle_(4)
-    foldB.setTitle_("fikd")
+    foldB.setTitle_("f")
     foldB.setTarget_(app.delegate())
     foldB.setAction_("fold:")
     # foldB.setContentTintColor_(NSColor.redColor())
@@ -2888,6 +2902,7 @@ def GUI():
     slider.setAction_("sliderChanged:")
     # Füge den Slider zum Fenster hinzu
     win.contentView().addSubview_(slider)
+    slider.setHidden_(True)
     # window.makeKeyAndOrderFront_(None)
     delegate.slider = slider
 
@@ -2902,7 +2917,6 @@ def GUI():
     bye.setTarget_(app)
     bye.setAction_("stop:")
     bye.setEnabled_(1)
-    # bye.setHidden_(True)
     bye.setTitle_("Goodbye!")
 
     # hide = NSButton.alloc().initWithFrame_(((190.0, 10.0), (80.0, 80.0)))
