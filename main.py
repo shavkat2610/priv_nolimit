@@ -63,6 +63,7 @@ from PIL import Image
 # todo:
 
 
+# make_clicking_image(x, y) or click(x, y) & remove debugging afterwards
 # regain chips when lower 20 maybe
 # i_bet
 # I_raise
@@ -466,6 +467,11 @@ class AppDelegate(NSObject):
             if self.user_decision != "6raise6":
                 self.user_decision = "6raise6"
             return
+        
+    def standUp_(self, sender):
+        # take gamescreenshot, cut out 'global-sit'-part (before and after checking), save for debugging, to implement a check if sitting successfully
+        get_up_stand_up()
+        return
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time

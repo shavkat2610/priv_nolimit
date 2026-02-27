@@ -980,7 +980,7 @@ def read_game_rules(big_blind = "200"):
     time.sleep(2)
     # print("positioning the game")
     if position_the_game():
-        
+        # read player info here again maybe ?
         pyautogui.moveTo(25, 25)
         return True
         time.sleep(1)
