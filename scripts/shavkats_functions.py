@@ -1157,8 +1157,14 @@ def play_shape_of_my_heart(data):
 
 
 def check_if_w8_for_blinds(im):
+    pixels1 = im.load()
+    sceen_pix = pixels1[528, 503]
     im1 = crop_wh(im, 525, 499, 102, 30)
     im0 = Image.open("images/w8_for_blinds_checked.png")
+    pixels2 = Image.load()
+    supposed_to_be = pixels2[3, 4]
+    print("sceen_pix: "+str(sceen_pix))
+    print("supposed_to_be: "+str(supposed_to_be))
     return comp_imgs(im0, im1)
 
 
