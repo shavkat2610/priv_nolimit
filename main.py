@@ -310,8 +310,7 @@ class AppDelegate(NSObject):
         return
 
     def updatePlayerData(self):
-        return
-        pyautogui.moveTo(25, 25)
+        # pyautogui.moveTo(25, 25)
         time.sleep(.5)
         if not check_if_we_holdin_yet():
             global_cash_game_sit_out()
@@ -383,14 +382,13 @@ class AppDelegate(NSObject):
 
 
         # start poker client and game
-        if not run_it_up(big_blind = self.big_blind):
+        yes = run_it_up(big_blind = self.big_blind)
+        if not yes:
             print("run it up did not work")
             exit() # is this the right way to exit the app?
         # todo: read player data here
-        try:
+        if yes == "yes":
             self.updatePlayerData()
-        except Exception as e:
-            print(e)
 
 
 

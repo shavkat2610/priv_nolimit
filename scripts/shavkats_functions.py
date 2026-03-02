@@ -31,7 +31,7 @@ def click(x, y, im = None, debug = False, calling_function = None): # done - nee
         # make screenshot, mark where we clicking, save image
         if im == None:
             im = game_screenshot()
-        point_on_image = (x, y-100)
+        point_on_image = (x, y-95)
         pixels = im.load()
         pixels[point_on_image[0]+1][point_on_image[1]] = (255, 0, 0, 255)
         pixels[point_on_image[0]+2][point_on_image[1]] = (255, 0, 0, 255)
@@ -1016,12 +1016,14 @@ def read_game_rules(big_blind = "200"):
     time.sleep(2)
     # print("positioning the game")
     if position_the_game():
-        # read player info here again maybe ?
+        
         pyautogui.moveTo(25, 25)
-        return True
         time.sleep(1)
         if not check_if_we_holdin_yet():
-            return True
+            if not global_cash_game_sit_out():
+                return True
+            if check_if_sitting() and not check_if_we_holdin_yet():
+                return "yes"   
         else:
             return True #already big blind and holding cards
     print("closing the game")
@@ -1053,19 +1055,17 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 
 
-def check_if_sitting(im): # pass image screenshot
+def check_if_sitting(im=None): # pass image screenshot
+    if im == None:
+        im = game_screenshot()
     # chkdimg = Image.open("images/global_sit_checked.png")
     # pixels_postbe = chkdimg.load()
     # actual_pixels = crop_wh(im, 20, 470, 25, 25).load() # 22, 481
     pixels = im.load()
     # print("pixels_postbe[2, 11]: "+str(pixels_postbe[2, 11]))
     # print("actual_pixels[2, 11]: "+str(actual_pixels[2, 11]))
-    print("pixels[22, 481]: "+str(pixels[22, 481]))
-
-    # result = comp_imgs(chkdimg,crop_wh(im, 20, 470, 25, 25))
-    # print("checking if sitting: "+str(result))
-    # chkdimg.show()
-    return pixels[22, 481] # global cash game sit out controller
+    # print("pixels[22, 481]: "+str(pixels[22, 481]))
+    return pixels[22, 481][0]<20 
 
 
 
@@ -1074,7 +1074,8 @@ def unwait_4blinds(im = None):
     if im == None:
         im = game_screenshot()
     if check_if_w8_for_blinds(im):
-        pyautogui.click(531, 602)
+        # pyautogui.click(531, 602)
+        click(531, 602, im = im, calling_function="unwait_4blinds", debug=True)
         return im
 
 
@@ -1099,10 +1100,13 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
         im = game_screenshot()
     if check_if_sitting(im):
         return False #already sitting out
-    pyautogui.click(25, 581) # global cash game sit out controller
-    time.sleep(5)
-    print("sit out globally clicked")
-    return True
+    click(25, 581, im = im, calling_function="global_cash_game_sit_out", debug=True)
+    time.sleep(1.5)
+    if check_if_sitting():
+        print("sit out globally clicked")
+        return True
+    print("!!! something went wrong at global_cash_game_sit_out")
+    return False
 
 
 
@@ -1113,12 +1117,14 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
 
     
 def get_up_stand_up(im = None): # pass image screenshot here
-    # if im == None:
-    #     im = game_screenshot()
-    # if check_if_sitting(im):
-    click(25, 581, im = im, calling_function="get_up_stand_up", debug=True)
+    if im == None:
+        im = game_screenshot()
+    if check_if_sitting(im):
+        click(25, 581, im = im, calling_function="get_up_stand_up", debug=True)
+    else: 
+        return False
     # pyautogui.click(25, 581) # global cash game sit out controller
-    time.sleep(2)
+    time.sleep(1.5)
     print("got up")
     return True
     # return False
