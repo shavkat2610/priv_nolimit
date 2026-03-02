@@ -1161,7 +1161,7 @@ def check_if_w8_for_blinds(im):
     sceen_pix = pixels1[528, 503]
     im1 = crop_wh(im, 525, 499, 102, 30)
     im0 = Image.open("images/w8_for_blinds_checked.png")
-    pixels2 = Image.load()
+    pixels2 = im0.load()
     supposed_to_be = pixels2[3, 4]
     print("sceen_pix: "+str(sceen_pix))
     print("supposed_to_be: "+str(supposed_to_be))
