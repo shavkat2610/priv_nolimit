@@ -473,7 +473,6 @@ class AppDelegate(NSObject):
             return
         
     def standUp_(self, sender):
-        # take gamescreenshot, cut out 'global-sit'-part (before and after checking), save for debugging, to implement a check if sitting successfully
         get_up_stand_up()
         return
 
@@ -2812,7 +2811,7 @@ def GUI():
     delegate.close_game_btn = close_game_btn
 
     # unsit button
-    w8_btn = NSButton.alloc().initWithFrame_(((280.0, 100.0), (80.0, 80.0)))
+    w8_btn = NSButton.alloc().initWithFrame_(((340.0, 110.0), (60.0, 60.0)))
     win.contentView().addSubview_(w8_btn)
     w8_btn.setBezelStyle_(4)
     w8_btn.setTitle_("sit/unsit")
