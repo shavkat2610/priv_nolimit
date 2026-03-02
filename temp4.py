@@ -5,7 +5,7 @@ im1 = Image.open("images/global_sit_checked.png")
 
 pixels = im1.load()
 
-print(pixels[2][10])
+print(pixels[2, 10])
 
 
 
