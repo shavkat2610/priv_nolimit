@@ -1055,10 +1055,15 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 def check_if_sitting(im): # pass image screenshot
     chkdimg = Image.open("images/global_sit_checked.png")
-    result = comp_imgs(chkdimg,crop_wh(im, 20, 470, 25, 25))
-    print("checking if sitting: "+str(result))
+    pixels_postbe = chkdimg.load()
+    actual_pixels = crop_wh(im, 20, 470, 25, 25).load()
+    print("pixels_postbe[2, 11]: "+str(pixels_postbe[2, 11]))
+    print("actual_pixels[2, 11]: "+str(actual_pixels[2, 11]))
+
+    # result = comp_imgs(chkdimg,crop_wh(im, 20, 470, 25, 25))
+    # print("checking if sitting: "+str(result))
     # chkdimg.show()
-    return result # global cash game sit out controller
+    return True # global cash game sit out controller
 
 
 
