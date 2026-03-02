@@ -1036,17 +1036,11 @@ def read_game_rules(big_blind = "200"):
 def crop_wh(img, left, top, width, height):
     return img.crop((left, top, left + width, top + height))
 
-def check_if_sitting(im): # pass image screenshot
-    chkdimg = Image.open("images/global_sit_checked.png")
-    result = comp_imgs(chkdimg,crop_wh(im, 20, 470, 25, 25))
-    print("checking if sitting: "+str(result))
-    # chkdimg.show()
-    return result # global cash game sit out controller
 
-def check_if_we_holdin_yet(im = None): # im = game-screenshot
+
+def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
     if im == None:
         im = game_screenshot()
-    print("checking if we holding cards")
     im0 = crop_wh(im, 372, 399, 101, 64)
     # im0.show()
     data1 = np.asarray(im0)
@@ -1059,9 +1053,12 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot
 
 
 
-
-
-
+def check_if_sitting(im): # pass image screenshot
+    chkdimg = Image.open("images/global_sit_checked.png")
+    result = comp_imgs(chkdimg,crop_wh(im, 20, 470, 25, 25))
+    print("checking if sitting: "+str(result))
+    # chkdimg.show()
+    return result # global cash game sit out controller
 
 
 
@@ -1073,7 +1070,9 @@ def unwait_4blinds(im = None):
         pyautogui.click(531, 602)
         return im
 
-def w8_4blinds(im = None):
+
+
+def w8_4blinds(im = None): # this is not always possible, so using this function probably will not be necessary. can be discarded probably
     if im == None:
         im = game_screenshot()
     if not check_if_w8_for_blinds(im):
@@ -1097,6 +1096,14 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
     time.sleep(5)
     print("sit out globally clicked")
     return True
+
+
+
+
+
+
+
+
     
 def get_up_stand_up(im = None): # pass image screenshot here
     # if im == None:
@@ -1163,16 +1170,9 @@ def play_shape_of_my_heart(data):
 
 
 
-def check_if_w8_for_blinds(im):
+def check_if_w8_for_blinds(im): # works
     pixels1 = im.load()
     screen_pix = pixels1[528, 503]
     return screen_pix[0]>250 and screen_pix[1] > 185 and screen_pix[1] < 210 and screen_pix[2] > 45 and screen_pix[2] < 55
-    im1 = crop_wh(im, 525, 499, 102, 30)
-    im0 = Image.open("images/w8_for_blinds_checked.png")
-    pixels2 = im0.load()
-    supposed_to_be = pixels2[3, 4]
-    print("sceen_pix: "+str(sceen_pix))
-    print("supposed_to_be: "+str(supposed_to_be))
-    return comp_imgs(im0, im1)
 
 
