@@ -1008,7 +1008,7 @@ def read_game_rules(big_blind = "200"):
     
     time.sleep(1)
 
-    im = game_screenshot()
+    im = screenshot_area(point = (0, 0), size = [1000, 540], file_name=None)
 
     pixels = im.load()
     if pixels[904, 362-95] == (92, 92, 92, 255): #receive chips
