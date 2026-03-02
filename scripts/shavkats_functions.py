@@ -1162,8 +1162,3 @@ def check_if_w8_for_blinds(im):
     return comp_imgs(im0, im1)
 
 
-
-
-if __name__ == "__main__":
-    im = Image.open("temp_screenshot/test_screenshot_1771160982_1.png")
-    print(check_if_w8_for_blinds(im))
