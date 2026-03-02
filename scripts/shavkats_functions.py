@@ -25,6 +25,42 @@ def_clint = [12, 46] #69, 70
 l_info_read = False
 
 
+
+def click(x, y, im = None, debug = False, calling_function = None): # done - needs integration and testing
+    if debug:
+        # make screenshot, mark where we clicking, save image
+        if im == None:
+            im = game_screenshot()
+        point_on_image = (x, y-100)
+        pixels = im.load()
+        pixels[point_on_image[0]+1][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]+2][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]+3][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]+4][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]-1][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]-2][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]-3][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]-4][point_on_image[1]] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]+1] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]+2] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]+3] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]+4] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]-1] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]-2] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]-3] = (255, 0, 0, 255)
+        pixels[point_on_image[0]][point_on_image[1]-4] = (255, 0, 0, 255)
+        if calling_function == None:
+            im.save(f"clicking_images/click_{str(pixels[760, 490][0][1][2])}_{str(time.time())[:10]}.png")
+        else:
+            im.save(f"clicking_images/click_{calling_function}_{str(pixels[760, 490][0][1][2])}_{str(time.time())[:10]}.png")
+
+        pyautogui.click(x, y)
+    else:
+        pyautogui.click(x, y)
+
+
+
+
 def remove_debug_imgs():
     removing_files = glob.glob('temp_*.png')
     # removing_files_0 = glob.glob('temp_*.png')
@@ -1059,7 +1095,8 @@ def get_up_stand_up(im = None): # pass image screenshot here
     # if im == None:
     #     im = game_screenshot()
     # if check_if_sitting(im):
-    pyautogui.click(25, 581) # global cash game sit out controller
+    click(25, 581, im = im, calling_function="get_up_stand_up", debug=True)
+    # pyautogui.click(25, 581) # global cash game sit out controller
     time.sleep(2)
     print("got up")
     return True
