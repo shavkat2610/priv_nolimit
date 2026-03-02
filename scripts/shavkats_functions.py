@@ -1005,7 +1005,19 @@ def read_game_rules(big_blind = "200"):
             if not l_info_read:
                 if see_if_there_is_l_info():
                     click_one_times_please('images/join_again.png', debug=False)
-            
+    
+    time.sleep(1)
+
+    im = game_screenshot()
+
+    pixels = im.load()
+    if pixels[904, 362-95] == (92, 92, 92, 255): #receive chips
+        print("receiving chips ...")
+        click(904, 362-95, im = im, calling_function="read_game_rules", debug=True)
+        return run_it_up(big_blind=big_blind)
+
+    
+
     click_ok(debug = False)  
 
     time.sleep(1)
