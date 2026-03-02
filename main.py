@@ -382,7 +382,12 @@ class AppDelegate(NSObject):
 
 
         # start poker client and game
-        yes = run_it_up(big_blind = self.big_blind)
+        try:
+            yes = run_it_up(big_blind = self.big_blind)
+        except Exception as e:
+            print("problem with run_it_up, maybe client already running ?")
+            print(e)
+            exit()
         if not yes:
             print("run it up did not work")
             exit() # is this the right way to exit the app?
