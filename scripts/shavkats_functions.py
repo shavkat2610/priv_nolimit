@@ -1164,3 +1164,6 @@ def check_if_w8_for_blinds(im):
 
 
 
+if __name__ == "__main__":
+    
+    pass

@@ -1219,7 +1219,7 @@ def handle_all_in(im = None):
         else:
             if pixels[576, 320][1] > 250:
                 pyautogui.moveTo(576, 420, duration=0.3)
-                time.sleep(0.5)
+                time.sleep(0.25)
                 pyautogui.click(576, 420) # hehe :D
                 print("\nclick open fifth ...")
                 return False
