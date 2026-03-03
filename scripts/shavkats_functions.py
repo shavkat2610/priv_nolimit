@@ -27,6 +27,7 @@ l_info_read = False
 
 
 def click(x, y, im = None, debug = False, calling_function = None): # done - needs integration and testing
+    print("click , debug: "+str(debug))
     if debug:
         # make screenshot, mark where we clicking, save image
         if im == None:
