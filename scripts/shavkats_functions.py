@@ -1035,6 +1035,7 @@ def read_game_rules(big_blind = "200"):
             if not global_cash_game_sit_out():
                 return True
             if check_if_sitting() and not check_if_we_holdin_yet():
+                print("read_game_rules returning yes")
                 return "yes"   
         else:
             return True #already big blind and holding cards
@@ -1053,6 +1054,7 @@ def crop_wh(img, left, top, width, height):
 
 
 def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
+    print("checking if we holding yet")
     if im == None:
         im = game_screenshot()
     im0 = crop_wh(im, 372, 399, 101, 64)
