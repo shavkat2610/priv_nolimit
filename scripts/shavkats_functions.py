@@ -1071,16 +1071,16 @@ def check_if_sitting(im=None): # pass image screenshot
     print("check if sitting ...")
     if im == None:
         im = game_screenshot()
-    chkdimg = Image.open("images/global_sit_checked.png")
-    pixels_postbe = chkdimg.load()
+    # chkdimg = Image.open("images/global_sit_checked.png")
+    # pixels_postbe = chkdimg.load()
     # actual_pixels = crop_wh(im, 20, 470, 25, 25).load() # 22, 481
     pixels = im.load()
-    print("pixels_postbe[2, 11]: "+str(pixels_postbe[2, 11]))
+    # print("pixels_postbe[2, 11]: "+str(pixels_postbe[2, 11]))
     # print("actual_pixels[2, 11]: "+str(actual_pixels[2, 11]))
     # print("pixels[22, 481]: "+str(pixels[22, 481]))
-    print("pixels[22, 481]: "+str(pixels[22, 481]))
-    print("pixels[22, 481][0]<20 : "+str(pixels[22, 481][0]<20))
-    return pixels[22, 481][0]<20 
+    # print("pixels[22, 481]: "+str(pixels[22, 481]))
+    # print("pixels[22, 481][0]>20 : "+str(pixels[22, 481][0]>20))
+    return pixels[22, 481][0]>20 
 
 
 
