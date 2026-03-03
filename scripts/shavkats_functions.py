@@ -1080,7 +1080,9 @@ def check_if_sitting(im=None): # pass image screenshot
     # print("pixels[22, 481]: "+str(pixels[22, 481]))
     # print("pixels[22, 481]: "+str(pixels[22, 481]))
     # print("pixels[22, 481][0]>20 : "+str(pixels[22, 481][0]>20))
-    return pixels[22, 481][0]>20 
+    result = pixels[22, 481][0]>20 
+    print("check_if_sitting result: "+str(result))
+    return result
 
 
 
