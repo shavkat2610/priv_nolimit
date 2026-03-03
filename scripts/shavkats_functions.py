@@ -1039,6 +1039,7 @@ def read_game_rules(big_blind = "200"):
                 print("read_game_rules returning yes")
                 return "yes"   
         else:
+            print("#already big blind and holding cards")
             return True #already big blind and holding cards
     print("closing the game")
     if close_game(): # close game brings client back up 
