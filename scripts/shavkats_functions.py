@@ -1011,9 +1011,9 @@ def read_game_rules(big_blind = "200"):
     im = screenshot_area(point = (0, 0), size = [1000, 540], file_name=None)
 
     pixels = im.load()
-    if pixels[904, 362-95] == (92, 92, 92, 255): #receive chips
+    if pixels[904, 267] == (92, 92, 92, 255): #receive chips
         print("receiving chips ...")
-        click(904, 362-95, im = im, calling_function="read_game_rules", debug=True)
+        click(904, 267, im = im, calling_function="read_game_rules", debug=True)
         return run_it_up(big_blind=big_blind)
 
     
