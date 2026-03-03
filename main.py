@@ -3,7 +3,7 @@ import pyautogui
 import time
 import numpy as np
 from chatGPT_XGBRegressor import river_features, turn_features
-from scripts.shavkats_functions import click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
+from scripts.shavkats_functions import click, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
                                             check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds
@@ -1954,7 +1954,7 @@ class AppDelegate(NSObject):
                     self.writeToCSVs()
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
-                    pyautogui.click(x=1183, y=759)    
+                    click(x=1183, y=759, im = current_im, debug = True, calling_function = "gameScreenshot_allIn")
                 with self.cards_lock:
                     if self.cards_open:
                         self.cards_open = False
