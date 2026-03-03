@@ -1122,7 +1122,7 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
     if check_if_sitting(im):
         print("#already sitting out")
         return False #already sitting out
-    click(25, 581, im = im, calling_function="global_cash_game_sit_out", debug=True)
+    click(24, 576, im = im, calling_function="global_cash_game_sit_out", debug=True)
     time.sleep(1.5)
     if check_if_sitting():
         print("sit out globally clicked")
