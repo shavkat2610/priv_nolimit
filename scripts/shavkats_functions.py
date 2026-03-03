@@ -1129,7 +1129,7 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
     if check_if_sitting(im):
         print("#already sitting out")
         return False #already sitting out
-    click(24, 576, im = im, calling_function="global_cash_game_sit_out", debug=True)
+    click(24, 576, im = im, calling_function="global_cash_game_sit_out", debug=False)
     time.sleep(1.5)
     if check_if_sitting():
         print("sit out globally clicked")
@@ -1150,7 +1150,7 @@ def get_up_stand_up(im = None): # pass image screenshot here
     if im == None:
         im = game_screenshot()
     if check_if_sitting(im):
-        click(25, 581, im = im, calling_function="get_up_stand_up", debug=True)
+        click(25, 576, im = im, calling_function="get_up_stand_up", debug=True)
     else: 
         return False
     # pyautogui.click(25, 581) # global cash game sit out controller
