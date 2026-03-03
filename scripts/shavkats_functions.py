@@ -51,9 +51,9 @@ def click(x, y, im = None, debug = False, calling_function = None): # done - nee
         pixels[point_on_image[0],point_on_image[1]-3] = (255, 0, 0, 255)
         pixels[point_on_image[0],point_on_image[1]-4] = (255, 0, 0, 255)
         if calling_function == None:
-            im.save(f"clicking_images/click_{str(pixels[760, 490][0][1][2])}_{str(time.time())[:10]}.png")
+            im.save(f"clicking_images/click_{str(pixels[760, 490][0],pixels[760, 490][1],pixels[760, 490][2])}_{str(time.time())[:10]}.png")
         else:
-            im.save(f"clicking_images/click_{calling_function}_{str(pixels[760, 490][0][1][2])}_{str(time.time())[:10]}.png")
+            im.save(f"clicking_images/click_{calling_function}_{str(pixels[760, 490][0],pixels[760, 490][1],pixels[760, 490][2])}_{str(time.time())[:10]}.png")
 
         pyautogui.click(x, y)
     else:
