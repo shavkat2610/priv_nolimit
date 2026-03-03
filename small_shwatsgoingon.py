@@ -1358,7 +1358,7 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 def simulate_gss(im=None):
     if im == None:
-        im = Image.open('shmol_new_data/connectivity_issues_1766017203.png') #should be a screenshot
+        im = Image.open('temp_screenshot/test_screenshot_1771160982_1.png') #should be a screenshot
 
     # handle_all_in(im=im):
 
