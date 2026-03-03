@@ -1040,6 +1040,7 @@ def read_game_rules(big_blind = "200"):
             if check_if_sitting() and check_if_really_seated():
                 print("read_game_rules returning yes")
                 return "yes"   
+            return True
         else:
             print("#already big blind and holding cards")
             return True #already big blind and holding cards
