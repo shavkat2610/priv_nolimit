@@ -312,6 +312,7 @@ class AppDelegate(NSObject):
         return
 
     def updatePlayerData(self):
+        print("AppDelegate.updatePlayerData ... ")
         # pyautogui.moveTo(25, 25)
         time.sleep(.5)
         if not check_if_we_holdin_yet():

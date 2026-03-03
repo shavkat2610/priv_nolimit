@@ -1068,6 +1068,7 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 
 def check_if_sitting(im=None): # pass image screenshot
+    print("check if sitting ...")
     if im == None:
         im = game_screenshot()
     # chkdimg = Image.open("images/global_sit_checked.png")
@@ -1077,6 +1078,8 @@ def check_if_sitting(im=None): # pass image screenshot
     # print("pixels_postbe[2, 11]: "+str(pixels_postbe[2, 11]))
     # print("actual_pixels[2, 11]: "+str(actual_pixels[2, 11]))
     # print("pixels[22, 481]: "+str(pixels[22, 481]))
+    print("pixels[22, 481]: "+str(pixels[22, 481]))
+    print("pixels[22, 481][0]<20 : "+str(pixels[22, 481][0]<20))
     return pixels[22, 481][0]<20 
 
 
@@ -1108,9 +1111,11 @@ def w8_4blinds(im = None): # this is not always possible, so using this function
 
 # checking the global cash game sit out button thingy
 def global_cash_game_sit_out(im = None): #pass image screenshot here
+    print("global_cash_game_sit_out ...")
     if im == None:
         im = game_screenshot()
     if check_if_sitting(im):
+        print("#already sitting out")
         return False #already sitting out
     click(25, 581, im = im, calling_function="global_cash_game_sit_out", debug=True)
     time.sleep(1.5)
