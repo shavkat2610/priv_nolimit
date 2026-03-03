@@ -1062,7 +1062,12 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
     # im0.show()
     data1 = np.asarray(im0)
     # print(data1.shape)
-    # print(data1[4,21,0])
+    print("data1[4,16,0]: "+str(data1[4,16,0]))
+    print("data1[4,17,0]: "+str(data1[4,17,0]))
+    print("data1[4,18,0]: "+str(data1[4,18,0]))
+    print("data1[4,19,0]: "+str(data1[4,19,0]))
+    print("data1[4,20,0]: "+str(data1[4,20,0]))
+    print("data1[4,21,0]: "+str(data1[4,21,0]))
     if data1[4,17,0] > 62 and data1[4,17,0]<70:
         if data1[4,18,0] > 140 and data1[4,21,0]<42:
             print("we are not")
