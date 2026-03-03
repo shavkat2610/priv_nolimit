@@ -3,7 +3,7 @@ import pyautogui
 import time
 import numpy as np
 from chatGPT_XGBRegressor import river_features, turn_features
-from scripts.shavkats_functions import click, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
+from scripts.shavkats_functions import check_if_really_seated, click, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
                                             check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds
@@ -314,10 +314,6 @@ class AppDelegate(NSObject):
     def updatePlayerData(self):
         print("AppDelegate.updatePlayerData ... ")
         # pyautogui.moveTo(25, 25)
-        time.sleep(.5)
-        if not check_if_we_holdin_yet():
-            global_cash_game_sit_out()
-        else: return False
         # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")
         # NSLog("updating player data")
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
