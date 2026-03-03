@@ -1036,7 +1036,7 @@ def read_game_rules(big_blind = "200"):
             if not global_cash_game_sit_out():
                 print("!!!! NOT GLOBAL SIT SOMEHOW")
                 return True
-        time.sleep(1)
+            time.sleep(1)
             if check_if_sitting() and (not check_if_we_holdin_yet()):
                 print("read_game_rules returning yes")
                 return "yes"   
