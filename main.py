@@ -65,10 +65,11 @@ from PIL import Image
 # todo:
 
 
+# remove equity flop from river and turn and equity_river from turn model data.
 # regain chips when lower 20 maybe
-# i_bet
-# I_raise
-# i_call
+# i_bet (preflop, flop, river, turn)
+# I_raise (preflop, flop, river, turn)
+# i_call (preflop, flop, river, turn)
 # playerinfo: average of all active holders AND the one before me
 # check all inputs for correctness
 # clicking_images everywhere and work from there
