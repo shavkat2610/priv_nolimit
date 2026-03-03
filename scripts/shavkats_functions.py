@@ -1035,7 +1035,7 @@ def read_game_rules(big_blind = "200"):
         if not check_if_we_holdin_yet():
             if not global_cash_game_sit_out():
                 return True
-            if check_if_sitting() and not check_if_we_holdin_yet():
+            if check_if_sitting() and (not check_if_we_holdin_yet()):
                 print("read_game_rules returning yes")
                 return "yes"   
         else:
@@ -1065,7 +1065,9 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
     # print(data1[4,21,0])
     if data1[4,17,0] > 62 and data1[4,17,0]<70:
         if data1[4,18,0] > 140 and data1[4,21,0]<42:
+            print("we are not")
             return False
+    print("we are")
     return True
 
 
@@ -1139,6 +1141,7 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
 
     
 def get_up_stand_up(im = None): # pass image screenshot here
+    print("get_up_stand_up ...")
     if im == None:
         im = game_screenshot()
     if check_if_sitting(im):
@@ -1206,6 +1209,7 @@ def play_shape_of_my_heart(data):
 
 
 def check_if_w8_for_blinds(im): # works
+    print("check_if_w8_for_blinds ...")
     pixels1 = im.load()
     screen_pix = pixels1[528, 503]
     return screen_pix[0]>250 and screen_pix[1] > 185 and screen_pix[1] < 210 and screen_pix[2] > 45 and screen_pix[2] < 55
