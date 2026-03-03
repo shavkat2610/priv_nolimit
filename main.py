@@ -38,7 +38,7 @@ from PIL import Image
 # done:
 
 
-# read played info -done
+
 # red own cards -done
 # read pot money -done
 # read deck cards -done
@@ -57,18 +57,19 @@ from PIL import Image
 # new bug somewhere (maybe always at all in?) - done
 # make decision buttons work again - done
 # close_game-button - done
+# make_clicking_image(x, y) or click(x, y) & remove debugging afterwards - done
+
 
 
 
 # todo:
 
 
-# make_clicking_image(x, y) or click(x, y) & remove debugging afterwards
 # regain chips when lower 20 maybe
 # i_bet
 # I_raise
 # i_call
-# playerinfo
+# playerinfo: average of all active holders AND the one before me
 # check all inputs for correctness
 # clicking_images everywhere and work from there
 # run it three times, accept opponents request
@@ -78,6 +79,7 @@ from PIL import Image
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
+# read played info - redo with finetuned model maybe
 ########## buttons to add:
 # emoji-button
 # unwait button
