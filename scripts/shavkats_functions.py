@@ -1037,7 +1037,7 @@ def read_game_rules(big_blind = "200"):
                 print("!!!! NOT GLOBAL SIT SOMEHOW")
                 return True
             time.sleep(1)
-            if check_if_sitting() and (not check_if_we_holdin_yet()):
+            if check_if_sitting() and check_if_really_seated():
                 print("read_game_rules returning yes")
                 return "yes"   
         else:
@@ -1054,6 +1054,31 @@ def read_game_rules(big_blind = "200"):
 
 def crop_wh(img, left, top, width, height):
     return img.crop((left, top, left + width, top + height))
+
+
+
+def check_if_really_seated(im = None):
+    print("checking if we really seated")
+    if im == None:
+        im = game_screenshot()
+    im0 = crop_wh(im, 372, 399, 101, 64)
+    # im0.show()
+    data1 = np.asarray(im0)
+    # print(data1.shape)
+    print("data1[4,16,0]: "+str(data1[4,16,0])) # 20
+    print("data1[4,17,0]: "+str(data1[4,17,0])) # 22
+    print("data1[4,18,0]: "+str(data1[4,18,0])) # 29
+    print("data1[4,19,0]: "+str(data1[4,19,0])) # 30
+    print("data1[4,20,0]: "+str(data1[4,20,0])) # 23
+    print("data1[4,21,0]: "+str(data1[4,21,0])) # 7
+    if data1[4,19,0] > 25 and data1[4,16,0]<25:
+        if data1[4,18,0] > 25 and data1[4,21,0]<10:
+            print("we are")
+            return True
+    print("we are not")
+    return False
+
+
 
 
 
