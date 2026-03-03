@@ -150,18 +150,6 @@ def check_holders(im=None, example_img_path_for_card_holder = "card_holders_exam
 
 
 
-def check_if_we_holdin_yet(im): # im = game-screenshot
-    # print("checking if we holding cards")
-    im0 = crop_wh(im, 372, 399, 101, 64)
-    # im0.show()
-    data1 = np.asarray(im0)
-    # print(data1.shape)
-    # print(data1[4,21,0])
-    if data1[4,17,0] > 62 and data1[4,17,0]<70:
-        if data1[4,18,0] > 140 and data1[4,21,0]<42:
-            return False
-    return True
-
 
 
 
@@ -1344,6 +1332,26 @@ def turn_model_predict_multiple(input_array):
 
 
 
+def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
+    print("checking if we holding yet")
+    if im == None:
+        im = game_screenshot()
+    im0 = crop_wh(im, 372, 399, 101, 64)
+    # im0.show()
+    data1 = np.asarray(im0)
+    # print(data1.shape)
+    print("data1[4,16,0]: "+str(data1[4,16,0]))
+    print("data1[4,17,0]: "+str(data1[4,17,0]))
+    print("data1[4,18,0]: "+str(data1[4,18,0]))
+    print("data1[4,19,0]: "+str(data1[4,19,0]))
+    print("data1[4,20,0]: "+str(data1[4,20,0]))
+    print("data1[4,21,0]: "+str(data1[4,21,0]))
+    if data1[4,17,0] > 62 and data1[4,17,0]<70:
+        if data1[4,18,0] > 140 and data1[4,21,0]<42:
+            print("we are not")
+            return False
+    print("we are")
+    return True
 
 
 
@@ -1368,7 +1376,9 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    print(general_whats_going_on_model(im=im, debug=True))
+    # print(general_whats_going_on_model(im=im, debug=True))
+
+    print(check_if_we_holdin_yet(im))
 
     return False
 
@@ -1431,23 +1441,23 @@ import glob
 if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
-    load_smol_watsgoingon_model()
+    # load_smol_watsgoingon_model()
     # prepare_pot_digits()
-    path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    # path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
-    for pth in path :
-        if pth.endswith(".png"):
-            im = Image.open(pth)
-            # tess_read(im=im)
-            # im = Image.open("gsss/game_screenshot1764690404.png")
-            if simulate_gss(im=im):
-                print("found one ! "+str(pth))
-            # time.sleep(0.1)
-    print("done with all images !")
-    print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
+    # for pth in path :
+    #     if pth.endswith(".png"):
+    #         im = Image.open(pth)
+    #         # tess_read(im=im)
+    #         # im = Image.open("gsss/game_screenshot1764690404.png")
+    #         if simulate_gss(im=im):
+    #             print("found one ! "+str(pth))
+    #         # time.sleep(0.1)
+    # print("done with all images !")
+    # print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
     # print(path)
-    # simulate_gss()
+    simulate_gss()
 
     # load_flop_equity_model()
     # print("start")
