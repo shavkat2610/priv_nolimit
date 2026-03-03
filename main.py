@@ -391,6 +391,14 @@ class AppDelegate(NSObject):
         except Exception as e:
             print("problem with run_it_up, maybe client already running ?")
             print(e)
+            print("e.args")
+            print(e.args)
+            print("e.__cause__")
+            print(e.__cause__)
+            print("e.__str__()")
+            print(e.__str__())
+            print("e.with_traceback()")
+            print(e.with_traceback())
             exit()
         if not yes:
             print("run it up did not work")
