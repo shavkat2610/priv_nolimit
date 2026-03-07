@@ -1153,10 +1153,11 @@ def global_cash_game_sit_out(im = None): #pass image screenshot here
         print("#already sitting out")
         return False #already sitting out
     click(24, 576, im = im, calling_function="global_cash_game_sit_out", debug=False)
-    time.sleep(1.5)
+    time.sleep(2.5)
     if check_if_sitting():
         print("sit out globally clicked")
         return True
+    im.save(f"global_cash_game_sit_out_failed{str(time.time())[:12]}.png")
     print("!!! something went wrong at global_cash_game_sit_out")
     return False
 
