@@ -65,6 +65,8 @@ from PIL import Image
 # todo:
 
 
+# read player info
+# save instances with text for tesseract training, especially playerinfo
 # remove equity flop from river and turn and equity_river from turn model data.
 # regain chips when lower 20 maybe
 # i_bet (preflop, flop, river, turn)
@@ -312,7 +314,7 @@ class AppDelegate(NSObject):
         # self.performSelectorOnMainThread_withObject_waitUntilDone_("didFinish:", None, False)
         return
 
-    def updatePlayerData(self):
+    def updatePlayerData(self): # 6 ppl
         print("AppDelegate.updatePlayerData ... ")
         # pyautogui.moveTo(25, 25)
         # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")

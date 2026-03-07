@@ -247,122 +247,49 @@ def check_if_w8_for_blinds(im):
 
 
 
-def read_player_info(im = None):
-    if im == None:
-        im = game_screenshot()
+def read_player_info(im):
     # im.show()
+    # save screenshot
     im1 = crop_wh(im, 380, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
-    position = data.find("%")
-    if position == -1:
-        # print("no percent-sign found, data:")
-        # print(data)
-        value_1 = 0
-    elif position == 1:
-        if data[0]=="0":
-            value_1 = 0
-        else:
-            value_1 = 0.1
-    elif position == 2:
-        data = data.replace("A", "4")
-        data = data.replace("B", "8")
-        data = data[:2]
-        try:
-            value_1 = float(data) / 100.
-        except Exception as e:
-            print()
-            print("read_player_info read something weird:"+str(data))
-            print()
-            print(e)
-            exit()
-    elif position == 3:
-        value_1 = 1.
-    else: 
-        print("something went wrong reading value 1 of player info: "+str(data))        
+    data1 = tess_read_playerinfo(im1)
+    try:
+        value_1 = float(data1) / 100.
+    except Exception as e:
+        print()
+        print("read_player_info read something weird:"+str(data))
+        print()
+        print(e)
+        exit()   
     im1 = crop_wh(im, 438, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
-    position = data.find("%")
-    if position == -1:
-        # print("no percent-sign found, data:")
-        # print(data)
-        value_2 = 0
-    elif position == 1:
-        if data[0]=="0":
-            value_2 = 0
-        else:
-            value_2 = 0.1
-    elif position == 2:
-        data = data.replace("A", "4")
-        data = data.replace("B", "8")
-        data = data[:2]
-        try:
-            value_2 = float(data) / 100.
-        except Exception as e:
-            print()
-            print("read_player_info read something weird:"+str(data))
-            print()
-            print(e)
-            exit()
-    elif position == 3:
-        value_2 = 1.
-    else: 
-        print("something went wrong reading value 2 of player info: "+str(data))        
+    data = tess_read_playerinfo(im1)
+    try:
+        value_2 = float(data) / 100.
+    except Exception as e:
+        print()
+        print("read_player_info read something weird:"+str(data))
+        print()
+        print(e)
+        exit()    
     im1 = crop_wh(im, 496, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
-    position = data.find("%")
-    if position == -1:
-        # print("no percent-sign found, data:")
-        # print(data)
-        value_3 = 0
-    elif position == 1:
-        if data[0]=="0":
-            value_3 = 0
-        else:
-            value_3 = 0.1
-    elif position == 2:
-        data = data.replace("A", "4")
-        data = data.replace("B", "8")
-        data = data[:2]
-        try:
-            value_3 = float(data) / 100.
-        except Exception as e:
-            print()
-            print("read_player_info read something weird:"+str(data))
-            print()
-            print(e)
-            exit()
-    elif position == 3:
-        value_3 = 1.
-    else: 
-        print("something went wrong reading value 3 of player info: "+str(data))
+    data = tess_read_playerinfo(im1)
+    try:
+        value_3 = float(data) / 100.
+    except Exception as e:
+        print()
+        print("read_player_info read something weird:"+str(data))
+        print()
+        print(e)
+        exit()  
     im1 = crop_wh(im, 554, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data = pytesseract.image_to_string(im1, config="--oem 0 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%.,:")
-    position = data.find("%")
-    if position == -1:
-        # print("no percent-sign found, data:")
-        # print(data)
-        value_4 = 0
-    elif position == 1:
-        if data[0]=="0":
-            value_4 = 0
-        else:
-            value_4 = 0.1
-    elif position == 2:
-        data = data.replace("A", "4")
-        data = data.replace("B", "8")
-        data = data[:2]
-        try:
-            value_4 = float(data) / 100.
-        except Exception as e:
-            print()
-            print("read_player_info read something weird:"+str(data))
-            print()
-            print(e)
-            exit()
-    elif position == 3:
-        value_4 = 1.
-    else: 
-        print("something went wrong reading value 4 of player info: "+str(data))
+    data = tess_read_playerinfo(im1)
+    try:
+        value_4 = float(data) / 100.
+    except Exception as e:
+        print()
+        print("read_player_info read something weird:"+str(data))
+        print()
+        print(e)
+        exit()  
     try:
         return [ value_1, value_2, value_3, value_4]
     except Exception as e:
@@ -447,6 +374,46 @@ def prepare_pot_digits():
             print(f"found some non png file in tesseract_training/digits, {filename}, skipping...")
 
 
+
+
+def tess_read_playerinfo(im1):
+    saving = False
+    data = pytesseract.image_to_data(
+        im1,
+        output_type=Output.DICT,
+        config="--oem 1 --psm 6",
+        lang="gg"
+    )
+    whole_text = ""
+    for text, conf in zip(data["text"], data["conf"]):
+        if conf != -1 :
+            text = text.strip()
+            whole_text += text + "_"
+            if conf < 90:
+                print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
+                saving = True
+            if text[0].isdigit():
+                if not text[-1] == "%":
+                    print("\n \n percent-sign read correctly at the end or percentile\n \n")
+                    saving = True  
+                    text = text[:-1]             
+                try:
+                    result = float(text)
+                    # if result == 0.0:
+                    #     print("probably read 0 instead of Check, returning 0.001 for now")
+                    #     return -1.0
+                    if saving:
+                        im1.save(f"tesseract_training/raw_data/playerinfo_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                    return result
+                except Exception as e:
+                    print("returning here 23")
+                    print("text: "+text)
+                    print(e)
+                    im1.save(f"tesseract_training/raw_data/playerinfo_return23_{str(time.time())[:12].replace('.', '_')}.png")  
+                    return 0.001
+
+
+
 def tess_read(im): #input is preprocessed image of the number, output is the number, if it cannot be read, return 0.001 for now, and save the image for later training
     saving = False
     data = pytesseract.image_to_data(
@@ -494,13 +461,15 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                         except Exception as e:
                             print("could not read number with extra dot or comma, probably something else went wrong, saving for now")
                             print("text: "+text)
-                            im.save(f"tesseract_training/raw_data/t_weird_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
                             print(e)
+                            im.save(f"tesseract_training/raw_data/t_weird_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                            
                             return 0.001         
                     print("returning here 24")
                     print("text: "+text)
-                    im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")  
                     print(e)
+                    im.save(f"tesseract_training/raw_data/t_return24_{str(time.time())[:12].replace('.', '_')}.png")  
+                    
                     return 0.001
     if whole_text.startswith("All"):
         return -1.0

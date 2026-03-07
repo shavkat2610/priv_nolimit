@@ -1132,16 +1132,10 @@ def unwait_4blinds(im = None):
     if check_if_w8_for_blinds(im):
         # pyautogui.click(531, 602)
         click(531, 602, im = im, calling_function="unwait_4blinds", debug=True)
-        return im
+    return im
+    
 
 
-
-def w8_4blinds(im = None): # this is not always possible, so using this function probably will not be necessary. can be discarded probably
-    if im == None:
-        im = game_screenshot()
-    if not check_if_w8_for_blinds(im):
-        pyautogui.click(531, 602)
-        return im
 
 
 
