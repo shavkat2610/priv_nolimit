@@ -401,7 +401,7 @@ class AppDelegate(NSObject):
             exit() # is this the right way to exit the app?
         # todo: read player data here
         if yes == "yes":
-            self.updatePlayerData()
+            self.updatePlayerData() # remove when debugging other stuff here I guess
 
 
 

@@ -383,7 +383,7 @@ def prepare_pot_digits():
 
 
 def tess_read_playerinfo(im1):
-    saving = False
+    saving = True
     data = pytesseract.image_to_data(
         im1,
         output_type=Output.DICT,
