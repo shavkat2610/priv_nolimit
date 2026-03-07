@@ -314,6 +314,16 @@ class AppDelegate(NSObject):
         # self.performSelectorOnMainThread_withObject_waitUntilDone_("didFinish:", None, False)
         return
 
+
+    def updateOnePlayerData_(self, pp): # pp = player position # needs testing
+        pyautogui.click(pp[0], pp[1])
+        time.sleep(1.8)# read here
+        im = game_screenshot(save=True)
+        player_info = read_player_info(im=im) 
+        time.sleep(.35)
+        return player_info
+
+
     def updatePlayerData(self): # 6 ppl
         print("AppDelegate.updatePlayerData ... ")
         # pyautogui.moveTo(25, 25)
@@ -323,12 +333,7 @@ class AppDelegate(NSObject):
         close_player_info_window_position = [596, 70]
         i = 0
         for pp in player_positions:
-            pyautogui.click(pp[0], pp[1])
-            time.sleep(1.8)# read here
-            im = game_screenshot(save=True)
-            self.player_data[i] = read_player_info(im=im)
-            pyautogui.click(close_player_info_window_position[0], close_player_info_window_position[1])
-            time.sleep(.35)
+            self.player_data[i] = self.updateOnePlayerData_(pp)
             i += 1
         print("self.player_data : "+str(self.player_data))
         if get_up_stand_up():

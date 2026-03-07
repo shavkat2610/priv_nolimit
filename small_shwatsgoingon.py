@@ -247,6 +247,12 @@ def check_if_w8_for_blinds(im):
 
 
 
+
+
+
+
+
+
 def read_player_info(im):
     # im.show()
     # save screenshot
@@ -393,10 +399,12 @@ def tess_read_playerinfo(im1):
                 print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
                 saving = True
             if text[0].isdigit():
-                if not text[-1] == "%":
+                if text[-1] == "%":
                     print("\n \n percent-sign read correctly at the end or percentile\n \n")
                     saving = True  
-                    text = text[:-1]             
+                    text = text[:-1]    
+                elif "%" in text:
+                    text = text.split("%")[0]         
                 try:
                     result = float(text)
                     # if result == 0.0:
@@ -1327,7 +1335,7 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 def simulate_gss(im=None):
     if im == None:
-        im = Image.open('temp_screenshot/test_screenshot_1771160982_1.png') #should be a screenshot
+        im = Image.open('temp_screenshot/plyerdata/game_screenshot1764975781.png') #should be a screenshot
 
     # handle_all_in(im=im):
 
@@ -1347,7 +1355,9 @@ def simulate_gss(im=None):
 
     # print(general_whats_going_on_model(im=im, debug=True))
 
-    print(check_if_we_holdin_yet(im))
+    # print(check_if_we_holdin_yet(im))
+
+    print(read_player_info(im))
 
     return False
 
