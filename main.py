@@ -320,6 +320,7 @@ class AppDelegate(NSObject):
         time.sleep(1.8)# read here
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
+        pyautogui.click(596, 70)
         time.sleep(.35)
         return player_info
 
@@ -330,7 +331,7 @@ class AppDelegate(NSObject):
         # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")
         # NSLog("updating player data")
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
-        close_player_info_window_position = [596, 70]
+        # close_player_info_window_position = [596, 70]
         i = 0
         for pp in player_positions:
             self.player_data[i] = self.updateOnePlayerData_(pp)
