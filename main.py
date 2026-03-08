@@ -6,7 +6,7 @@ from chatGPT_XGBRegressor import river_features, turn_features
 from scripts.shavkats_functions import check_if_really_seated, click, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
-                                            check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds
+                                            check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds, check_if_playerinfo
 import random
 from Cocoa import NSObject, NSApplication, NSApp, NSWindow, NSButton, NSSound, NSComboBox, NSTextField, NSFont, NSColor, NSSlider
 from PyObjCTools import AppHelper
@@ -65,7 +65,8 @@ from PIL import Image
 # todo:
 
 
-# read player info
+# read player info 
+ # # check if window is open yet, before reading numbers
 # save instances with text for tesseract training, especially playerinfo
 # remove equity flop from river and turn and equity_river from turn model data.
 # regain chips when lower 20 maybe
@@ -317,11 +318,35 @@ class AppDelegate(NSObject):
 
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
         pyautogui.click(pp[0], pp[1])
-        time.sleep(1.8)# read here
+        for i in range(7):
+            time.sleep(0.35)
+            if check_if_playerinfo():
+                break
+            else:
+                if i == 6:
+                    time.sleep(1.5)
+                    if check_if_playerinfo():
+                        break
+                    else:
+                        pyautogui.click(pp[0], pp[1])
+                        for i in range(7):
+                            time.sleep(0.35)
+                            if check_if_playerinfo():
+                                break
+                            else:
+                                if i == 6:
+                                    time.sleep(1.5)
+                                    if check_if_playerinfo():
+                                        break
+                                    else:
+                                        pyautogui.click(pp[0], pp[1])
+                                        print("could not read player info, maybe player not seated ? HERE 24 ay")
+                                        return [0, 0, 0, 0]
+        
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
         pyautogui.click(596, 70)
-        time.sleep(.35)
+        time.sleep(.75)
         return player_info
 
 
@@ -330,6 +355,7 @@ class AppDelegate(NSObject):
         # pyautogui.moveTo(25, 25)
         # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")
         # NSLog("updating player data")
+        
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
         # close_player_info_window_position = [596, 70]
         i = 0
