@@ -1340,7 +1340,7 @@ def simulate_gss(im=None):
     # handle_all_in(im=im):
 
     # read_total_pot_money(im=im)
-    # read_total_pot_money_manually(im=im)
+    read_total_pot_money_manually(im=im)
     # read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
@@ -1357,7 +1357,7 @@ def simulate_gss(im=None):
 
     # print(check_if_we_holdin_yet(im))
 
-    print(read_player_info(im))
+    # print(read_player_info(im))
 
     return False
 
@@ -1421,7 +1421,7 @@ if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
     # load_smol_watsgoingon_model()
-    # prepare_pot_digits()
+    prepare_pot_digits()
     # path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
