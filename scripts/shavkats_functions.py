@@ -1131,7 +1131,7 @@ def unwait_4blinds(im = None):
         im = game_screenshot()
     if check_if_w8_for_blinds(im):
         # pyautogui.click(531, 602)
-        click(531, 602, im = im, calling_function="unwait_4blinds", debug=True)
+        click(531, 602, im = im, calling_function="unwait_4blinds", debug=False)
     return im
     
 
@@ -1140,15 +1140,15 @@ def unwait_4blinds(im = None):
 
 
 def check_if_playerinfo(im = None):
-    print("checking player info ...")
+    # print("checking player info ...")
     if im == None:
         im = game_screenshot()
     pixels = im.load()
     pix = pixels[327, 20]
     if pix[0] == pix[1] == pix[2] == 0:
-        print("player info detected")
+        # print("player info detected")
         return True
-    print("player info not detected")
+    # print("player info not detected")
     return False
 
 
@@ -1184,7 +1184,7 @@ def get_up_stand_up(im = None): # pass image screenshot here
     if im == None:
         im = game_screenshot()
     if check_if_sitting(im):
-        click(25, 576, im = im, calling_function="get_up_stand_up", debug=True)
+        click(25, 576, im = im, calling_function="get_up_stand_up", debug=False)
     else: 
         return False
     # pyautogui.click(25, 581) # global cash game sit out controller

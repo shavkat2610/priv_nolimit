@@ -58,6 +58,7 @@ from PIL import Image
 # make decision buttons work again - done
 # close_game-button - done
 # make_clicking_image(x, y) or click(x, y) & remove debugging afterwards - done
+ # check if window is open yet, before reading numbers - done
 
 
 
@@ -66,7 +67,7 @@ from PIL import Image
 
 
 # read player info 
- # # check if window is open yet, before reading numbers
+ # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # save instances with text for tesseract training, especially playerinfo
 # remove equity flop from river and turn and equity_river from turn model data.
 # regain chips when lower 20 maybe
@@ -329,17 +330,16 @@ class AppDelegate(NSObject):
                         break
                     else:
                         pyautogui.click(pp[0], pp[1])
-                        for i in range(7):
+                        for j in range(7):
                             time.sleep(0.35)
                             if check_if_playerinfo():
                                 break
                             else:
-                                if i == 6:
+                                if j == 6:
                                     time.sleep(1.5)
                                     if check_if_playerinfo():
                                         break
                                     else:
-                                        pyautogui.click(pp[0], pp[1])
                                         print("could not read player info, maybe player not seated ? HERE 24 ay")
                                         return [0, 0, 0, 0]
         
