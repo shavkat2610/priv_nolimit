@@ -70,7 +70,7 @@ from PIL import Image
  # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # save instances with text for tesseract training, especially playerinfo
 # remove equity flop from river and turn and equity_river from turn model data.
-# regain chips when lower 20 maybe
+# regain chips (when lower 20 maybe automatically)
 # i_bet (preflop, flop, river, turn)
 # I_raise (preflop, flop, river, turn)
 # i_call (preflop, flop, river, turn)
