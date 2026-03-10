@@ -59,6 +59,7 @@ from PIL import Image
 # close_game-button - done
 # make_clicking_image(x, y) or click(x, y) & remove debugging afterwards - done
  # check if window is open yet, before reading numbers - done
+# remove equity flop from river and turn and equity_river from turn model data. - done
 
 
 
@@ -69,7 +70,6 @@ from PIL import Image
 # read player info 
  # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # save instances with text for tesseract training, especially playerinfo
-# remove equity flop from river and turn and equity_river from turn model data.
 # regain chips (when lower 20 maybe automatically)
 # i_bet (preflop, flop, river, turn)
 # I_raise (preflop, flop, river, turn)
@@ -613,8 +613,16 @@ class AppDelegate(NSObject):
                 self.made_flop_model_input = True
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:    
-                    with self.our_turn_lock:                  
-                        flop_model_input = [self.equity_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
+                    with self.our_turn_lock:           
+    # i_call_preflop = 0.0
+    # i_call_flop = 0.0
+    # i_call_river = 0.0
+    # i_call_turn = 0.0
+    # i_bet_preflop = 0.0
+    # i_bet_flop = 0.0
+    # i_bet_river = 0.0
+    # i_bet_turn = 0.0       
+                        flop_model_input = [self.equity_flop, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
                                                 self.num_active_players, self.num_active_players_before_me,
                                                 self.flop_features[0], # 7 + 32 = 39 features total for flop model input
                                                 self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
@@ -684,8 +692,8 @@ class AppDelegate(NSObject):
             # print("\nshould save something for river model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                                
-                    river_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, # 9 + 14 = 23
-                                         self.to_call, self.equity_flop, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                    river_model_input = [self.probability_1_1, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, self.i_bet_river,self.potheight, self.potheight_after_preflop, self.potheight_after_flop, # 9 + 14 = 23
+                                         self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
                                             self.river_features[0], self.river_features[1], self.river_features[2], self.river_features[3], self.river_features[4],
                                             self.river_features[5], self.river_features[6], self.river_features[7], self.river_features[8], self.river_features[9], 
                                             self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]
@@ -741,8 +749,8 @@ class AppDelegate(NSObject):
             # print("\nshould save something for turn model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:# 11 + 15 = 26 features total for turn model input       
-                    turn_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, self.potheight_after_river,
-                                            self.to_call, self.equity_flop, self.equity_river, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                    turn_model_input = [self.probability_1_1, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, self.i_bet_river, self.i_call_turn, self.i_bet_turn, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, self.potheight_after_river,
+                                            self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
                                             self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
                                             self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
                                             self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
