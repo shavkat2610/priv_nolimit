@@ -745,7 +745,7 @@ class AppDelegate(NSObject):
                 with self.potheight_lock:# 11 + 15 = 26 features total for turn model input       
                     turn_model_input = [self.probability_1_1, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
                                             self.i_bet_river, self.i_call_turn, self.i_bet_turn, self.potheight, self.potheight_after_preflop, 
-                                            self.potheight_after_flop, self.potheight_after_river, # 17 + 17 = 32
+                                            self.potheight_after_flop, self.potheight_after_river,
                                             self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
                                             self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
                                             self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
