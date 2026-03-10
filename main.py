@@ -172,6 +172,7 @@ class AppDelegate(NSObject):
 
     player_data_lock = Lock()
     player_data = [ [ 0 , 0 , 0, 0 ], [ 0 , 0 , 0, 0 ], [ 0 , 0 , 0, 0 ], [ 0, 0, 0, 0], [ 0, 0, 0, 0], [ 0, 0, 0, 0], [ 0, 0, 0, 0], [ 0, 0, 0, 0], [ 0 , 0 , 0 , 0 ]] #read at beginning while waiting or sitting out
+    to_update = [0, 0, 0, 0, 0] # 6 ppl
 
 
     mutex_screenshot = Lock()
@@ -245,6 +246,7 @@ class AppDelegate(NSObject):
     valset_lock = Lock()
     values_set = False
     number_of_the_universe = 1
+    can_update_PD = False
 
 
 
@@ -253,6 +255,10 @@ class AppDelegate(NSObject):
             h_pos_current = check_holders(current_im)
             if self.holders_pos != h_pos_current:
                 self.holders_pos = h_pos_current
+            with self.player_data_lock:
+                for i in range(len(h_pos_current)):
+                    if h_pos_current[i] == True:
+                        self.to_update[i] += 1
             # print("holders set ...")
             holder_current = count_holders(self.holders_pos)
             if self.num_active_players != holder_current:
@@ -324,6 +330,26 @@ class AppDelegate(NSObject):
         playsound('acoustic.mp3')
         # self.performSelectorOnMainThread_withObject_waitUntilDone_("didFinish:", None, False)
         return
+
+
+    def updatePDbyNumber(self): # needs testing
+        with self.player_data_lock:
+            to_update = self.to_update
+        max_value = max(to_update)
+        max_index = to_update.index(max_value)
+        number = max_index + 1
+        player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
+        with self.player_data_lock:
+            self.to_update[max_index] = 0
+        if number <= len(player_positions):
+            pp = player_positions[number-1]
+            player_info = self.updateOnePlayerData_(pp)
+            with self.player_data_lock:
+                self.player_data[number-1] = player_info
+            return player_info
+        else:
+            print(f"Invalid player number: {number}. Must be between 1 and {len(player_positions)}.")
+            return [0, 0, 0, 0]
 
 
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
@@ -2161,9 +2187,19 @@ class AppDelegate(NSObject):
                 secs = time.time()
                 # self.im.save(f"shmol_new_data/no_decision_to_be_made_{str(secs).split(".")[0]}.png")   
                 with self.game_stage_lock:     
-                    if self.game_stage_current != "no_decision_to_be_made":
-                        print("no decision to be made")
+                    previous_game_stage = self.game_stage_current
+                if previous_game_stage != "no_decision_to_be_made":
+                    print("no decision to be made")
+                    with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
+                else:
+                    with self.valset_lock:
+                        can_ = self.can_update_PD
+                    if can_ == True:
+                        self.updatePDbyNumber()
+                        with self.valset_lock:
+                            self.can_update_PD = False
+                    
                     # with self.acting_lock:
                     #     self.time_to_act = False
                     #     return
@@ -2477,6 +2513,9 @@ class AppDelegate(NSObject):
                             pyautogui.click(x=1183, y=759)
                             # self.to_call = 0.0 # already here
                         else :
+                            if game_stage == "preflop" or game_stage == "flop":
+                                with self.valset_lock:
+                                    self.can_update_PD = True
                             pyautogui.moveTo(540, 610, duration=0.1)
                             time.sleep(0.1)                    
                             pyautogui.click(540, 610) # folding, reset values
