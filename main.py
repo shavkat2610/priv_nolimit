@@ -187,6 +187,15 @@ class AppDelegate(NSObject):
     potheight = 0.1
     to_call = 0.0
     invested_in_preflop = 0.0
+    i_call_preflop = 0.0
+    i_call_flop = 0.0
+    i_call_river = 0.0
+    i_call_turn = 0.0
+    i_bet_preflop = 0.0
+    i_bet_flop = 0.0
+    i_bet_river = 0.0
+    i_bet_turn = 0.0
+
 
     lock = Lock() #
     own_money = 0.0
@@ -876,7 +885,24 @@ class AppDelegate(NSObject):
             if self.potheight_after_river != -1:
                 self.potheight_after_river = -1    
             if self.invested_in_preflop != 0.0:
-                self.invested_in_preflop = 0.0     
+                self.invested_in_preflop = 0.0   
+            if self.i_call_preflop != 0.0:  
+                self.i_call_preflop = 0.0
+            if self.i_call_flop != 0.0:
+                self.i_call_flop = 0.0
+            if self.i_call_river != 0.0:
+                self.i_call_river = 0.0
+            if self.i_call_turn != 0.0:
+                self.i_call_turn = 0.0
+            if self.i_bet_preflop != 0.0:
+                self.i_bet_preflop = 0.0
+            if self.i_bet_flop != 0.0:
+                self.i_bet_flop = 0.0
+            if self.i_bet_river != 0.0:
+                self.i_bet_river = 0.0
+            if self.i_bet_turn != 0.0:
+                self.i_bet_turn = 0.0
+            
         with self.mk_comte_carlo_decision_lock:
             if self.probability_1_1 != -1:
                 self.probability_1_1 = -1
@@ -1310,14 +1336,18 @@ class AppDelegate(NSObject):
                 if decision != "call":
                     if to_call > 0.0:
                         self.invested_in_preflop += to_call*2.0 # since raise to double of to-call
+                        self.i_bet_preflop += to_call*2.0
                     else:
                         if decision != "raise1":
                             self.invested_in_preflop += float(decision[0]) # since raise to double of to-call, but to-call is zero, so adding zero here
+                            self.i_bet_preflop += float(decision[0])
                         else:
                             self.invested_in_preflop += 1.0 # since raise to 2.5 when to-call is zero
+                            self.i_bet_preflop += 1.0
                 else:
                     if to_call > 0.0:
                         self.invested_in_preflop += to_call 
+                        self.i_call_preflop += to_call
                     
                                                                                     
         return decision
@@ -1439,7 +1469,20 @@ class AppDelegate(NSObject):
                 elif decision.startswith("2") or decision.startswith("3"):
                     self.confidence += 4.5
                 elif decision.startswith("raise1"):
-                    self.confidence += 2.5                                    
+                    self.confidence += 2.5    
+        with self.potheight_lock:
+            if decision != "fold":   
+                if decision != "call":
+                    if to_call > 0.0:
+                        self.i_bet_flop += to_call*2.0
+                    else:
+                        if decision != "raise1":
+                            self.i_bet_flop += float(decision[0])
+                        else:
+                            self.i_bet_flop += 1.0
+                else:
+                    if to_call > 0.0:
+                        self.i_call_flop += to_call                                
         return decision 
         decision = "fold"
         if set_1_1 > 0.89:
@@ -1553,7 +1596,20 @@ class AppDelegate(NSObject):
                 elif decision.startswith("2") or decision.startswith("3"):
                     self.confidence += 4.5
                 elif decision.startswith("raise1"):
-                    self.confidence += 2.5          
+                    self.confidence += 2.5         
+        with self.potheight_lock:
+            if decision != "fold":   
+                if decision != "call":
+                    if to_call > 0.0:
+                        self.i_bet_river += to_call*2.0
+                    else:
+                        if decision != "raise1":
+                            self.i_bet_river += float(decision[0])
+                        else:
+                            self.i_bet_river += 1.0
+                else:
+                    if to_call > 0.0:
+                        self.i_call_river += to_call         
         return decision 
     
 
@@ -1582,8 +1638,22 @@ class AppDelegate(NSObject):
                 self.confidence += 7.5       
         if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
             with self.confidence_lock:
-                self.confidence += 13.5                 
-        return self.makeAIDecision_(outputs)
+                self.confidence += 13.5       
+        decision = self.makeAIDecision_(outputs)         
+        with self.potheight_lock:
+            if decision != "fold":   
+                if decision != "call":
+                    if to_call > 0.0:
+                        self.i_bet_turn += to_call*2.0
+                    else:
+                        if decision != "raise1":
+                            self.i_bet_turn += float(decision[0])
+                        else:
+                            self.i_bet_turn += 1.0
+                else:
+                    if to_call > 0.0:
+                        self.i_call_turn += to_call       
+        return decision
     
 
     def makeDecision(self):  # up confidence according to pot_height when calling (the bet)
