@@ -372,7 +372,7 @@ class AppDelegate(NSObject):
                             else:
                                 if j == 6:
                                     time.sleep(1.5)
-                                    if check_if_playerinfo():
+                                    if check_if_playerinfo(desperate=True):
                                         break
                                     else:
                                         print("could not read player info, maybe player not seated ? HERE 24 ay")

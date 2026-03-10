@@ -1139,12 +1139,14 @@ def unwait_4blinds(im = None):
 
 
 
-def check_if_playerinfo(im = None):
+def check_if_playerinfo(im = None, desperate = False):
     # print("checking player info ...")
     if im == None:
         im = game_screenshot()
     pixels = im.load()
     pix = pixels[327, 20]
+    if desperate:
+        print("pix: "+str(pix))
     if pix[0] == pix[1] == pix[2] == 0:
         # print("player info detected")
         return True
