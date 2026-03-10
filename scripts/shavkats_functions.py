@@ -8,14 +8,9 @@ import random
 # import matplotlib
 # matplotlib.use('agg')
 from secrets1.secret import password, email
-from matplotlib import pyplot as plt
 # import pyperclip
 import glob
-import pytesseract
 from PIL import Image
-from PIL import ImageChops
-from threading import Thread, Lock
-import threading
 from playsound3 import playsound
 
 
