@@ -60,6 +60,8 @@ from PIL import Image
 # make_clicking_image(x, y) or click(x, y) & remove debugging afterwards - done
  # check if window is open yet, before reading numbers - done
 # remove equity flop from river and turn and equity_river from turn model data. - done
+# i_bet (preflop, flop, river, turn) - done
+# i_call (preflop, flop, river, turn) - done
 
 
 
@@ -71,9 +73,6 @@ from PIL import Image
  # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # save instances with text for tesseract training, especially playerinfo
 # regain chips (when lower 20 maybe automatically)
-# i_bet (preflop, flop, river, turn)
-# I_raise (preflop, flop, river, turn)
-# i_call (preflop, flop, river, turn)
 # playerinfo: average of all active holders AND the one before me
 # check all inputs for correctness
 # clicking_images everywhere and work from there
@@ -256,7 +255,7 @@ class AppDelegate(NSObject):
             if self.holders_pos != h_pos_current:
                 self.holders_pos = h_pos_current
             with self.player_data_lock:
-                for i in range(len(h_pos_current)):
+                for i in range(6): # 6 ppl
                     if h_pos_current[i] == True:
                         self.to_update[i] += 1
             # print("holders set ...")
