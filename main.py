@@ -274,8 +274,12 @@ class AppDelegate(NSObject):
                         for i_1 in range(len(playerdata[i])):
                             pdata_summed[i_1]+=playerdata[i][i_1]
                 if count > 0:
+                    print()
+                    print("pdata summed: "+str(pdata_summed))
                     for pd in pdata_summed:
                         pd = pd/count
+                    print("pdata average: "+str(pdata_summed))
+                    print()
                     if not np.array_equal(self.pdata_average, pdata_summed):
                         self.pdata_average = pdata_summed
 
