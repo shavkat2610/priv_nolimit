@@ -1038,7 +1038,7 @@ def read_game_rules(big_blind = "200"):
 
     click_ok(debug = False)  
 
-    time.sleep(0.5)
+    time.sleep(1.0)
 
     minimize_client()
 
