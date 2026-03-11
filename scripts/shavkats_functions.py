@@ -1048,7 +1048,7 @@ def read_game_rules(big_blind = "200"):
     if position_the_game():
         
         pyautogui.moveTo(25, 25)
-        time.sleep(0.5)
+        time.sleep(0.25)
         if not check_if_we_holdin_yet():
             # if not global_cash_game_sit_out():
             #     print("!!!! NOT GLOBAL SIT SOMEHOW")
