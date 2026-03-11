@@ -357,8 +357,6 @@ class AppDelegate(NSObject):
 
 
     def updatePDbyNumber(self): # needs testing
-        pyautogui.click(x=50, y=50)
-        time.sleep(0.5)
         with self.player_data_lock:
             to_update = self.to_update
         max_value = max(to_update)
@@ -375,6 +373,7 @@ class AppDelegate(NSObject):
             player_info = self.updateOnePlayerData_(pp)
             with self.player_data_lock:
                 self.player_data[number-1] = player_info
+            
             return player_info
         else:
             print(f"Invalid player number: {number}. Must be between 1 and {len(player_positions)}.")
@@ -382,6 +381,8 @@ class AppDelegate(NSObject):
 
 
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
+        pyautogui.click(x=50, y=100)
+        time.sleep(0.5)
         pyautogui.click(pp[0], pp[1])
         for i in range(7):
             time.sleep(0.35)
