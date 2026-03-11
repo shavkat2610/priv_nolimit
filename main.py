@@ -273,7 +273,8 @@ class AppDelegate(NSObject):
                             count += 1
                     if h_pos_current[i] == True:
                         count += 1
-                        pdata_summed += playerdata[i]
+                        for i_1 in range(len(playerdata[i])):
+                            pdata_summed[i_1]+=playerdata[i][i_1]
                 if count > 0:
                     pdata_avg_current = pdata_summed/count
                     if not np.array_equal(self.pdata_average, pdata_avg_current):
