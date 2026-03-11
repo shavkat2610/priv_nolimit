@@ -340,6 +340,9 @@ class AppDelegate(NSObject):
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
         with self.player_data_lock:
             self.to_update[max_index] = 0
+            for i in range(len(to_update)):
+                if i != max_index:
+                    self.to_update[i] += 1
         if number <= len(player_positions):
             pp = player_positions[number-1]
             player_info = self.updateOnePlayerData_(pp)
