@@ -411,7 +411,7 @@ def tess_read_playerinfo(im1):
                     #     print("probably read 0 instead of Check, returning 0.001 for now")
                     #     return -1.0
                     if saving:
-                        im1.save(f"tesseract_training/raw_data/playerinfo_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")                
+                        im1.save(f"tesseract_training/raw_data/playerinfo_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}.png")                
                     return result
                 except Exception as e:
                     print("returning here 23")
