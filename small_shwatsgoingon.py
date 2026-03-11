@@ -4,7 +4,7 @@ import pyautogui
 import pytesseract
 from pytesseract import Output
 from  fish_for_cards import prepare_fishing_deck_cards, prepare_fishing_own_cards, red_own_cards, game_screenshot, fish_for_own_cards, fish_for_deck_cards, red_deck_cards
-from scripts.shavkats_functions import is_red, read_D
+from scripts.shavkats_functions import is_red, read_D, click
 import numpy as np
 import time
 import cv2
@@ -1157,21 +1157,9 @@ def handle_all_in(im = None):
         im = game_screenshot()
     # print(im.size)
     pixels = im.load() # create the pixel map
-    if pixels[760, 490][1] >= 80:
+    if pixels[627, 570][1] >= 80:
         print("\nrun three times clicked (need to switch to two I think, they dont play three around here ...)")
-        pyautogui.click(760, 590)
-        # pixels[760, 490] = (255, 0, 0, 255)
-        pixels[761, 491] = (255, 0, 0, 255)
-        pixels[761, 489] = (255, 0, 0, 255)
-        pixels[759, 491] = (255, 0, 0, 255)
-        pixels[759, 489] = (255, 0, 0, 255)
-        pixels[761, 490] = (255, 0, 0, 255)
-        pixels[760, 491] = (255, 0, 0, 255)
-        pixels[759, 490] = (255, 0, 0, 255)
-        pixels[760, 489] = (255, 0, 0, 255)
-        pixels[762, 490] = (255, 0, 0, 255)
-        pixels[760, 492] = (255, 0, 0, 255)
-        im.save(f"clicking_images/run_three_times_{str(pixels[760, 490][1])}.png")
+        click(x=627, y=570, im = im, debug = True, calling_function = "handle_all_in")
         return False
     else:
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
