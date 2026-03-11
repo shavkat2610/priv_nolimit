@@ -257,7 +257,7 @@ class AppDelegate(NSObject):
             with self.player_data_lock:
                 for i in range(6): # 6 ppl
                     if h_pos_current[i] == True:
-                        self.to_update[i] += 1
+                        self.to_update[i] += 2
             # print("holders set ...")
             holder_current = count_holders(self.holders_pos)
             if self.num_active_players != holder_current:
@@ -362,23 +362,12 @@ class AppDelegate(NSObject):
                 break
             else:
                 if i == 6:
-                    time.sleep(1.5)
-                    if check_if_playerinfo():
+                    time.sleep(0.05)
+                    if check_if_playerinfo(desperate=True):
                         break
                     else:
-                        pyautogui.click(pp[0], pp[1])
-                        for j in range(7):
-                            time.sleep(0.35)
-                            if check_if_playerinfo():
-                                break
-                            else:
-                                if j == 6:
-                                    time.sleep(1.5)
-                                    if check_if_playerinfo(desperate=True):
-                                        break
-                                    else:
-                                        print("could not read player info, maybe player not seated ? HERE 24 ay")
-                                        return [0, 0, 0, 0]
+                        print("could not read player info, maybe player not seated ? HERE 24 ay")
+                        return [0, 0, 0, 0]
         
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
