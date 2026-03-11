@@ -1167,6 +1167,9 @@ def check_if_playerinfo(im = None, desperate = False):
     if pix[0] == pix[1] == pix[2] == 0:
         # print("player info detected")
         return True
+    elif pix[0]<2 and pix[1]<2 and pix[2]<2:
+        print("player info weakly detected")
+        return True
     # print("player info not detected")
     return False
 
