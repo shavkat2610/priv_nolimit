@@ -265,13 +265,11 @@ class AppDelegate(NSObject):
                 count = 0
                 first = True
                 for i in range(6):
-                    if first:
-                        if h_pos_current[i] == True:
+                    if h_pos_current[i] == True:
+                        if first:
                             if not np.array_equal(self.pdata_before_me, playerdata[i]):
                                 self.pdata_before_me = playerdata[i]
                             first = False
-                            count += 1
-                    if h_pos_current[i] == True:
                         count += 1
                         for i_1 in range(len(playerdata[i])):
                             pdata_summed[i_1]+=playerdata[i][i_1]
