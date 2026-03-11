@@ -400,7 +400,7 @@ def tess_read_playerinfo(im1):
                 saving = True
             if text[0].isdigit():
                 if text[-1] == "%":
-                    print("\n \n percent-sign read correctly at the end or percentile\n \n")
+                    # print("\n \n percent-sign read correctly at the end or percentile\n \n")
                     saving = True  
                     text = text[:-1]    
                 elif "%" in text:
