@@ -276,12 +276,16 @@ class AppDelegate(NSObject):
                 if count > 0:
                     print()
                     print("pdata summed: "+str(pdata_summed))
+                    i_1 = 0
+                    pdata_average = [0, 0, 0, 0]
                     for pd in pdata_summed:
-                        pd = pd/count
-                    print("pdata average: "+str(pdata_summed))
+                        pdav = pd/count
+                        pdata_average[i_1] = pdav
+                        i_1 += 1
+                    print("pdata average: "+str(pdata_average))
                     print()
-                    if not np.array_equal(self.pdata_average, pdata_summed):
-                        self.pdata_average = pdata_summed
+                    if not np.array_equal(self.pdata_average, pdata_average):
+                        self.pdata_average = pdata_average
 
             # print("holders set ...")
             holder_current = count_holders(self.holders_pos)
