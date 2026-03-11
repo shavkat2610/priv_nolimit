@@ -357,6 +357,8 @@ class AppDelegate(NSObject):
 
 
     def updatePDbyNumber(self): # needs testing
+        pyautogui.click(x=50, y=50)
+        time.sleep(0.5)
         with self.player_data_lock:
             to_update = self.to_update
         max_value = max(to_update)
@@ -402,6 +404,7 @@ class AppDelegate(NSObject):
 
 
     def updatePlayerData(self): # 6 ppl
+        pyautogui.click(x=1183, y=759)
         print("AppDelegate.updatePlayerData ... ")
         # pyautogui.moveTo(25, 25)
         # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")
