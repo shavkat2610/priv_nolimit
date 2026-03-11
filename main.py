@@ -241,6 +241,8 @@ class AppDelegate(NSObject):
     holders_pos = [ False ,  False ,  False ,  False ,  False ,  False ,  False ,  False ] # check_holders(im) #   # from me counting, counterclockwise, me not considered, because I still hold cards when this is interesting 
     num_active_players = 0 # 5 (card holders currently) (aka holders)
     num_active_players_before_me = 0 # starting at small blind | (aka holders)
+    pdata_average = [0, 0, 0, 0] # average of all active holders, updated every round when we have the chance to read player info, so preflop when we wait or sit out and after flop, turn and river when we can click on players to read them
+    pdata_before_me = [0, 0, 0, 0] # player data of the player before me, updated every round when we have the chance to read player info, so preflop when we wait or sit out and after flop, turn and river when we can click on players to read them
 
     valset_lock = Lock()
     values_set = False
@@ -258,6 +260,25 @@ class AppDelegate(NSObject):
                 for i in range(6): # 6 ppl
                     if h_pos_current[i] == True:
                         self.to_update[i] += 2
+                playerdata = self.player_data
+                pdata_summed = [0, 0, 0, 0]
+                count = 0
+                first = True
+                for i in range(6):
+                    if first:
+                        if h_pos_current[i] == True:
+                            if not np.array_equal(self.pdata_before_me, playerdata[i]):
+                                self.pdata_before_me = playerdata[i]
+                            first = False
+                            count += 1
+                    if h_pos_current[i] == True:
+                        count += 1
+                        pdata_summed += playerdata[i]
+                if count > 0:
+                    pdata_avg_current = pdata_summed/count
+                    if not np.array_equal(self.pdata_average, pdata_avg_current):
+                        self.pdata_average = pdata_avg_current
+
             # print("holders set ...")
             holder_current = count_holders(self.holders_pos)
             if self.num_active_players != holder_current:
