@@ -383,7 +383,7 @@ def prepare_pot_digits():
 
 
 def tess_read_playerinfo(im1):
-    saving = True
+    saving = False
     data = pytesseract.image_to_data(
         im1,
         output_type=Output.DICT,
@@ -395,7 +395,7 @@ def tess_read_playerinfo(im1):
         if conf != -1 :
             text = text.strip()
             whole_text += text + "_"
-            if conf < 90:
+            if conf < 92:
                 print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
                 saving = True
             if text[0].isdigit():
