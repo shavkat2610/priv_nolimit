@@ -2811,8 +2811,8 @@ class AppDelegate(NSObject):
                                 if not self.updateOwnMoney_(current_im=None):
                                     print("\nread own money failed gss ... \n")            
                 else:
-                    # update player data here
-                    self.updatePDbyNumber()
+                    if game_stage == "no_decision_to_be_made":
+                        self.updatePDbyNumber()
 
             with self.valset_lock:
                 self.number_of_the_universe += 1
