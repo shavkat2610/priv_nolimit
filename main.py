@@ -274,9 +274,10 @@ class AppDelegate(NSObject):
                         for i_1 in range(len(playerdata[i])):
                             pdata_summed[i_1]+=playerdata[i][i_1]
                 if count > 0:
-                    pdata_avg_current = pdata_summed/count
-                    if not np.array_equal(self.pdata_average, pdata_avg_current):
-                        self.pdata_average = pdata_avg_current
+                    for pd in pdata_summed:
+                        pd = pd/count
+                    if not np.array_equal(self.pdata_average, pdata_summed):
+                        self.pdata_average = pdata_summed
 
             # print("holders set ...")
             holder_current = count_holders(self.holders_pos)
