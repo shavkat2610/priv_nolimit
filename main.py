@@ -259,7 +259,7 @@ class AppDelegate(NSObject):
             with self.player_data_lock:
                 for i in range(6): # 6 ppl
                     if h_pos_current[i] == True:
-                        self.to_update[i] += 2
+                        self.to_update[i] += 4
                 playerdata = self.player_data
                 pdata_summed = [0, 0, 0, 0]
                 count = 0
