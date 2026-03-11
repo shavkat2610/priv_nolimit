@@ -62,6 +62,11 @@ from PIL import Image
 # remove equity flop from river and turn and equity_river from turn model data. - done
 # i_bet (preflop, flop, river, turn) - done
 # i_call (preflop, flop, river, turn) - done
+# read player info 
+ # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
+# playerinfo: average of all active holders AND the one before me
+# adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
+# raise32 button (32x big blind) - needs testing
 
 
 
@@ -69,27 +74,19 @@ from PIL import Image
 # todo:
 
 
-# read player info 
- # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # save instances with text for tesseract training, especially playerinfo
 # regain chips (when lower 20 maybe automatically)
-# playerinfo: average of all active holders AND the one before me
 # check all inputs for correctness
 # clicking_images everywhere and work from there
 # run it three times, accept opponents request
 # run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
-# adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 # read played info - redo with finetuned model maybe
 ########## buttons to add:
 # emoji-button
-# unwait button
-# stand up button
-# rebuy button
-# raise32 button (32x big blind) - needs testing
 
 
 
@@ -470,8 +467,8 @@ class AppDelegate(NSObject):
         self.raiseB4.setHidden_(False)
         self.raiseB5.setHidden_(False)
         self.raiseB6.setHidden_(False)
-        self.close_game_btn.setHidden_(False)
-        self.w8_btn.setHidden_(False)
+        # self.close_game_btn.setHidden_(False)
+        # self.w8_btn.setHidden_(False)
         self.slider.setHidden_(False)
 
 
@@ -2058,8 +2055,8 @@ class AppDelegate(NSObject):
         self.raiseB4.setHidden_(True)
         self.raiseB5.setHidden_(True)
         self.raiseB6.setHidden_(True)
-        self.close_game_btn.setHidden_(True)
-        self.w8_btn.setHidden_(True)
+        # self.close_game_btn.setHidden_(True)
+        # self.w8_btn.setHidden_(True)
         self.slider.setHidden_(True)
 
         # show start-up controls
@@ -2982,24 +2979,24 @@ def GUI():
     # hello.setAction_("sayHello:")
     # delegate.hello = hello
 
-    close_game_btn = NSButton.alloc().initWithFrame_(((280.0, 10.0), (80.0, 80.0)))
-    win.contentView().addSubview_(close_game_btn)
-    close_game_btn.setBezelStyle_(4)
-    close_game_btn.setTitle_("Close Game")
-    close_game_btn.setTarget_(app.delegate())
-    close_game_btn.setAction_("closeGame:")
-    close_game_btn.setHidden_(True)
-    delegate.close_game_btn = close_game_btn
+    # close_game_btn = NSButton.alloc().initWithFrame_(((280.0, 10.0), (80.0, 80.0)))
+    # win.contentView().addSubview_(close_game_btn)
+    # close_game_btn.setBezelStyle_(4)
+    # close_game_btn.setTitle_("Close Game")
+    # close_game_btn.setTarget_(app.delegate())
+    # close_game_btn.setAction_("closeGame:")
+    # close_game_btn.setHidden_(True)
+    # delegate.close_game_btn = close_game_btn
 
-    # unsit button
-    w8_btn = NSButton.alloc().initWithFrame_(((340.0, 110.0), (60.0, 60.0)))
-    win.contentView().addSubview_(w8_btn)
-    w8_btn.setBezelStyle_(4)
-    w8_btn.setTitle_("sit/unsit")
-    w8_btn.setTarget_(app.delegate())
-    w8_btn.setAction_("standUp:")
-    w8_btn.setHidden_(True)
-    delegate.w8_btn = w8_btn
+    # # unsit button
+    # w8_btn = NSButton.alloc().initWithFrame_(((340.0, 110.0), (60.0, 60.0)))
+    # win.contentView().addSubview_(w8_btn)
+    # w8_btn.setBezelStyle_(4)
+    # w8_btn.setTitle_("sit/unsit")
+    # w8_btn.setTarget_(app.delegate())
+    # w8_btn.setAction_("standUp:")
+    # w8_btn.setHidden_(True)
+    # delegate.w8_btn = w8_btn
 
     # holdm btns
     foldB = NSButton.alloc().initWithFrame_(((10.0, 260.0), (50.0, 50.0)))
