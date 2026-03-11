@@ -1036,9 +1036,9 @@ def read_game_rules(big_blind = "200"):
 
     
 
-    click_ok(debug = False)  
+    # click_ok(debug = False)  
 
-    time.sleep(1)
+    time.sleep(0.5)
 
     minimize_client()
 
@@ -1049,14 +1049,15 @@ def read_game_rules(big_blind = "200"):
         
         pyautogui.moveTo(25, 25)
         time.sleep(1)
+        click_ok(debug = False)  
         if not check_if_we_holdin_yet():
-            if not global_cash_game_sit_out():
-                print("!!!! NOT GLOBAL SIT SOMEHOW")
-                return True
-            time.sleep(1)
-            if check_if_sitting() and check_if_really_seated():
-                print("read_game_rules returning yes")
-                return "yes"   
+            # if not global_cash_game_sit_out():
+            #     print("!!!! NOT GLOBAL SIT SOMEHOW")
+            #     return True
+            # time.sleep(1)
+            # if check_if_sitting() and check_if_really_seated():
+            #     print("read_game_rules returning yes")
+            #     return "yes"   
             return True
         else:
             print("#already big blind and holding cards")
