@@ -2191,13 +2191,13 @@ class AppDelegate(NSObject):
                     print("no decision to be made")
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
-                else:
-                    with self.valset_lock:
-                        can_ = self.can_update_PD
-                    if can_ == True:
-                        self.updatePDbyNumber()
-                        with self.valset_lock:
-                            self.can_update_PD = False
+                # else:
+                #     with self.valset_lock:
+                #         can_ = self.can_update_PD
+                #     if can_ == True:
+                #         self.updatePDbyNumber()
+                #         with self.valset_lock:
+                #             self.can_update_PD = False
                     
                     # with self.acting_lock:
                     #     self.time_to_act = False
@@ -2802,9 +2802,10 @@ class AppDelegate(NSObject):
                         with self.potheight_lock: # regularly 
                             self.potheight = result["result"]
                             print("debug potheight set to: "+str(self.potheight))
-            if game_stage != "no_decision_to_be_made" and game_stage != "connectivity_issues": 
+            if game_stage != "connectivity_issues": 
                 time.sleep(0.375)
                 with self.valset_lock:
+                    
                     need_set = False
                     if not self.values_set: # own money value not set after it changed 
                         need_set = True
@@ -2816,7 +2817,10 @@ class AppDelegate(NSObject):
                             if not self.updateOwnMoney_(current_im=None):
                                 time.sleep(0.74)
                                 if not self.updateOwnMoney_(current_im=None):
-                                    print("\nread own money failed gss ... \n")                   
+                                    print("\nread own money failed gss ... \n")            
+                else:
+                    # update player data here
+                    self.updatePDbyNumber()
 
             with self.valset_lock:
                 self.number_of_the_universe += 1
