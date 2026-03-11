@@ -259,7 +259,7 @@ class AppDelegate(NSObject):
             with self.player_data_lock:
                 for i in range(6): # 6 ppl
                     if h_pos_current[i] == True:
-                        self.to_update[i] += 4
+                        self.to_update[i] += 3
                 playerdata = self.player_data
                 pdata_summed = [0, 0, 0, 0]
                 count = 0
@@ -664,7 +664,9 @@ class AppDelegate(NSObject):
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:    
                     with self.our_turn_lock:   
-                        flop_model_input = [self.equity_flop, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, 
+                        flop_model_input = [self.equity_flop, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                            self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, 
                                                 self.i_bet_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
                                                 self.num_active_players, self.num_active_players_before_me,
                                                 self.flop_features[0],
@@ -735,7 +737,9 @@ class AppDelegate(NSObject):
             # print("\nshould save something for river model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:                                
-                    river_model_input = [self.probability_1_1, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
+                    river_model_input = [self.probability_1_1, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                            self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
                                          self.i_bet_river,self.potheight, self.potheight_after_preflop, self.potheight_after_flop,
                                          self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
                                             self.river_features[0], self.river_features[1], self.river_features[2], self.river_features[3], self.river_features[4],
@@ -793,7 +797,9 @@ class AppDelegate(NSObject):
             # print("\nshould save something for turn model data now ... \n")
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:# 11 + 15 = 26 features total for turn model input       
-                    turn_model_input = [self.probability_1_1, self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
+                    turn_model_input = [self.probability_1_1, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                        self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
                                             self.i_bet_river, self.i_call_turn, self.i_bet_turn, self.potheight, self.potheight_after_preflop, 
                                             self.potheight_after_flop, self.potheight_after_river,
                                             self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
@@ -896,19 +902,19 @@ class AppDelegate(NSObject):
                         with open('csv_s/turnModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]),str(turn_model_input[20]),str(turn_model_input[21]),str(turn_model_input[22]),str(turn_model_input[23]),str(turn_model_input[24]),str(turn_model_input[25]),str(turn_model_input[26]),str(turn_model_input[27]),str(turn_model_input[28]),str(turn_model_input[29]),str(turn_model_input[30]),str(turn_model_input[31]), self.model_output])                 
+                            writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]),str(turn_model_input[20]),str(turn_model_input[21]),str(turn_model_input[22]),str(turn_model_input[23]),str(turn_model_input[24]),str(turn_model_input[25]),str(turn_model_input[26]),str(turn_model_input[27]),str(turn_model_input[28]),str(turn_model_input[29]),str(turn_model_input[30]),str(turn_model_input[31]), str(turn_model_input[32]), str(turn_model_input[33]), str(turn_model_input[34]), str(turn_model_input[35]), str(turn_model_input[36]), str(turn_model_input[37]), str(turn_model_input[38]), str(turn_model_input[39]),self.model_output])                 
                 if self.made_river_model_input:
                     for river_model_input in self.river_model_inputs:    
                         with open('csv_s/riverModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]),str(river_model_input[19]),str(river_model_input[20]),str(river_model_input[21]),str(river_model_input[22]), str(river_model_input[23]), str(river_model_input[24]), str(river_model_input[25]), str(river_model_input[26]), str(river_model_input[27]), self.model_output])                 
+                            writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]),str(river_model_input[19]),str(river_model_input[20]),str(river_model_input[21]),str(river_model_input[22]), str(river_model_input[23]), str(river_model_input[24]), str(river_model_input[25]), str(river_model_input[26]), str(river_model_input[27]), str(turn_model_input[28]), str(turn_model_input[29]), str(turn_model_input[30]), str(turn_model_input[31]), str(turn_model_input[32]), str(turn_model_input[33]), str(turn_model_input[34]), str(turn_model_input[35]),self.model_output])                 
                 if self.made_flop_model_input:
                     for flop_model_input in self.flop_model_inputs:
                         with open('csv_s/flopModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), self.model_output])                 
+                            writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), str(turn_model_input[43]), str(turn_model_input[44]), str(turn_model_input[45]), str(turn_model_input[46]), str(turn_model_input[47]), str(turn_model_input[48]), str(turn_model_input[49]), str(turn_model_input[50]), self.model_output])                 
             return
 
 
