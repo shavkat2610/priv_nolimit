@@ -74,6 +74,7 @@ from PIL import Image
 # todo:
 
 
+# show cards sometimes
 # save instances with text for tesseract training, especially playerinfo
 # regain chips (when lower 20 maybe automatically)
 # check all inputs for correctness
