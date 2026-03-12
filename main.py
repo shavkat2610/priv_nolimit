@@ -2070,6 +2070,29 @@ class AppDelegate(NSObject):
 
 
 
+
+    def addChips(self):
+        with self.mutex_screenshot:
+            current_im = self.im
+        click(795, 90, current_im, debug=True, calling_function="delegate_addChips")
+        pixels = current_im.load()
+        if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
+            print("\nimma try clicking ok here 22222")
+            time.sleep(0.75)
+            # 461 +95 =  556
+            # 556 - 160 = 396
+            # 284 + 270 = 554
+            click(554, 396, current_im, debug=True, calling_function="delegate_addChips_maxing_out")
+            time.sleep(0.75)
+            # secs = time.time()
+            # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
+            pyautogui.click(340, 560)
+            return True
+        pass
+
+
+
+
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
 
@@ -2089,14 +2112,7 @@ class AppDelegate(NSObject):
             #         return # already in tick, reading player info
 
             self.mutex_screenshot.acquire()
-            try:
-                self.im = game_screenshot(save=False)
-            except Exception as e:
-                print(e)
-                self.mutex_screenshot.release()
-                with self.acting_lock:
-                    self.time_to_act = False
-                return
+            self.im = game_screenshot(save=False)
             current_im = self.im
             self.mutex_screenshot.release()
             
@@ -2560,7 +2576,7 @@ class AppDelegate(NSObject):
                             # self.resetValues()
                             self.foldErase() # remove later, when folds can be involved into feature set. maybe after experts_say_fold model is implemented.
                             with self.lock:
-                                if self.own_money > 199.0:
+                                if self.own_money > 299.0:
 
                                     close_game()
                                     self.timer2.invalidate()
@@ -2858,7 +2874,10 @@ class AppDelegate(NSObject):
                                     print("\nread own money failed gss ... \n")            
                 else:
                     if game_stage == "no_decision_to_be_made":
-                        self.updatePDbyNumber()
+                        if self.own_money < 50.0:
+                            self.addChips()
+                        else:
+                            self.updatePDbyNumber()
 
             with self.valset_lock:
                 self.number_of_the_universe += 1

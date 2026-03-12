@@ -1164,9 +1164,14 @@ def handle_all_in(im = None):
     else:
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
             print("\nimma try clicking ok here")
-            time.sleep(1)
-            secs = time.time()
-            im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
+            time.sleep(0.75)
+            # 461 +95 =  556
+            # 556 - 160 = 396
+            # 284 + 270 = 554
+            click(554, 396, im, debug=True, calling_function="handle_all_in_maxing_out")
+            time.sleep(0.75)
+            # secs = time.time()
+            # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
             pyautogui.click(340, 560)
             return True
         else:

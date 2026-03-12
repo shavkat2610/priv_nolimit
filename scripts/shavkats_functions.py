@@ -755,17 +755,21 @@ def scroll_to_bottom():
 
 
 def click_ok(debug = False):
+    time.sleep(0.5)
     image_path = 'images/ok.png'
     i = 0
     while True:
         if i > 200:
             close_game()
             exit()
-        time.sleep(.5)
+        time.sleep(.25)
         button_pos = imagesearch(image_path, precision=0.95, debug = debug, calling_function="click_one_times_please")
-        time.sleep(1)
+        
         # print(f"{image_path} position: ", button_pos)
         if button_pos != [-1, -1]:
+            time.sleep(.45)
+            click(button_pos[0] + 270, button_pos[1] - 160, debug=True, calling_function="click_ok")
+            time.sleep(0.75)
             pyautogui.click(button_pos[0] + random.randrange(10,14), button_pos[1] + random.randrange(1,4))
             time.sleep(.4)
             button_pos = imagesearch(image_path, precision=0.95, debug = debug, calling_function="click_one_times_please")
