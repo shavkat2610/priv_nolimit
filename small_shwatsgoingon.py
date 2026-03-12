@@ -395,7 +395,7 @@ def tess_read_playerinfo(im1):
         if conf != -1 :
             text = text.strip()
             whole_text += text + "_"
-            if conf < 92:
+            if conf < 91:
                 print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
                 saving = True
             if text[0].isdigit():
@@ -436,7 +436,7 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
         if conf != -1 :
             text = text.strip()
             whole_text += text + "_"
-            if conf < 92:
+            if conf < 91:
                 # print("tess_read data: "+text+" conf: "+str(conf)+" filepath: "+str(im.filename))
                 print("tess_read data: "+text+" conf: "+str(conf))
                 saving = True  
