@@ -436,7 +436,7 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
         if conf != -1 :
             text = text.strip()
             whole_text += text + "_"
-            if conf < 90:
+            if conf < 92:
                 # print("tess_read data: "+text+" conf: "+str(conf)+" filepath: "+str(im.filename))
                 print("tess_read data: "+text+" conf: "+str(conf))
                 saving = True  
