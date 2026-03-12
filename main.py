@@ -1532,7 +1532,7 @@ class AppDelegate(NSObject):
             if decision != "fold":   
                 if decision != "call":
                     if to_call > 0.0:
-                        self.i_bet_flop += to_call*2.0
+                        self.i_bet_flop += max((to_call*2.0), 2**(float(decision[-1])-1))
                     else:
                         if decision != "raise1":
                             self.i_bet_flop += float(decision[0])
@@ -1659,7 +1659,7 @@ class AppDelegate(NSObject):
             if decision != "fold":   
                 if decision != "call":
                     if to_call > 0.0:
-                        self.i_bet_river += to_call*2.0
+                        self.i_bet_river += max((to_call*2.0), 2**(float(decision[-1])-1))
                     else:
                         if decision != "raise1":
                             self.i_bet_river += float(decision[0])
@@ -1702,7 +1702,7 @@ class AppDelegate(NSObject):
             if decision != "fold":   
                 if decision != "call":
                     if to_call > 0.0:
-                        self.i_bet_turn += to_call*2.0
+                        self.i_bet_turn += max((to_call*2.0), 2**(float(decision[-1])-1))
                     else:
                         if decision != "raise1":
                             self.i_bet_turn += float(decision[0])
@@ -2220,6 +2220,15 @@ class AppDelegate(NSObject):
                     print("no decision to be made")
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
+                    if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn":
+                        pixels = current_im.load()
+                        if pixels[782, 527][0] > 250:
+                            if pixels[782, 527][1] > 250:
+                                if pixels[782, 527][2] > 250:
+                                    if pixels[749, 527] > 190:
+                                        current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+                                        if self.probability_1_1 > 0.95:
+                                            click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                 # else:
                 #     with self.valset_lock:
                 #         can_ = self.can_update_PD

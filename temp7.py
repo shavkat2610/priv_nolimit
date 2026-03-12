@@ -17,10 +17,12 @@ from fish_for_cards import crop_wh
 
 
 
-im = Image.open('clicking_images/run_three_times_135.png')
+im = Image.open('shmol_model_not_sure/if_turn_or_no_dec_2.627464.png')
 
+# click(749, 622)
 
-im1 = crop_wh(im, 627, 480, 100, 25)
+# pixel[782, 527] # is white
+im1 = crop_wh(im, 782, 527, 40, 25)
 
 pixels = im1.load()
 
