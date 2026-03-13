@@ -1153,6 +1153,7 @@ def flop_equity_model_predict(features):
 
 
 def handle_all_in(im = None):
+    print("handle all in ...")
     if im == None:
         im = game_screenshot()
     # print(im.size)

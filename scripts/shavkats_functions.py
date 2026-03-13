@@ -51,27 +51,31 @@ def click(x, y, im = None, debug = False, calling_function = None): # done - nee
                 except Exception as e:
                     print("error in click: "+str(e))
                     if calling_function == None:
-                        im.save(f"clicking_images/click_failed_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
+                        im.save(f"clicking_images/click_failed_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
                     else:
-                        im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")                
+                        im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")                
             except Exception as e:
                 print("error in click: "+str(e))
                 if calling_function == None:
-                    im.save(f"clicking_images/click_failed_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
+                    im.save(f"clicking_images/click_failed_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
                 else:
-                    im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
+                    im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
                     
         except Exception as e:
             print("error in click: "+str(e))
             if calling_function == None:
-                im.save(f"clicking_images/click_failed_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
+                im.save(f"clicking_images/click_failed_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
             else:
-                im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
-        if calling_function == None:
-            im.save(f"clicking_images/click_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
-        else:
-            im.save(f"clicking_images/click_{calling_function}_{str(pixels[760, 490][0])}_{str(pixels[760, 490][1])}_{str(pixels[760, 490][2])}_{str(time.time())[:10]}.png")
-
+                im.save(f"clicking_images/click_failed_{calling_function}_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
+        try:
+            if calling_function == None:
+                im.save(f"clicking_images/click_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
+            else:
+                im.save(f"clicking_images/click_{calling_function}_{str(pixels[point_on_image[0], point_on_image[1]][0])}_{str(pixels[point_on_image[0], point_on_image[1]][1])}_{str(pixels[point_on_image[0], point_on_image[1]][2])}_{str(time.time())[:10]}.png")
+        except Exception as e:
+            print("\n IN CLICK, SAVING NOT WORKING !!!!!!!!!!!! \n")
+            print(e)
+            print("\n")
         pyautogui.click(x, y)
     else:
         pyautogui.click(x, y)
@@ -783,7 +787,7 @@ def click_ok(debug = False):
             time.sleep(.45)
             # click(button_pos[0] + 270, button_pos[1] - 160, debug=True, calling_function="click_ok")
             # pyautogui.click(button_pos[0] + 270, button_pos[1] - 160)
-            click2(button_pos[0] + 266, button_pos[1] - 195)
+            click(button_pos[0] + 266, button_pos[1] - 190)
             time.sleep(0.75)
             pyautogui.click(button_pos[0] + random.randrange(10,14), button_pos[1] + random.randrange(1,4))
             time.sleep(1.4)
