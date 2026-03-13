@@ -761,7 +761,7 @@ def click2(x, y):
     pixels[49, 50] = (255, 0, 0, 255)
     pixels[50, 49] = (255, 0, 0, 255)
     pixels[50, 50] = (255, 0, 0, 255)
-    im.save("clicking_images/click2_"+str(time.time)[:10]+".png")
+    im.save("clicking_images/click2_"+str(time.time())[:10]+".png")
     pyautogui.click(x, y)
 
 
