@@ -402,7 +402,9 @@ class AppDelegate(NSObject):
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
         pyautogui.click(596, 70)
-        time.sleep(.75)
+        time.sleep(0.5)
+        pyautogui.click(x=50, y=100)
+        time.sleep(.25)
         return player_info
 
 
