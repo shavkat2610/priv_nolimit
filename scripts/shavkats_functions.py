@@ -783,7 +783,7 @@ def click_ok(debug = False):
             time.sleep(.45)
             # click(button_pos[0] + 270, button_pos[1] - 160, debug=True, calling_function="click_ok")
             # pyautogui.click(button_pos[0] + 270, button_pos[1] - 160)
-            click2(button_pos[0] + 270, button_pos[1] - 160)
+            click2(button_pos[0] + 269, button_pos[1] - 120)
             time.sleep(0.75)
             pyautogui.click(button_pos[0] + random.randrange(10,14), button_pos[1] + random.randrange(1,4))
             time.sleep(1.4)
