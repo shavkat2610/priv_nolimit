@@ -246,6 +246,7 @@ class AppDelegate(NSObject):
     values_set = False
     number_of_the_universe = 1
     can_update_PD = False
+    readAllPD = 7
 
 
 
@@ -359,6 +360,8 @@ class AppDelegate(NSObject):
 
 
     def updatePDbyNumber(self): # needs testing
+        with self.valset_lock:
+            self.readAllPD -= 1
         with self.player_data_lock:
             to_update = self.to_update
         max_value = max(to_update)
@@ -2881,6 +2884,14 @@ class AppDelegate(NSObject):
                             self.addChips()
                         else:
                             self.updatePDbyNumber()
+                    else:
+                        do_ = False
+                        with self.valset_lock:
+                            if self.readAllPD > 0:
+                                do_ = True
+                        if do_:
+                            self.updatePDbyNumber()
+
 
             with self.valset_lock:
                 self.number_of_the_universe += 1
