@@ -392,7 +392,7 @@ class AppDelegate(NSObject):
                 break
             else:
                 if i == 6:
-                    time.sleep(0.5)
+                    time.sleep(0.75)
                     if check_if_playerinfo(desperate=True):
                         break
                     else:
