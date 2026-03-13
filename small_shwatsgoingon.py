@@ -4,7 +4,7 @@ import pyautogui
 import pytesseract
 from pytesseract import Output
 from  fish_for_cards import prepare_fishing_deck_cards, prepare_fishing_own_cards, red_own_cards, game_screenshot, fish_for_own_cards, fish_for_deck_cards, red_deck_cards
-from scripts.shavkats_functions import is_red, read_D, click
+from scripts.shavkats_functions import click2, is_red, read_D, click
 import numpy as np
 import time
 import cv2
@@ -1168,7 +1168,7 @@ def handle_all_in(im = None):
             # 461 +95 =  556
             # 556 - 160 = 396
             # 284 + 270 = 554
-            click(554, 396, im, debug=True, calling_function="handle_all_in_maxing_out")
+            click2(554, 396)
             time.sleep(0.75)
             # secs = time.time()
             # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
