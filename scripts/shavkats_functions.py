@@ -772,7 +772,7 @@ def click_ok(debug = False):
             pyautogui.click(button_pos[0] + 270, button_pos[1] - 160)
             time.sleep(0.75)
             pyautogui.click(button_pos[0] + random.randrange(10,14), button_pos[1] + random.randrange(1,4))
-            time.sleep(.4)
+            time.sleep(1.4)
             button_pos = imagesearch(image_path, precision=0.95, debug = debug, calling_function="click_one_times_please")
             if button_pos == [-1, -1]:
                 return True
