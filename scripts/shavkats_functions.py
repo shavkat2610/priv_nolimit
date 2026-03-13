@@ -755,12 +755,12 @@ def scroll_to_bottom():
 
 def click2(x, y):
     pyautogui.moveTo(x, y)
-    im = pyautogui.screenshot(region=(x-50, y-50, 100, 100))
+    im = pyautogui.screenshot(region=(x-100, y-100, 200, 200))
     pixels= im.load()
-    pixels[49, 49] = (255, 0, 0, 255)
-    pixels[49, 50] = (255, 0, 0, 255)
-    pixels[50, 49] = (255, 0, 0, 255)
-    pixels[50, 50] = (255, 0, 0, 255)
+    pixels[99, 99] = (255, 0, 0, 255)
+    pixels[99, 100] = (255, 0, 0, 255)
+    pixels[100, 99] = (255, 0, 0, 255)
+    pixels[100, 100] = (255, 0, 0, 255)
     im.save("clicking_images/click2_"+str(time.time())[:10]+".png")
     pyautogui.click(x, y)
 
