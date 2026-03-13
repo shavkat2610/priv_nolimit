@@ -387,12 +387,12 @@ class AppDelegate(NSObject):
         time.sleep(0.5)
         pyautogui.click(pp[0], pp[1])
         for i in range(7):
-            time.sleep(0.35)
+            time.sleep(0.25)
             if check_if_playerinfo():
                 break
             else:
                 if i == 6:
-                    time.sleep(0.05)
+                    time.sleep(0.5)
                     if check_if_playerinfo(desperate=True):
                         break
                     else:
