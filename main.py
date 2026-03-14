@@ -2094,10 +2094,10 @@ class AppDelegate(NSObject):
 
 
     def addChips(self):
-        with self.mutex_screenshot:
-            current_im = self.im
         print("clicking add chips")
         pyautogui.click(795, 90)
+        time.sleep(1.4)
+        current_im = game_screenshot()
         pixels = current_im.load()
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
             print("\nimma try clicking ok here 22222")
