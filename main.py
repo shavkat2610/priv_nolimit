@@ -248,7 +248,7 @@ class AppDelegate(NSObject):
     values_set = False
     number_of_the_universe = 1
     can_update_PD = False
-    readAllPD = 7
+    readAllPD = 9
 
 
 
@@ -2910,9 +2910,11 @@ class AppDelegate(NSObject):
                                     self.need_replenishment = 7
                         else:
                             if self.readAllPD > -5: # 6 ppl
-                                self.updatePDbyNumber()
                                 if self.readAllPD == 3:
-                                    unwait_4blinds()           
+                                    unwait_4blinds()     
+                                else:
+                                    self.updatePDbyNumber()
+
                             else:
                                 with self.valset_lock:
                                     self.readAllPD -= 1
