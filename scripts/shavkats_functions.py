@@ -1175,6 +1175,8 @@ def unwait_4blinds(im = None, debug = False):
         time.sleep(0.15)
         pyautogui.moveTo(531, 602, duration=0.25)
         click(531, 602, im = im, calling_function="unwait_4blinds", debug=debug)
+        time.sleep(0.25)
+        pyautogui.click(x=1183, y=759)
     return im
     
 
