@@ -2924,6 +2924,9 @@ class AppDelegate(NSObject):
                     else:
                         if self.readAllPD > 2:
                             self.updatePDbyNumber()
+                        if self.readAllPD == 3:
+                            unwait_4blinds()
+
 
 
             with self.valset_lock:
