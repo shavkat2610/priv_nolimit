@@ -2249,7 +2249,8 @@ class AppDelegate(NSObject):
                         if pixels[782, 527][0] > 250:
                             if pixels[782, 527][1] > 250:
                                 if pixels[782, 527][2] > 250:
-                                    if pixels[749, 527] > 190:
+                                    if pixels[749, 527][1] > 190:
+                                        print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
                                         current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
                                         if self.probability_1_1 > 0.95:
                                             click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
