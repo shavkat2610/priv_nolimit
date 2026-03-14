@@ -2911,7 +2911,7 @@ class AppDelegate(NSObject):
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 3:
-                                    unwait_4blinds()     
+                                    unwait_4blinds(debug=True)     
                                 else:
                                     self.updatePDbyNumber()
 
