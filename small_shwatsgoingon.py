@@ -1188,6 +1188,7 @@ def handle_all_in(im = None):
                 time.sleep(0.25)
                 pyautogui.click(576, 420) # hehe :D
                 print("\nclick open fifth ...")
+                im.save(f"shmol_new_data/no_dec_open_fifth_{str(time.time()).split('.')[0]}.png")
                 return False
             else:
                 # im0 = crop_wh(im, 320, 420, 100, 100)
