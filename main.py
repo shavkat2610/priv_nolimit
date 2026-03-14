@@ -199,7 +199,7 @@ class AppDelegate(NSObject):
     lock = Lock() #
     own_money = 0.0
     own_money_before_last_preflop = 30.0
-    need_replenishment = 5
+    need_replenishment = 7
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -2269,13 +2269,16 @@ class AppDelegate(NSObject):
                                         current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
                                         if self.probability_1_1 > 0.95:
                                             click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
-                # else:
-                #     with self.valset_lock:
-                #         can_ = self.can_update_PD
-                #     if can_ == True:
-                #         self.updatePDbyNumber()
-                #         with self.valset_lock:
-                #             self.can_update_PD = False
+                else:
+                    with self.valset_lock:
+                        can_ = self.can_update_PD
+                    if can_ == True:
+                        self.updatePDbyNumber()
+                        with self.valset_lock:
+                            self.can_update_PD = False
+                        with self.acting_lock:
+                            self.time_to_act = False                                                                           
+                            return
                     
                     # with self.acting_lock:
                     #     self.time_to_act = False
@@ -2903,9 +2906,20 @@ class AppDelegate(NSObject):
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
                                     self.addChips()
-                                    self.need_replenishment = 5
+                                    self.need_replenishment = 7
                         else:
-                            self.updatePDbyNumber()
+                            if self.readAllPD > -5: # 6 ppl
+                                self.updatePDbyNumber()
+                            else:
+                                with self.valset_lock:
+                                    self.readAllPD -= 1
+                                if self.readAllPD < -25:
+                                    with self.valset_lock:
+                                        self.readAllPD = 2
+                                elif self.readAllPD % 5 == 0:
+                                    self.updatePDbyNumber()
+
+
                     else:
                         if self.readAllPD > 2:
                             self.updatePDbyNumber()
