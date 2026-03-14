@@ -2922,10 +2922,10 @@ class AppDelegate(NSObject):
                             else:
                                 with self.valset_lock:
                                     self.readAllPD -= 1
-                                if self.readAllPD < -25:
+                                if self.readAllPD < -50:
                                     with self.valset_lock:
                                         self.readAllPD = 2
-                                elif self.readAllPD % 5 == 0:
+                                elif self.readAllPD % 7 == 0:
                                     self.updatePDbyNumber()                         
 
 
