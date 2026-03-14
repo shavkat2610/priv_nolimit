@@ -539,8 +539,8 @@ class AppDelegate(NSObject):
 
     def fold_(self, userInfo):
         with self.dec_lock:
-            if self.user_decision != "None_yet":
-                self.user_decision = "None_yet"
+            if self.user_decision != "fold":
+                self.user_decision = "fold"
             return
         
     def call_(self, userInfo):
