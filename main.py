@@ -2153,6 +2153,8 @@ class AppDelegate(NSObject):
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
                     pyautogui.click(x=1183, y=759)
+                    with self.valset_lock:
+                        self.values_set = False
                 with self.cards_lock:
                     if self.cards_open:
                         self.cards_open = False
@@ -2548,6 +2550,8 @@ class AppDelegate(NSObject):
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
                     pyautogui.click(x=1183, y=759)
+                    with self.valset_lock:
+                        self.values_set = False
                 with self.acting_lock:
                     self.time_to_act = False            
                     return
@@ -2605,7 +2609,6 @@ class AppDelegate(NSObject):
                             self.foldErase() # remove later, when folds can be involved into feature set. maybe after experts_say_fold model is implemented.
                             with self.lock:
                                 if self.own_money > 299.0:
-
                                     close_game()
                                     self.timer2.invalidate()
                                     self.hideButtons()
@@ -2887,7 +2890,6 @@ class AppDelegate(NSObject):
             if game_stage != "connectivity_issues": 
                 time.sleep(0.375)
                 with self.valset_lock:
-                    
                     need_set = False
                     if not self.values_set: # own money value not set after it changed 
                         need_set = True
