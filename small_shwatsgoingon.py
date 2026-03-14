@@ -262,7 +262,7 @@ def read_player_info(im):
         value_1 = float(data1) / 100.
     except Exception as e:
         print()
-        print("read_player_info read something weird:"+str(data))
+        print("read_player_info read something weird:"+str(data1))
         print()
         print(e)
         exit()   
