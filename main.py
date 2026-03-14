@@ -2152,7 +2152,7 @@ class AppDelegate(NSObject):
                     self.writeToCSVs()
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
-                    click(x=1183, y=759, im = current_im, debug = True, calling_function = "gameScreenshot_allIn")
+                    pyautogui.click(x=1183, y=759)
                 with self.cards_lock:
                     if self.cards_open:
                         self.cards_open = False
@@ -2547,6 +2547,7 @@ class AppDelegate(NSObject):
                     self.writeToCSVs()
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
+                    pyautogui.click(x=1183, y=759)
                 with self.acting_lock:
                     self.time_to_act = False            
                     return
