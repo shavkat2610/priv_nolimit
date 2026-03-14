@@ -313,7 +313,7 @@ class AppDelegate(NSObject):
         try:
             own_money_current = read_own_money(im=current_im)
             print("own money read: "+str(own_money_current))
-            if own_money_current != -10 and own_money_current != None:
+            if own_money_current != -10 and own_money_current != None and own_money_current != 0.001:
                 with self.lock:
                     if self.own_money != own_money_current:
                         self.own_money = own_money_current                    
@@ -2153,8 +2153,8 @@ class AppDelegate(NSObject):
                     time.sleep(4) # write loss to model here
                     get_up_stand_up()
                     pyautogui.click(x=1183, y=759)
-                    with self.valset_lock:
-                        self.values_set = False
+                    with self.lock:
+                        self.own_money=100.0
                 with self.cards_lock:
                     if self.cards_open:
                         self.cards_open = False
@@ -2552,6 +2552,8 @@ class AppDelegate(NSObject):
                     pyautogui.click(x=1183, y=759)
                     with self.valset_lock:
                         self.values_set = False
+                    with self.lock:
+                        self.own_money=100.0
                 with self.acting_lock:
                     self.time_to_act = False            
                     return

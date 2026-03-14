@@ -459,9 +459,9 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                     text = text[:-1]                
                 try:
                     result = float(text)
-                    if result == 0.0:
-                        print("probably read 0 instead of Check, returning 0.001 for now")
-                        return -1.0
+                    # if result == 0.0:
+                    #     print("probably read 0 instead of Check, returning 0.001 for now")
+                    #     return 0.001
                     # if result > 22.0:
                     #     saving = True
                     if saving:
@@ -485,9 +485,8 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
                     print("text: "+text)
                     print(e)
                     im.save(f"tesseract_training/raw_data/t_return24_{str(time.time())[:12].replace('.', '_')}.png")  
-                    
                     return 0.001
-    if whole_text.startswith("All"):
+    if whole_text.startswith("A"):
         return -1.0
     if whole_text != "":
         im.save(f"tesseract_training/raw_data/t_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}{str(time.time())[:12].replace('.', '_')}.png")    
