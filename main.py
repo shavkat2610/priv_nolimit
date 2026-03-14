@@ -388,8 +388,8 @@ class AppDelegate(NSObject):
 
 
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
-        pyautogui.click(x=50, y=100)
-        time.sleep(0.1)
+        # pyautogui.click(x=25, y=100)
+        # time.sleep(0.1)
         pyautogui.moveTo(pp[0], pp[1], duration=0.3)
         time.sleep(0.2)
         pyautogui.click(pp[0], pp[1])
@@ -408,10 +408,12 @@ class AppDelegate(NSObject):
         
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
+        pyautogui.moveTo(596, 70, duration=0.3)
+        time.sleep(0.25)
         pyautogui.click(596, 70)
-        time.sleep(0.15)
-        pyautogui.click(x=50, y=100)
-        time.sleep(.45)
+        time.sleep(0.25)
+        pyautogui.moveTo(25, 100, duration=0.45)
+        pyautogui.click(x=25, y=100)
         return player_info
 
 
