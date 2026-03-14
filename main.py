@@ -527,7 +527,7 @@ class AppDelegate(NSObject):
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
         start_time = NSDate.date() #todo: every 2 secs switch between 1. make screenshot 2. use existing screenshot to evaluate
-        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 2.9, self, 'gameScreenshot:', None, True)
+        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 2.4, self, 'gameScreenshot:', None, True)
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
         print("game screenshot timer started")
@@ -2917,7 +2917,9 @@ class AppDelegate(NSObject):
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 3:
-                                    unwait_4blinds(debug=True)     
+                                    unwait_4blinds(debug=True) 
+                                    with self.valset_lock:
+                                        self.readAllPD -= 1    
                                 else:
                                     self.updatePDbyNumber()
 
