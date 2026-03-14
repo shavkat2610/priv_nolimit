@@ -1158,7 +1158,7 @@ def handle_all_in(im = None):
         im = game_screenshot()
     # print(im.size)
     pixels = im.load() # create the pixel map
-    if pixels[627, 570][1] >= 80:
+    if pixels[627, 475][1] >= 80:
         print("\nrun three times clicked (need to switch to two I think, they dont play three around here ...)")
         click(x=627, y=570, im = im, debug = True, calling_function = "handle_all_in")
         return False
