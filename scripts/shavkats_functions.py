@@ -997,8 +997,9 @@ def read_game_rules(big_blind = "200"):
             if not click_two_times_please(image_path, precision=.8, debug = False):
                 print("Could not find selection once ...")
                 if not click_two_times_please(image_path, precision=8, debug = False):
-                    print("Could not find selection, exiting...")
-                    exit()
+                    print("Could not find selection, retry 25...")
+                    result = read_game_rules(big_blind)
+                    return result
         elif big_blind == "500":
             print("trying to click selection ... ")
             try:
@@ -1006,8 +1007,9 @@ def read_game_rules(big_blind = "200"):
                 
                 image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
                 if not click_two_times_please(image_path, precision=.75, debug = True):
-                    print("Could not find selection, exiting...")
-                    exit()
+                    print("Could not find selection, retry 24...")
+                    result = read_game_rules(big_blind)
+                    return result
             except Exception as e:
                 print(e)
                 exit()
