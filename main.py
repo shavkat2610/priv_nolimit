@@ -2096,7 +2096,7 @@ class AppDelegate(NSObject):
     def addChips(self):
         print("clicking add chips")
         pyautogui.click(795, 90)
-        time.sleep(3.4)
+        time.sleep(2.4)
         current_im = game_screenshot()
         pixels = current_im.load()
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
