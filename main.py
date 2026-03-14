@@ -199,6 +199,7 @@ class AppDelegate(NSObject):
     lock = Lock() #
     own_money = 0.0
     own_money_before_last_preflop = 30.0
+    need_replenishment = 5
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -2884,7 +2885,11 @@ class AppDelegate(NSObject):
                 else:
                     if game_stage == "no_decision_to_be_made":
                         if self.own_money < 50.0:
-                            self.addChips()
+                            with self.lock:
+                                self.need_replenishment -= 1
+                                if self.need_replenishment <= 0:
+                                    self.addChips()
+                                    self.need_replenishment = 5
                         else:
                             self.updatePDbyNumber()
                     else:
