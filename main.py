@@ -406,11 +406,11 @@ class AppDelegate(NSObject):
                         print("could not read player info, maybe player not seated ? HERE 24 ay")
                         return False
                 if i == 3:
-                    time.sleep(0.5)
+                    time.sleep(0.25)
                     if not check_if_playerinfo(desperate=True):
                         print("clicking again i == 3")
                         pyautogui.click(pp[0], pp[1])
-                        time.sleep(0.5)
+                        time.sleep(0.25)
 
 
                     
