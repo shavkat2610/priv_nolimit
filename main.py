@@ -2096,19 +2096,21 @@ class AppDelegate(NSObject):
     def addChips(self):
         print("clicking add chips")
         pyautogui.click(795, 90)
-        time.sleep(1.4)
+        time.sleep(2.4)
         current_im = game_screenshot()
         pixels = current_im.load()
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
             print("\nimma try clicking ok here 22222")
-            time.sleep(0.75)
+            # time.sleep(0.75)
             # 461 +95 =  556
             # 556 - 160 = 396
             # 284 + 270 = 554
+            pyautogui.moveTo(554, 396, duration=0.25)
             click(554, 396, current_im, debug=True, calling_function="delegate_addChips_maxing_out")
-            time.sleep(0.75)
+            time.sleep(.5)
             # secs = time.time()
             # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
+            pyautogui.moveTo(340, 560, duration=0.25)
             pyautogui.click(340, 560)
             return True
         pass
