@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import tensorflow as tf
 import time
 
-batch_size = 128
+batch_size = 32
 
 
 
@@ -31,14 +31,14 @@ train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(150, 150),
+    image_size=(250, 250),
     batch_size=batch_size)
 
 validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(150, 150),
+    image_size=(250, 250),
     batch_size=batch_size)
 
 
@@ -48,26 +48,29 @@ def make_datasets():
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(150, 150),
+        image_size=(250, 250),
         batch_size=batch_size)
 
     validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(150, 150),
+        image_size=(250, 250),
         batch_size=batch_size)    
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs) 
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.515)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -82,7 +85,7 @@ x = keras.layers.LayerNormalization()(x)
 outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
 model = keras.Model(inputs, outputs)
 
-# old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+# old_model = keras.saving.load_model("model1_3.keras", custom_objects=None, compile=True, safe_mode=True)
 
 # model.set_weights(old_model.get_weights()) 
 
@@ -105,15 +108,18 @@ model.save("model1_2.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.515)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -152,15 +158,18 @@ model.save("model1_3.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.515)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -198,15 +207,18 @@ model.save("model1_4.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.515)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -247,15 +259,18 @@ model.save("model1_5.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.515)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -296,15 +311,18 @@ model.save("model1_6.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.3)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -353,15 +371,18 @@ model.save("model1_01.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.1)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -396,15 +417,18 @@ model.save("model2_1.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.15)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -435,15 +459,18 @@ model.save("model3.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.2)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -474,15 +501,18 @@ model.save("model4.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.23)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -513,15 +543,18 @@ model.save("model5.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.3)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -552,15 +585,18 @@ model.save("model6.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.4)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
@@ -594,15 +630,18 @@ model.save("model7.keras")
 
 
 
-inputs = keras.Input(shape=(150, 150, 3))
+inputs = keras.Input(shape=(250, 250, 3))
 x = keras.layers.Rescaling(1./128, -1)(inputs)
+x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
+x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
 x = keras.layers.MaxPool2D()(x)
 
-x = keras.layers.Conv2D(128, 4, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+
 x = keras.layers.Flatten()(x)
 x = keras.layers.Dropout(rate=.45)(x)
 x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
