@@ -2909,16 +2909,11 @@ class AppDelegate(NSObject):
                                     self.addChips()
                                     self.need_replenishment = 7
                         else:
-                            was_in_if = False
                             if self.readAllPD > -5: # 6 ppl
-                                was_in_if = True
                                 self.updatePDbyNumber()
-                            elif self.readAllPD == 3:
-                                unwait_4blinds()           
+                                if self.readAllPD == 3:
+                                    unwait_4blinds()           
                             else:
-                                if was_in_if:
-                                    print("WAS IN IF !!!!!!!!!!!!!!!!??????????????????? PYTHON ?!?!?!?!?!?!?!?!?!??!?!!?!?!?!?!?!?!?!?!?")
-                                    exit()
                                 with self.valset_lock:
                                     self.readAllPD -= 1
                                 if self.readAllPD < -25:
