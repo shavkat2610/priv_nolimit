@@ -371,21 +371,20 @@ class AppDelegate(NSObject):
         max_index = to_update.index(max_value)
         number = max_index + 1
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
-        with self.player_data_lock:
-            self.to_update[max_index] = 0
-            for i in range(len(to_update)):
-                if i != max_index:
-                    self.to_update[i] += 1
         if number <= len(player_positions):
             pp = player_positions[number-1]
             player_info = self.updateOnePlayerData_(pp)
-            with self.player_data_lock:
-                self.player_data[number-1] = player_info
-            
-            return player_info
+            if player_info != False:
+                with self.player_data_lock:
+                    self.player_data[number-1] = player_info
+                    self.to_update[max_index] = 0
+                    for i in range(len(to_update)):
+                        if i != max_index:
+                            self.to_update[i] += 1
+            return 
         else:
             print(f"Invalid player number: {number}. Must be between 1 and {len(player_positions)}.")
-            return [0, 0, 0, 0]
+            return 
 
 
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
@@ -405,14 +404,14 @@ class AppDelegate(NSObject):
                         break
                     else:
                         print("could not read player info, maybe player not seated ? HERE 24 ay")
-                        return [0, 0, 0, 0]
+                        return False
         
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
         pyautogui.click(596, 70)
-        time.sleep(0.5)
+        time.sleep(0.15)
         pyautogui.click(x=50, y=100)
-        time.sleep(.25)
+        time.sleep(.45)
         return player_info
 
 
@@ -427,7 +426,9 @@ class AppDelegate(NSObject):
         # close_player_info_window_position = [596, 70]
         i = 0
         for pp in player_positions:
-            self.player_data[i] = self.updateOnePlayerData_(pp)
+            numba = self.updateOnePlayerData_(pp)
+            if numba != False:
+                self.player_data[i] = self.updateOnePlayerData_(pp)
             i += 1
         print("self.player_data : "+str(self.player_data))
         if get_up_stand_up():

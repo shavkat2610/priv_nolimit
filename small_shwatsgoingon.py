@@ -257,12 +257,14 @@ def read_player_info(im):
     # im.show()
     # save screenshot
     im1 = crop_wh(im, 380, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
-    data1 = tess_read_playerinfo(im1)
+    data = tess_read_playerinfo(im1)
     try:
-        value_1 = float(data1) / 100.
+        value_1 = float(data) / 100.
     except Exception as e:
         print()
-        print("read_player_info read something weird:"+str(data1))
+        print("read_player_info read something weird 1:"+str(data))
+        if data == None:
+            return False
         print()
         print(e)
         exit()   
@@ -272,7 +274,9 @@ def read_player_info(im):
         value_2 = float(data) / 100.
     except Exception as e:
         print()
-        print("read_player_info read something weird:"+str(data))
+        print("read_player_info read something weird 2:"+str(data))
+        if data == None:
+            return False        
         print()
         print(e)
         exit()    
@@ -282,7 +286,9 @@ def read_player_info(im):
         value_3 = float(data) / 100.
     except Exception as e:
         print()
-        print("read_player_info read something weird:"+str(data))
+        print("read_player_info read something weird 3:"+str(data))
+        if data == None:
+            return False        
         print()
         print(e)
         exit()  
@@ -292,14 +298,16 @@ def read_player_info(im):
         value_4 = float(data) / 100.
     except Exception as e:
         print()
-        print("read_player_info read something weird:"+str(data))
+        print("read_player_info read something weird 4:"+str(data))
+        if data == None:
+            return False        
         print()
         print(e)
         exit()  
     try:
         return [ value_1, value_2, value_3, value_4]
     except Exception as e:
-        return [ 0, 0, 0, 0]
+        return False
 
 
 
