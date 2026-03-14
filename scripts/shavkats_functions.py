@@ -1171,6 +1171,7 @@ def unwait_4blinds(im = None):
         im = game_screenshot()
     if check_if_w8_for_blinds(im):
         # pyautogui.click(531, 602)
+        time.sleep(0.25)
         click(531, 602, im = im, calling_function="unwait_4blinds", debug=False)
     return im
     
