@@ -417,11 +417,11 @@ class AppDelegate(NSObject):
         
         im = game_screenshot(save=True)
         player_info = read_player_info(im=im) 
-        pyautogui.moveTo(596, 70, duration=0.3)
-        time.sleep(0.25)
+        pyautogui.moveTo(596, 70, duration=0.1)
+        time.sleep(0.15)
         pyautogui.click(596, 70)
-        time.sleep(0.25)
-        pyautogui.moveTo(25, 100, duration=0.45)
+        time.sleep(0.15)
+        pyautogui.moveTo(25, 100, duration=0.15)
         pyautogui.click(x=25, y=100)
         return player_info
 
