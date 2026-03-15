@@ -73,7 +73,7 @@ from PIL import Image
 
 # todo:
 
-
+# no-read # handle all-in (no decision to be made, click ok or run two times)
 # some problem with handle-all-in I think
 # show cards sometimes
 # save instances with text for tesseract training, especially playerinfo
