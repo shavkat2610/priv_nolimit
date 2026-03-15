@@ -983,6 +983,11 @@ class AppDelegate(NSObject):
                 self.i_bet_river = 0.0
             if self.i_bet_turn != 0.0:
                 self.i_bet_turn = 0.0
+    
+
+        with self.dec_lock:
+            if self.user_decision != "None_yet":
+                self.user_decision = "None_yet"
             
         with self.mk_comte_carlo_decision_lock:
             if self.probability_1_1 != -1:
