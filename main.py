@@ -423,6 +423,7 @@ class AppDelegate(NSObject):
         # time.sleep(0.15)
         # pyautogui.moveTo(25, 100, duration=0.15)
         # pyautogui.click(x=25, y=100)
+        pyautogui.click(x=1183, y=759)  
         return player_info
 
 
