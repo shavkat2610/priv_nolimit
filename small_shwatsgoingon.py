@@ -263,7 +263,7 @@ def read_player_info(im):
     except Exception as e:
         print()
         print("read_player_info read something weird 1:"+str(data))
-        im1.save(f"read_p_i_None_read_{str(time.time())[:10]}.png")
+        im1.save(f"read_p_i_no_read_{str(time.time())[:10]}.png")
         if data == None:
             return False
         print()
@@ -276,7 +276,7 @@ def read_player_info(im):
     except Exception as e:
         print()
         print("read_player_info read something weird 2:"+str(data))
-        im1.save(f"read_p_i_None_read_{str(time.time())[:10]}.png")
+        im1.save(f"read_p_i_no_read_{str(time.time())[:10]}.png")
         if data == None:
             return False        
         print()
@@ -289,7 +289,7 @@ def read_player_info(im):
     except Exception as e:
         print()
         print("read_player_info read something weird 3:"+str(data))
-        im1.save(f"read_p_i_None_read_{str(time.time())[:10]}.png")
+        im1.save(f"read_p_i_no_read_{str(time.time())[:10]}.png")
         if data == None:
             return False        
         print()
@@ -302,7 +302,7 @@ def read_player_info(im):
     except Exception as e:
         print()
         print("read_player_info read something weird 4:"+str(data))
-        im1.save(f"read_p_i_None_read_{str(time.time())[:10]}.png")
+        im1.save(f"read_p_i_no_read_{str(time.time())[:10]}.png")
         if data == None:
             return False        
         print()
