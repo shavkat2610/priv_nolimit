@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import tensorflow as tf
 import time
 
-batch_size = 32
+batch_size = 64
 
 
 
@@ -31,14 +31,14 @@ train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(250, 250),
+    image_size=(150, 150),
     batch_size=batch_size)
 
 validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(250, 250),
+    image_size=(150, 150),
     batch_size=batch_size)
 
 
@@ -48,42 +48,56 @@ def make_datasets():
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(250, 250),
+        image_size=(150, 150),
         batch_size=batch_size)
 
     validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(250, 250),
+        image_size=(150, 150),
         batch_size=batch_size)    
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs) 
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
+def build_model(dp_rate = 0.5):
+    inputs = keras.Input(shape=(150, 150, 3))
+    x = keras.layers.Rescaling(1./255, -1)(inputs) 
+    x = keras.layers.Reshape((150, 150, 3, 1))(x)
+    x = keras.layers.Conv3D(2, 3, 3, activation='leaky_relu')(x)
+    # x2 = keras.layers.Lambda(lambda x: x[:,:,:,0])(x)
+    x2 = keras.layers.Flatten()(x[:,:,:,0 ,0])
+    x2 = keras.layers.Dense(1, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x2)
+    x = keras.layers.Reshape((50, 50, 2, 1))(x)
+    x = keras.layers.Conv3D(4, 2, 2, activation='leaky_relu')(x)
+    # x3 = keras.layers.Lambda(lambda x: x[:,:,:,7])(x)
+    x3 = keras.layers.Flatten()(x[:,:,:,0 ,3])
+    x3 = keras.layers.Dense(2, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x3)
+    x = keras.layers.Reshape((25, 25, 4, 1))(x)
+    x = keras.layers.Conv3D(8, 2, 2, activation="leaky_relu")(x)
+    # x4 = keras.layers.Lambda(lambda x: x[:,:,15], output_shape=x[:, :, 15].shape)(x)
+    x4 = keras.layers.Flatten()(x[:,:,:, 1 ,3])
+    x4 = keras.layers.Dense(4, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x4)
+    x = keras.layers.Reshape((12, 12, 8, 2))(x)
+    x = keras.layers.Conv3D(16, 4, 4,activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+    x = keras.layers.MaxPool3D()(x)
+    x5 = keras.layers.Flatten()(x[:,:,:, 0,15])
+    x5 = keras.layers.Dense(8, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x5)
+    x = keras.layers.Flatten()(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Concatenate()([x, x2, x3, x4, x5])
+    x = keras.layers.Dense(32, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Dense(32, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dense(32, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dense(32, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
+    x = keras.layers.LayerNormalization()(x)
+    outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
+    return keras.Model(inputs, outputs)
 
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.515)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.6)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 # old_model = keras.saving.load_model("model1_3.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -108,31 +122,7 @@ model.save("model1_2.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.515)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.7)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -158,31 +148,7 @@ model.save("model1_3.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.515)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.15)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -207,31 +173,7 @@ model.save("model1_4.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.515)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.45)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.71)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -259,31 +201,7 @@ model.save("model1_5.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.515)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.71)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -311,31 +229,7 @@ model.save("model1_6.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.6)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -371,31 +265,10 @@ model.save("model1_01.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
+model = build_model()
 
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
 
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.1)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.2)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) 
-model = keras.Model(inputs, outputs)
+
 
 old_model = keras.saving.load_model("model1_01.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -416,32 +289,7 @@ model.save("model2_1.keras")
 
 
 
-
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.15)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model2_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -459,31 +307,7 @@ model.save("model3.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.2)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.6)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model3.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -501,31 +325,7 @@ model.save("model4.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.23)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=0.7)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu)(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model4.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -543,31 +343,7 @@ model.save("model5.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.3)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=0.7)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu)(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model5.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -585,37 +361,13 @@ model.save("model6.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.4)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=0.7)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu)(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model6.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
-model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.000032, momentum=0.5),
+model.compile(optimizer=keras.optimizers.SGD(learning_rate=0.00003, momentum=0.5),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -630,31 +382,7 @@ model.save("model7.keras")
 
 
 
-inputs = keras.Input(shape=(250, 250, 3))
-x = keras.layers.Rescaling(1./128, -1)(inputs)
-x = keras.layers.Conv2D(16, 3, strides = (1,1), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(32, 3, strides = (2,2), activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-x = keras.layers.Conv2D(64, 3, strides = (2,2),activation='relu')(x)
-x = keras.layers.MaxPool2D()(x)
-
-x = keras.layers.Conv2D(128, 3, strides = (1,1),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Conv2D(128, 3, strides = (2,2),activation='relu', kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-
-x = keras.layers.Flatten()(x)
-x = keras.layers.Dropout(rate=.45)(x)
-x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.5)(x)
-x = keras.layers.BatchNormalization()(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu, kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=0.7)(x)
-x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-5),activity_regularizer=keras.regularizers.L2(3e-6))(x)
-x = keras.layers.Dropout(rate=.8)(x)
-x = keras.layers.Dense(128, activation=keras.activations.leaky_relu)(x)
-x = keras.layers.LayerNormalization()(x)
-outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
-model = keras.Model(inputs, outputs)
+model = build_model()
 
 old_model = keras.saving.load_model("model7.keras", custom_objects=None, compile=True, safe_mode=True)
 

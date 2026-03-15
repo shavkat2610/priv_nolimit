@@ -1109,7 +1109,7 @@ def general_whats_going_on_model(im = None, debug = False):
         im = game_screenshot()
     nim = im.convert("RGB")
     nim = np.array(nim)
-    nim = cv2.resize(nim, dsize=(250, 250))
+    nim = cv2.resize(nim, dsize=(150, 150))
     # print(im.shape)
     # print(str(im))
     # exit
