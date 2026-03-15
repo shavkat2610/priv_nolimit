@@ -1191,7 +1191,7 @@ def check_if_playerinfo(im = None, desperate = False):
     if im == None:
         im = game_screenshot()
     pixels = im.load()
-    pix = pixels[327, 20]
+    pix = pixels[327, 19]
     if desperate:
         print("check_if_playerinfo desperate pix: "+str(pix))
     if pix[0] == pix[1] == pix[2] == 0:
