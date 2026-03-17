@@ -1127,12 +1127,12 @@ def general_whats_going_on_model(im = None, debug = False):
             global filenames
             filenames.append(im.filename)
         # print(str(model_output))
-        print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01)))
+        print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01))[:4].replace(".","_"))
         secs = time.time()
         second = class_names[sec_max]
         # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
         im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
-    return result
+    return result, prob
 
 
 
@@ -1346,7 +1346,7 @@ def simulate_gss(im=None):
     # handle_all_in(im=im):
 
     # read_total_pot_money(im=im)
-    read_total_pot_money_manually(im=im)
+    # read_total_pot_money_manually(im=im)
     # read_own_money(im=im)
     # try:
     #     pix = im.getpixel((530, 500)) # there should be a red button here, when it is our turn 
@@ -1359,7 +1359,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    # print(general_whats_going_on_model(im=im, debug=True))
+    print(general_whats_going_on_model(im=im, debug=True))
 
     # print(check_if_we_holdin_yet(im))
 
@@ -1426,23 +1426,23 @@ import glob
 if __name__ == "__main__":
     # prepare_fishing_own_cards()
     # prepare_fishing_deck_cards()
-    # load_smol_watsgoingon_model()
-    prepare_pot_digits()
-    # path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
+    load_smol_watsgoingon_model()
+    # prepare_pot_digits()
+    path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
-    # for pth in path :
-    #     if pth.endswith(".png"):
-    #         im = Image.open(pth)
-    #         # tess_read(im=im)
-    #         # im = Image.open("gsss/game_screenshot1764690404.png")
-    #         if simulate_gss(im=im):
-    #             print("found one ! "+str(pth))
+    for pth in path :
+        if pth.endswith(".png"):
+            im = Image.open(pth)
+            # tess_read(im=im)
+            # im = Image.open("gsss/game_screenshot1764690404.png")
+            if simulate_gss(im=im):
+                print("found one ! "+str(pth))
     #         # time.sleep(0.1)
     # print("done with all images !")
-    # print("filenames with own money reading of -1: \n"+str('\n'.join(filenames)))
+    print("filenames with bad bois: \n"+str('\n'.join(filenames)))
     # print(path)
-    simulate_gss()
+    # simulate_gss()
 
     # load_flop_equity_model()
     # print("start")

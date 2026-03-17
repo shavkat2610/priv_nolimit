@@ -106,7 +106,7 @@ prepare_pot_digits()
 
 
 
-
+glob_gms_confidence = 10.0
 prod = False # play soundtrack or no
 max_num_hands = 150 # todo: mave tables or restart client after this many ahnds maybe?
 
@@ -393,22 +393,17 @@ class AppDelegate(NSObject):
         pyautogui.moveTo(pp[0], pp[1], duration=0.25)
         time.sleep(0.15)
         pyautogui.click(pp[0], pp[1])
-        for i in range(7):
+        for i in range(5):
             time.sleep(0.25)
             if check_if_playerinfo():
                 break
             else:
-                if i == 6:
-                    time.sleep(0.75)
-                    if check_if_playerinfo(desperate=True):
-                        break
-                    else:
-                        print("could not read player info, maybe player not seated ? HERE 24 ay")
-                        return [0, 0, 0, 0]
-                if i == 3 or i == 5:
-                    time.sleep(0.1)
+                if i == 4:
+                    return [0, 0, 0, 0]
+                if i == 2 or i == 3:
+                    time.sleep(0.25)
                     if not check_if_playerinfo(desperate=True):
-                        print("clicking again i == 3")
+                        print("clicking again i == "+str(i))
                         pyautogui.click(pp[0], pp[1])
                         time.sleep(0.45)
 
@@ -2186,7 +2181,7 @@ class AppDelegate(NSObject):
                     return
             
 
-            game_stage = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
+            game_stage, gms_confidence = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
 
@@ -2194,7 +2189,10 @@ class AppDelegate(NSObject):
             if game_stage == "flop":
                 print("flop")
                 if self.number_of_the_universe%52==0:
-                    current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
+                    if gms_confidence > glob_gms_confidence:
+                        current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
+                    else:
+                        current_im.save(f"shmol_model_not_sure/flop_{str(time.time()).split('.')[0]}.png")
                 with self.cards_lock:
                     self.cards_open = False
                 if current_game_stage != "flop":
@@ -2212,6 +2210,9 @@ class AppDelegate(NSObject):
                         current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
                         print("exiting")
                         exit()
+
+
+
                     with self.potheight_lock:
                         self.potheight_after_preflop = self.potheight
                     with self.game_stage_lock:
@@ -2257,8 +2258,12 @@ class AppDelegate(NSObject):
                     
 
             elif game_stage == "no_decision_to_be_made":
-                if self.number_of_the_universe%53==0:
-                    current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
+                if self.number_of_the_universe%33==0:
+                    if gms_confidence > glob_gms_confidence:
+                        current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
+                    else:
+                        current_im.save(f"shmol_model_not_sure/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
+
                 with self.cards_lock:
                     self.cards_open = False
                 secs = time.time()
@@ -2280,9 +2285,7 @@ class AppDelegate(NSObject):
                                         if self.probability_1_1 > 0.95:
                                             click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                 else:
-                    with self.valset_lock:
-                        can_ = self.can_update_PD
-                    if can_ == True:
+                    if self.can_update_PD == True:
                         self.updatePDbyNumber()
                         with self.valset_lock:
                             self.can_update_PD = False
@@ -2296,8 +2299,12 @@ class AppDelegate(NSObject):
                     
             
             elif game_stage == "river":
-                if self.number_of_the_universe%37==0:
-                    current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
+                if self.number_of_the_universe%13==0:
+                    if gms_confidence > glob_gms_confidence:
+                        current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
+                    else:
+                        current_im.save(f"shmol_model_not_sure/river_{str(time.time()).split('.')[0]}.png")
+
                 print("river")
                 if current_game_stage != "river":
                     with self.own_cards_lock:
@@ -2370,8 +2377,12 @@ class AppDelegate(NSObject):
 
 
             elif game_stage == "turn":
-                if self.number_of_the_universe%18==0:
-                    current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
+                if self.number_of_the_universe%8==0:
+                    if gms_confidence > glob_gms_confidence:
+                        current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
+                    else:
+                        current_im.save(f"shmol_model_not_sure/turn_{str(time.time()).split('.')[0]}.png")
+
                 if current_game_stage != "turn":
                     with self.own_cards_lock:
                         if self.own_card_left == "nn" or self.own_card_right == "nn":
@@ -2448,9 +2459,16 @@ class AppDelegate(NSObject):
                         else:
                             self.misred = False
                 if self.number_of_the_universe%50==0:
-                    current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
+                    if gms_confidence > glob_gms_confidence:
+                        current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
+                    else:
+                        current_im.save(f"shmol_model_not_sure/preflop_{str(time.time()).split('.')[0]}.png")
                 if current_game_stage != "preflop":
-                    
+                    if self.d_position > 3:
+                        self.updatePDbyNumber()
+                        with self.acting_lock:
+                            self.time_to_act = False                                                                           
+                            return                    
                     with self.game_stage_lock:
                         self.game_stage_current = "preflop"                
                     with self.d_lock: # only once after turn or once every preflop
@@ -2919,7 +2937,7 @@ class AppDelegate(NSObject):
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
                                     self.addChips()
-                                    self.need_replenishment = 7
+                                    self.need_replenishment = 5
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 3:
@@ -2932,9 +2950,9 @@ class AppDelegate(NSObject):
                             else:
                                 with self.valset_lock:
                                     self.readAllPD -= 1
-                                if self.readAllPD < -50:
+                                if self.readAllPD < -25:
                                     with self.valset_lock:
-                                        self.readAllPD = 2
+                                        self.readAllPD = 1
                                 elif self.readAllPD % 7 == 0:
                                     self.updatePDbyNumber()                         
 
