@@ -90,7 +90,7 @@ def build_model(dp_rate = 0.8):
     x = keras.layers.Conv3D(32, (3,3,3), (1,1,1),activation='relu')(x)
     x = keras.layers.Reshape((13, 13, 14, 16))(x)
     x = keras.layers.Conv3D(32, (3,3,3), (1,1,1),activation='relu')(x)
-    x = keras.layers.MaxPooling3D()(x)
+    # x = keras.layers.MaxPooling3D()(x)
     # x = keras.layers.Reshape((6, 6, 1, 32))(x)
     x = keras.layers.Conv3D(64, (3,3,3), (1,1,1),activation='relu')(x)
     # x = keras.layers.MaxPooling3D()(x)
