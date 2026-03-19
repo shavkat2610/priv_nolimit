@@ -2377,7 +2377,7 @@ class AppDelegate(NSObject):
 
 
             elif game_stage == "turn":
-                if self.number_of_the_universe%8==0:
+                if self.number_of_the_universe%3==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
                     else:
