@@ -650,6 +650,8 @@ def see_if_there_is_l_info():
     global l_info_read
     img = Image.open('images/i_understand.png')
     if compare_img_screenshot(img,(630, 569)):
+        pyautogui.moveTo(630, 569, duration=0.7)
+        time.sleep(.1)
         pyautogui.click(630 + random.randrange(1,20), 569 + random.randrange(1,20))
         time.sleep(.4)
         l_info_read = True
