@@ -10,7 +10,7 @@ import tensorflow as tf
 import time
 
 batch_size = 64
-learning_rate = 0.0001
+learning_rate = 0.00001
 
 
 
@@ -115,9 +115,9 @@ def build_model(dp_rate = 0.8):
 
 model = build_model(0.5)
 
-old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+# old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
-model.set_weights(old_model.get_weights()) 
+# model.set_weights(old_model.get_weights()) 
 
 model.summary()
 
@@ -126,7 +126,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
               metrics=["accuracy"])
 
 # make_datasets()
-model.fit(train_ds, validation_data=validation_ds,epochs=1, batch_size=batch_size,
+model.fit(train_ds, validation_data=validation_ds,epochs=2, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
            )
@@ -137,7 +137,7 @@ model.save("model1_2.keras")
 
 
 
-learning_rate = 0.0001
+
 
 model = build_model(0.7)
 
@@ -154,7 +154,7 @@ model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
 
 
 make_datasets()
-model.fit(train_ds, validation_data=validation_ds,epochs=3, batch_size=batch_size,
+model.fit(train_ds, validation_data=validation_ds,epochs=5, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
            )
@@ -164,7 +164,7 @@ model.save("model1_3.keras")
 
 
 
-learning_rate = 0.0001
+
 
 model = build_model(0.8)
 
@@ -189,7 +189,7 @@ model.save("model1_4.keras")
 
 
 
-learning_rate = 0.0001
+
 
 
 model = build_model(0.8)
