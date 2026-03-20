@@ -413,9 +413,10 @@ def tess_read_playerinfo(im1):
             if text[0].isdigit():
                 if text[-1] == "%":
                     # print("\n \n percent-sign read correctly at the end or percentile\n \n")
-                    saving = True  
+                    # saving = True  
                     text = text[:-1]    
                 elif "%" in text:
+                    saving = True
                     text = text.split("%")[0]         
                 try:
                     result = float(text)
@@ -426,11 +427,11 @@ def tess_read_playerinfo(im1):
                         im1.save(f"tesseract_training/raw_data/playerinfo_{whole_text.replace(':', 'i').replace('|', '_i_').replace('<', '_l_')}_{str(time.time())[:12].replace('.', '_')}.png")                
                     return result
                 except Exception as e:
-                    print("returning here 23")
+                    print("exiting here 23")
                     print("text: "+text)
                     print(e)
                     im1.save(f"tesseract_training/raw_data/playerinfo_return23_{str(time.time())[:12].replace('.', '_')}.png")  
-                    return 0.001
+                    exit()
 
 
 
