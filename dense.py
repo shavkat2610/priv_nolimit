@@ -166,7 +166,7 @@ model.save("model1_3.keras")
 
 
 
-model = build_model(0.8)
+model = build_model(0.75)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -192,7 +192,7 @@ model.save("model1_4.keras")
 
 
 
-model = build_model(0.8)
+model = build_model(0.75)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -220,7 +220,7 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.85)
+model = build_model(0.75)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
