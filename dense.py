@@ -60,7 +60,7 @@ def make_datasets():
         batch_size=batch_size)    
 
 
-def build_model(dp_rate = 0.72):
+def build_model(dp_rate = 0.7):
     inputs = keras.Input(shape=(150, 150, 3))
     x = keras.layers.Rescaling(1./255, -1)(inputs)
     x = keras.layers.Reshape((150, 150, 3, 1))(x)
@@ -102,22 +102,22 @@ def build_model(dp_rate = 0.72):
     # x5 = keras.layers.Dense(64, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x5)
     # x5 = keras.layers.Dropout(rate=dp_rate)(x5)
     x = keras.layers.Flatten()(x)
-    x = keras.layers.Dense(128, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    x = keras.layers.Dense(128, activation="linear", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
     # x = keras.layers.Concatenate()([x, x5])
     # x = keras.layers.BatchNormalization()(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(128, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    x = keras.layers.Dense(128, activation="leaky_relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(64, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    x = keras.layers.Dense(64, activation="softplus", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
     x = keras.layers.LayerNormalization()(x)
     outputs = keras.layers.Dense(6,  kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
 model = build_model(0.5)
 
-old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model1_5.keras", custom_objects=None, compile=True, safe_mode=True)
 
-model.set_weights(old_model.get_weights()) 
+model.set_weights(old_model.get_weights())
 
 model.summary()
 
@@ -220,7 +220,7 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.74)
+model = build_model(0.71)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 

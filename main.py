@@ -2117,6 +2117,12 @@ class AppDelegate(NSObject):
         pass
 
 
+    def saveScreenshot_one_two_(self, image, gamestage, confidence):
+        if confidence > glob_gms_confidence:
+            image.save(f"shmol_new_data/{gamestage}_{str(time.time()).split('.')[0]}.png")
+        else:
+            image.save(f"shmol_model_not_sure/{gamestage}_{str(time.time()).split('.')[0]}.png")
+
 
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
@@ -2141,6 +2147,8 @@ class AppDelegate(NSObject):
             self.im = game_screenshot(save=False)
             current_im = self.im
             self.mutex_screenshot.release()
+            pix = current_im.getpixel((530, 500)) 
+            saving = False
             
 
             with self.lock:
@@ -2181,9 +2189,19 @@ class AppDelegate(NSObject):
                     return
             
 
-            game_stage, gms_confidence = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
+            game_stage, gms_confidence, sec_max, sec_prob = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
+            if sec_prob < 1.0 :
+                saving = True
+            if game_stage == "no_decision_to_be_made" and is_red(pix):
+                # save screenshot for model training, probably take second choice, if above threshold here
+                saving = True
+                if sec_prob > 2.0:
+                    game_stage = sec_max
+
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
+
+
 
 
             if game_stage == "flop":
@@ -2191,8 +2209,10 @@ class AppDelegate(NSObject):
                 if self.number_of_the_universe%52==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                     else:
                         current_im.save(f"shmol_model_not_sure/flop_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                 with self.cards_lock:
                     self.cards_open = False
                 if current_game_stage != "flop":
@@ -2256,13 +2276,14 @@ class AppDelegate(NSObject):
                     print("flop equity: "+str(self.equity_flop))             
 
                     
-
             elif game_stage == "no_decision_to_be_made":
                 if self.number_of_the_universe%33==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                     else:
                         current_im.save(f"shmol_model_not_sure/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
+                        saving = False
 
                 with self.cards_lock:
                     self.cards_open = False
@@ -2282,6 +2303,7 @@ class AppDelegate(NSObject):
                                     if pixels[749, 527][1] > 190:
                                         print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
                                         current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+                                        saving = False
                                         if self.probability_1_1 > 0.95:
                                             click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                 else:
@@ -2302,8 +2324,10 @@ class AppDelegate(NSObject):
                 if self.number_of_the_universe%13==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                     else:
                         current_im.save(f"shmol_model_not_sure/river_{str(time.time()).split('.')[0]}.png")
+                        saving = False
 
                 print("river")
                 if current_game_stage != "river":
@@ -2330,6 +2354,7 @@ class AppDelegate(NSObject):
                         self.cards_open = False
                     secs = time.time()
                     current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
+                    saving = False
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
@@ -2380,8 +2405,10 @@ class AppDelegate(NSObject):
                 if self.number_of_the_universe%3==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                     else:
                         current_im.save(f"shmol_model_not_sure/turn_{str(time.time()).split('.')[0]}.png")
+                        saving = False
 
                 if current_game_stage != "turn":
                     with self.own_cards_lock:
@@ -2407,7 +2434,8 @@ class AppDelegate(NSObject):
                     with self.cards_lock:
                         self.cards_open = False
                     secs = time.time()
-                    current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")     
+                    current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")   
+                    saving = False  
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
@@ -2419,14 +2447,14 @@ class AppDelegate(NSObject):
                                 [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
                         except Exception as e:
                             print(e) 
-                            print("model said turn, but no cards could be read , returning out of gameScreenshot_ ... 24")
+                            print("model said turn, but no cards could be read , exiting out of gameScreenshot_ ... 24")
                             current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                                                 
                             with self.game_stage_lock:
                                 self.game_stage_current = "no_decision_to_be_made" 
                             with self.acting_lock:
                                 self.time_to_act = False
-                                return
+                                exit()
                     with self.cards_lock:
                         if self.deck_card_4 == "nn":
                             print("model said turn, but found no four cards, exiting out of gameScreenshot_")
@@ -2461,8 +2489,10 @@ class AppDelegate(NSObject):
                 if self.number_of_the_universe%50==0:
                     if gms_confidence > glob_gms_confidence:
                         current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                     else:
                         current_im.save(f"shmol_model_not_sure/preflop_{str(time.time()).split('.')[0]}.png")
+                        saving = False
                 if current_game_stage != "preflop":
                     if self.d_position > 3:
                         self.updatePDbyNumber()
@@ -2560,14 +2590,13 @@ class AppDelegate(NSObject):
                                 self.time_to_act = False                                                                              
                                 exit()
                             
-                    
-
             
 
             elif game_stage == "connectivity_issues":
                 print("connectivity_issues") 
                 secs = time.time()
                 current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
+                saving = False
                 time.sleep(1)
                 if handle_all_in(current_im):
                     print("ALL IN HANDLED NICELY")
@@ -2585,9 +2614,12 @@ class AppDelegate(NSObject):
                     return
 
 
+            if saving:
+                self.saveScreenshot_one_two_(current_im, game_stage, gms_confidence)
+
             # print("pix (where red button might be): "+ str(pix))
             if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
-                pix = current_im.getpixel((530, 500)) 
+                
                 if is_red(pix):
                     # pyautogui.moveTo(25, 45)
                     # time to cat logic :
@@ -2915,7 +2947,7 @@ class AppDelegate(NSObject):
                         with self.potheight_lock: # regularly 
                             self.potheight = result["result"]
                             print("debug potheight set to: "+str(self.potheight))
-            if game_stage != "connectivity_issues": 
+            elif game_stage != "connectivity_issues": 
                 time.sleep(0.375)
                 with self.valset_lock:
                     need_set = False
@@ -2931,6 +2963,7 @@ class AppDelegate(NSObject):
                                 if not self.updateOwnMoney_(current_im=None):
                                     print("\nread own money failed gss ... \n")            
                 else:
+
                     if game_stage == "no_decision_to_be_made":
                         if self.own_money < 50.0:
                             with self.lock:

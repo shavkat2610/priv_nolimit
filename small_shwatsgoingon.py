@@ -1123,17 +1123,19 @@ def general_whats_going_on_model(im = None, debug = False):
     model_output[arg_max] = 0
     sec_max = model_output.argmax()
     sec_prob = model_output[sec_max]
+    # saving = False
+    second = class_names[sec_max]
     if (prob/(sec_prob+0.01))<=8.3:
         if debug:
             global filenames
             filenames.append(im.filename)
         # print(str(model_output))
-        print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01))[:4].replace(".","_"))
-        secs = time.time()
-        second = class_names[sec_max]
+        # saving = True
+        # print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01))[:4].replace(".","_"))
+        # secs = time.time()
         # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
-        im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
-    return result, prob
+        # im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
+    return result, prob, second, sec_prob
 
 
 
