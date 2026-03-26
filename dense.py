@@ -115,7 +115,7 @@ def build_model(dp_rate = 0.7):
 
 model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_5.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights())
 

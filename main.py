@@ -106,7 +106,7 @@ prepare_pot_digits()
 
 
 
-glob_gms_confidence = 10.0
+glob_gms_confidence = 9.0
 prod = False # play soundtrack or no
 max_num_hands = 150 # todo: mave tables or restart client after this many ahnds maybe?
 
