@@ -1110,7 +1110,7 @@ def general_whats_going_on_model(im = None, debug = False):
         im = game_screenshot()
     nim = im.convert("RGB")
     nim = np.array(nim)
-    nim = cv2.resize(nim, dsize=(150, 150))
+    nim = cv2.resize(nim, dsize=(150, 150), interpolation=cv2.INTER_NEAREST)
     # print(im.shape)
     # print(str(im))
     # exit
