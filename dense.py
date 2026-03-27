@@ -33,14 +33,18 @@ train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
     image_size=(150, 150),
-    batch_size=batch_size)
+    batch_size=batch_size, 
+    # interpolation="nearest"
+)
 
 validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
     image_size=(150, 150),
-    batch_size=batch_size)
+    batch_size=batch_size, 
+    # interpolation="nearest"
+)
 
 
 def make_datasets():
@@ -50,14 +54,18 @@ def make_datasets():
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
         image_size=(150, 150),
-        batch_size=batch_size)
+        batch_size=batch_size, 
+        # interpolation="nearest"
+    )
 
     validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation_small_shwatsgo",
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
         image_size=(150, 150),
-        batch_size=batch_size)    
+        batch_size=batch_size, 
+        # interpolation="nearest"
+    )    
 
 
 def build_model(dp_rate = 0.7):
