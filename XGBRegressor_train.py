@@ -178,6 +178,8 @@ def train_xgb():
         random_state=42
     )
 
+    
+
     print("fitting now")
 
     model.fit(X_train, y_train)
@@ -203,14 +205,14 @@ if __name__ == "__main__":
     flop = ["Ah", "4c", "7h"]
     # print(treys_equity(hole, flop, iters=25000))
 
-    features = extract_flop_features(hole, flop)
+    # features = extract_flop_features(hole, flop)
     # xgb_loaded = load("flop_equity_xgb_0.joblib")
     # equity = xgb_loaded.predict([features])[0]
     # print("Predicted equity:", equity)    
     # exit()
     
     model = train_xgb()
-    # features = extract_flop_features(hole, flop)
+    features = extract_flop_features(hole, flop)
     # equity = model.predict([features])[0]
     # print("Predicted flop equity:", round(equity, 7))
 

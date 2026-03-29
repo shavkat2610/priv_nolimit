@@ -491,17 +491,17 @@ def treys_equity(hole, flop, iters=5000):
 # -------------------------
 # Dataset generation
 # -------------------------
-def generate_dataset(n_samples=10001):
+def generate_dataset(n_samples=100001):
     import time
     import pickle
     X, y = [], []
-    try:
-        with open("X", "rb") as fp:   # Unpickling
-            X = pickle.load(fp)
-        with open("y", "rb") as fp:   # Unpickling
-            y = pickle.load(fp)  
-    except:
-        print('no pickles could be loaded (none there yet most likely)')  
+    # try:
+    #     with open("X", "rb") as fp:   # Unpickling
+    #         X = pickle.load(fp)
+    #     with open("y", "rb") as fp:   # Unpickling
+    #         y = pickle.load(fp)  
+    # except:
+    #     print('no pickles could be loaded (none there yet most likely)')  
     for i in range(n_samples):
         if i%10 == 0:
             print(f"generated {i} of {n_samples} samples ...")
@@ -571,7 +571,7 @@ def train_xgb():
 if __name__ == "__main__":
     from joblib import dump, load
     hole = ["Ks", "Kd"]
-    board = ["Ah", "Kc", "Kh", "2d"]
+    board = ["Ah", "Kc", "Kh"]
     # print(treys_equity(hole, flop, iters=25000))
 
     # features = extract_flop_features(hole, flop)
@@ -580,8 +580,8 @@ if __name__ == "__main__":
     # print("Predicted equity:", equity)    
     # exit()
     
-    # model = train_xgb()
-    features = river_features(hole, board)
+    model = train_xgb()
+    features = extract_flop_features(hole, board)
     print("features:", features)
     # equity = xgb_loaded.predict([features])[0]
     # equity = model.predict([features])[0]

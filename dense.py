@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 import tensorflow as tf
 import time
 
-batch_size = 64
-learning_rate = 0.000001
+batch_size = 128
+learning_rate = 0.000005
 
 
 
@@ -19,7 +19,7 @@ learning_rate = 0.000001
 
 # base_model = keras.applications.Xception(
 #     weights='imagenet',  # Load weights pre-trained on ImageNet.
-#     input_shape=(75, 75, 3),
+#     input_shape=(375, 375, 3),
 #     pooling=None,
 #     include_top=False)  # Do not include the ImageNet classifier at the top.
 
@@ -32,7 +32,7 @@ train_ds = tf.keras.utils.image_dataset_from_directory("datasets/shmol_watgoinon
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(75, 75),
+    image_size=(375, 375),
     batch_size=batch_size, 
     interpolation="nearest"
 )
@@ -41,7 +41,7 @@ validation_ds = tf.keras.utils.image_dataset_from_directory("datasets/validation
     label_mode = "categorical",
     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
     seed=int(time.time()),
-    image_size=(75, 75),
+    image_size=(375, 375),
     batch_size=batch_size, 
     interpolation="nearest"
 )
@@ -53,7 +53,7 @@ def make_datasets():
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(75, 75),
+        image_size=(375, 375),
         batch_size=batch_size, 
         interpolation="nearest"
     )
@@ -62,66 +62,44 @@ def make_datasets():
         label_mode = "categorical",
         class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"],
         seed=int(time.time()),
-        image_size=(75, 75),
+        image_size=(375, 375),
         batch_size=batch_size, 
         interpolation="nearest"
     )    
 
 
-def build_model(dp_rate = 0.5):
-    inputs = keras.Input(shape=(75, 75, 3))
+def build_model(dp_rate = 0.65):
+    inputs = keras.Input(shape=(375, 375, 3))
     x = keras.layers.Rescaling(1./255, -1)(inputs)
-    x = keras.layers.Reshape((75, 75, 3, 1))(x)
+    x = keras.layers.Reshape((375, 375, 3, 1))(x)
     x = keras.layers.Conv3D(16, 3, (2,2,1), activation='relu')(x)
-    x = keras.layers.Reshape((37, 37, 16, 1))(x)
-    # x = keras.layers.MaxPool3D()(x)
-    x = keras.layers.Conv3D(32, 3, 1, activation='relu')(x)
-    # x = keras.layers.Reshape((35, 35, 14, 32))(x)
-    x = keras.layers.Conv3D(32, 3, (1,1,1), activation='relu')(x)
-    # x = keras.layers.MaxPooling3D()(x)
-    # x = keras.layers.Reshape((33, 33, 12, 32))(x)
-    x = keras.layers.Conv3D(32, 3, (1,1,1), activation='relu')(x)
-    # x3 = keras.layers.Add()([x[:,i,:,0,3] for i in [2,4, 6, 8]])
-    # x3 = keras.layers.Flatten()(x3)
-    # x3 = keras.layers.Dropout(rate=dp_rate**2.7)(x3)
-    # # x3 = keras.layers.Add()([x2, x3])
-    # x3 = keras.layers.Dense(17, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x3)
-    # x = keras.layers.Reshape((33, 33, 20, 32))(x)
-    x = keras.layers.Conv3D(32, 3, 1, activation="relu")(x)
-    # x = keras.layers.MaxPooling3D()(x)
-    # x4 = keras.layers.Add()([x[:,i,:,0,0] for i in [5, 7, 9, 11]])
-    # x4 = keras.layers.Flatten()(x4)
-    # x4 = keras.layers.Add()([x3, x4])
-    # x4 = keras.layers.Dense(64, activation="swish", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x4)
-    # x4 = keras.layers.Dropout(rate=dp_rate**2.7)(x4)
-    # x = keras.layers.Reshape((15, 15, 9, 32))(x)
-    x = keras.layers.Conv3D(32, (3,3,3), (2,2,1),activation='relu')(x)
-    # x = keras.layers.Reshape((27, 27, 6, 32))(x)
-    x = keras.layers.Conv3D(32, (3,3,3), (2,2,1),activation='relu')(x)
-    # x = keras.layers.MaxPooling3D()(x)
-    # x = keras.layers.Reshape((6, 6, 4, 32))(x)
-    x = keras.layers.Conv3D(64, (3,3,2), (3,3,2),activation='relu')(x)
-    # x = keras.layers.MaxPooling3D()(x)
-    # x = keras.layers.Reshape((1, 1, 2, 64))(x)
-    # x = keras.layers.Conv3D(256, (3,3,2), (2,2,1),activation='relu')(x)
-    #  = keras.layers.Add()(x[:,:,0,:,:32])
-    # x5 = keras.layers.Flatten()(x[:,:,:,0,:64])
-    # x5 = keras.layers.Add()([x4, x5])
-    # x5 = keras.layers.Dense(64, activation="relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x5)
-    # x5 = keras.layers.Dropout(rate=dp_rate)(x5)
+    x = keras.layers.Reshape((187, 187, 16, 1))(x)
+    x = keras.layers.MaxPooling3D((2,2,1))(x)
+    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='relu')(x)
+    x1 = keras.layers.Flatten()(x[:,:,3,3,7])
+    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='relu')(x)
+    x2 = keras.layers.Flatten()(x[:,3,:,2,8])
+    # x = keras.layers.MaxPooling3D((2,2,1))(x)
+    x = keras.layers.Conv3D(16, (3, 3, 2), (2,2,1), activation='relu')(x)
+    # x = keras.layers.Reshape((10, 10, 2, 16))(x)
+    x3 = keras.layers.Flatten()(x[:,:,3,1,3])
+    x = keras.layers.Conv3D(64, (5, 5, 2), (5,5,1), activation="relu")(x)
     x = keras.layers.Flatten()(x)
     x = keras.layers.Dense(128, activation="linear", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
-    # x = keras.layers.Concatenate()([x, x5])
-    # x = keras.layers.BatchNormalization()(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Concatenate()([x, x1, x2, x3])
+    # x = keras.layers.Dropout(rate=dp_rate)(x)
     x = keras.layers.Dense(128, activation="leaky_relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(64, activation="softplus", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
-    x = keras.layers.LayerNormalization()(x)
+    x = keras.layers.Dense(64, activation="leaky_relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dense(32, activation="leaky_relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dense(16, activation="leaky_relu", kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x)
+    # x = keras.layers.LayerNormalization()(x)
     outputs = keras.layers.Dense(6,  kernel_regularizer=keras.regularizers.L1L2(l1=2e-5, l2=2e-4))(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
-model = build_model(0.5)
+model = build_model(0.25)
 
 # old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -129,7 +107,7 @@ model = build_model(0.5)
 
 model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -147,7 +125,7 @@ model.save("model1_2.keras")
 
 
 
-model = build_model(0.6)
+model = build_model(0.4)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -174,7 +152,7 @@ model.save("model1_3.keras")
 
 
 
-model = build_model(0.63)
+model = build_model(0.53)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -200,7 +178,7 @@ model.save("model1_4.keras")
 
 
 
-model = build_model(0.62)
+model = build_model(0.6)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -228,7 +206,7 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.71)
+model = build_model(0.7)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -256,7 +234,7 @@ model.save("model1_6.keras")
 
 
 
-model = build_model()
+model = build_model(.5)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
