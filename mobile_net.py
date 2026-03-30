@@ -78,6 +78,9 @@ def build_model(dp_rate = 0.65):
     base_model = MobileNetV2(input_tensor=x.output, weights='imagenet', include_top=True)    
     x = base_model.output
     x = keras.layers.Flatten()(x)
+    x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dense(256, activation="leaky_relu")(x)
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     model = keras.Model(base_model.input, outputs)
     # first: train only the top layers (which were randomly initialized)
@@ -134,9 +137,9 @@ for i, layer in enumerate(base_model.layers):
 # we chose to train the top 2 inception blocks, i.e. we will freeze
 print("\n# we chose to train the top 2 inception blocks, i.e. we will freeze \n")
 # the first 249 layers and unfreeze the rest:
-for layer in model.layers[:249]:
+for layer in base_model.layers[:249]:
    layer.trainable = False
-for layer in model.layers[249:]:
+for layer in base_model.layers[249:]:
    layer.trainable = True
 
 # we need to recompile the model for these modifications to take effect
