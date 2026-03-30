@@ -10,7 +10,7 @@ import tensorflow as tf
 import time
 
 batch_size = 128
-learning_rate = 0.00003 # 0.000005
+learning_rate = 0.000015 # 0.000005
 
 
 
@@ -73,29 +73,29 @@ def build_model(dp_rate = 0.65):
     inputs = keras.Input(shape=(375, 375, 3))
     x = keras.layers.Rescaling(1./255, -1)(inputs)
     x = keras.layers.Reshape((375, 375, 3, 1))(x)
-    x = keras.layers.Conv3D(16, 3, (2,2,1), activation='relu')(x)
+    x = keras.layers.Conv3D(16, 3, (2,2,1), activation='swish')(x)
     x = keras.layers.Reshape((187, 187, 16, 1))(x)
 
-    x0 = keras.layers.Conv3D(16, (3,3,2), (5,5,16), activation='relu')(x)
+    x0 = keras.layers.Conv3D(16, (3,3,2), (5,5,16), activation='swish')(x)
     x0 = keras.layers.MaxPooling3D((7,7,1))(x0)
-    x0 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='relu')(x0)
+    x0 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='swish')(x0)
     x0 = keras.layers.Flatten()(x0)
 
     x = keras.layers.MaxPooling3D((2,2,1))(x)
-    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='relu')(x)
+    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='swish')(x)
 
     x1 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,3), activation='linear')(x)
     x1 = keras.layers.MaxPooling3D((3, 3, 2))(x1)
     x1 = keras.layers.Conv3D(16, (3, 3, 1), (1,1,1), activation='linear')(x1)
     x1 = keras.layers.Flatten()(x1)
 
-    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='relu')(x)
+    x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='swish')(x)
 
     x2 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,2), activation='linear')(x)
-    x2 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='linear')(x2)
+    x2 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='swish')(x2)
     x2 = keras.layers.Flatten()(x2)
 
-    x = keras.layers.Conv3D(16, (3, 3, 2), (2,2,1), activation='relu')(x)
+    x = keras.layers.Conv3D(16, (3, 3, 2), (2,2,1), activation='swish')(x)
     
     x3 = keras.layers.Flatten()(x[:,:,3,1,3])
 
@@ -116,20 +116,20 @@ def build_model(dp_rate = 0.65):
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
-model = build_model(0.035)
+model = build_model(0.0)
 
-# old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
-# model.set_weights(old_model.get_weights())
+model.set_weights(old_model.get_weights())
 
 model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*8.0),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate/2.0),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
 # make_datasets()
-model.fit(train_ds, validation_data=validation_ds,epochs=4, batch_size=batch_size
+model.fit(train_ds, validation_data=validation_ds,epochs=2, batch_size=batch_size
            # callbacks=..., 
            # validation_data=...
            )
@@ -150,14 +150,14 @@ model.set_weights(old_model.get_weights())
 
 model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*4.0),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2.0),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
 
 
 make_datasets()
-model.fit(train_ds, validation_data=validation_ds,epochs=4, batch_size=batch_size,
+model.fit(train_ds, validation_data=validation_ds,epochs=2, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
            )
@@ -177,7 +177,7 @@ model.set_weights(old_model.get_weights())
 
 model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*3),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 

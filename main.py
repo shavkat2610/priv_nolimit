@@ -2193,10 +2193,14 @@ class AppDelegate(NSObject):
             if sec_prob < 1.0 :
                 saving = True
             if game_stage == "no_decision_to_be_made" and is_red(pix):
+                print("\n!!!\ngame_stage == \"no_decision_to_be_made\" and is_red(pix) \n \n")
                 # save screenshot for model training, probably take second choice, if above threshold here
                 saving = True
-                if sec_prob > 2.0:
+                if sec_prob > 1.5:
                     game_stage = sec_max
+                else:
+                    print("exiting 7132864537 - false class")
+                    exit()
 
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
