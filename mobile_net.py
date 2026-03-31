@@ -14,7 +14,7 @@ import tensorflow as tf
 import time
 
 batch_size = 64
-learning_rate = 0.00001 # 0.000005
+learning_rate = 0.0001 # 0.000005
 
 
 
@@ -74,13 +74,13 @@ def make_datasets():
 
 def build_model(dp_rate = 0.65):
     input_tensor = keras.Input(shape=(375, 375, 3))
-    x = keras.layers.Rescaling(1./255, -1)(input_tensor)
-    base_model = MobileNetV2(input_tensor=x.output, weights='imagenet', include_top=True)    
+    # x = keras.layers.Rescaling(1./255, -1)(input_tensor)
+    base_model = MobileNetV2(input_tensor=input_tensor, weights='imagenet', include_top=True)    
     x = base_model.output
     x = keras.layers.Flatten()(x)
-    x = keras.layers.Dense(256, activation="leaky_relu")(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    # x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    # x = keras.layers.Dropout(rate=dp_rate)(x)
+    # x = keras.layers.Dense(256, activation="leaky_relu")(x)
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     model = keras.Model(base_model.input, outputs)
     # first: train only the top layers (which were randomly initialized)

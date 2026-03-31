@@ -102,23 +102,23 @@ def build_model(dp_rate = 0.5):
     x = keras.layers.Conv3D(64, (5, 5, 2), (5,5,1), activation="linear")(x)
     x = keras.layers.Flatten()(x)
     x = keras.layers.Dense(256, activation="swish")(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dropout(rate=0.0)(x)
     x = keras.layers.Concatenate()([x, x0, x1])
     x = keras.layers.Dense(256, activation="softplus")(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dropout(rate=0.0)(x)
     x = keras.layers.Concatenate()([x, x2, x3])
     x = keras.layers.Dense(256, activation="softplus")(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dropout(rate=0.0)(x)
     x = keras.layers.Dense(64, activation="softplus")(x)
-    x = keras.layers.Dropout(rate=dp_rate)(x)
+    x = keras.layers.Dropout(rate=0.0)(x)
     x = keras.layers.Dense(16, activation="softplus")(x)
     # x = keras.layers.LayerNormalization()(x)
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
-model = build_model(0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights())
 
@@ -133,7 +133,7 @@ model.fit(train_ds, validation_data=validation_ds,epochs=2, batch_size=batch_siz
            # callbacks=..., 
            # validation_data=...
            )
-model.save("model1_1.keras")
+model.save("model_temp.keras")
 model.save("model1_2.keras")
 
 
@@ -142,9 +142,9 @@ model.save("model1_2.keras")
 
 
 
-model = build_model(0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
@@ -161,7 +161,7 @@ model.fit(train_ds, validation_data=validation_ds,epochs=2, batch_size=batch_siz
            # callbacks=..., 
            # validation_data=...
            )
-model.save("model1_1.keras")
+model.save("model_temp.keras")
 model.save("model1_3.keras")
 
 
@@ -169,9 +169,9 @@ model.save("model1_3.keras")
 
 
 
-model = build_model(0.0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
@@ -186,7 +186,7 @@ model.fit(train_ds, validation_data=validation_ds,epochs=5, batch_size=batch_siz
            # callbacks=..., 
            # validation_data=...
            )
-model.save("model1_1.keras")
+model.save("model_temp.keras")
 model.save("model1_4.keras")
 
 
@@ -195,9 +195,9 @@ model.save("model1_4.keras")
 
 
 
-model = build_model(0.0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
@@ -212,7 +212,7 @@ model.fit(train_ds, validation_data=validation_ds,epochs=20, batch_size=batch_si
            # callbacks=..., 
            # validation_data=...
            )
-model.save("model1_1.keras")
+model.save("model_temp.keras")
 model.save("model1_5.keras")
 
 
@@ -223,9 +223,9 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
@@ -240,7 +240,7 @@ model.fit(train_ds, validation_data=validation_ds,epochs=30, batch_size=batch_si
            # callbacks=..., 
            # validation_data=...
            )
-model.save("model1_1.keras")
+model.save("model_temp.keras")
 model.save("model1_6.keras")
 
 
@@ -251,9 +251,9 @@ model.save("model1_6.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
-old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
+old_model = keras.saving.load_model("model_temp.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
@@ -287,7 +287,7 @@ model.save("model1_01.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
 
 
@@ -311,7 +311,7 @@ model.save("model2_1.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model2_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -329,7 +329,7 @@ model.save("model3.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model3.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -346,8 +346,7 @@ model.save("model4.keras")
 
 
 
-
-model = build_model(.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model4.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -365,7 +364,7 @@ model.save("model5.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model5.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -383,7 +382,7 @@ model.save("model6.keras")
 
 
 
-model = build_model(.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model6.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -404,7 +403,7 @@ model.save("model7.keras")
 
 
 
-model = build_model(0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model7.keras", custom_objects=None, compile=True, safe_mode=True)
 
