@@ -396,6 +396,24 @@ def prepare_pot_digits():
 
 def tess_read_playerinfo(im1):
     saving = False
+    pixels = im1.load()
+    # invert image
+    for i in range(im1.size[0]):
+        for j in range(im1.size[1]):
+            r, g, b, _ = pixels[i, j]
+            pixels[i, j] = (255 - r, 255 - g, 255 - b)
+
+
+    # binary thresholding
+    for i in range(im1.size[0]):
+        for j in range(im1.size[1]):
+            r, g, b, _ = pixels[i, j]
+            if r > 130:
+                pixels[i, j] = (255, 255, 255)
+            else:
+                # pixels[i, j] = (0, 0, 0)
+                pass    
+    
     data = pytesseract.image_to_data(
         im1,
         output_type=Output.DICT,

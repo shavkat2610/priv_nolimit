@@ -116,7 +116,7 @@ def build_model(dp_rate = 0.5):
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
-model = build_model(0.5)
+model = build_model(0)
 
 old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -142,7 +142,7 @@ model.save("model1_2.keras")
 
 
 
-model = build_model(.5)
+model = build_model(0)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -169,7 +169,7 @@ model.save("model1_3.keras")
 
 
 
-model = build_model(0.5)
+model = build_model(0.0)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -195,7 +195,7 @@ model.save("model1_4.keras")
 
 
 
-model = build_model(0.5)
+model = build_model(0.0)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -223,7 +223,7 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.5)
+model = build_model(0.0)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -251,7 +251,7 @@ model.save("model1_6.keras")
 
 
 
-model = build_model(.5)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -287,7 +287,7 @@ model.save("model1_01.keras")
 
 
 
-model = build_model(.4)
+model = build_model(.0)
 
 
 
@@ -311,7 +311,7 @@ model.save("model2_1.keras")
 
 
 
-model = build_model(.5)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model2_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -329,7 +329,7 @@ model.save("model3.keras")
 
 
 
-model = build_model(.5)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model3.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -347,7 +347,7 @@ model.save("model4.keras")
 
 
 
-model = build_model(.54)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model4.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -365,7 +365,7 @@ model.save("model5.keras")
 
 
 
-model = build_model(.45)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model5.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -383,7 +383,7 @@ model.save("model6.keras")
 
 
 
-model = build_model(.5)
+model = build_model(.0)
 
 old_model = keras.saving.load_model("model6.keras", custom_objects=None, compile=True, safe_mode=True)
 
@@ -404,7 +404,7 @@ model.save("model7.keras")
 
 
 
-model = build_model(.6)
+model = build_model(0)
 
 old_model = keras.saving.load_model("model7.keras", custom_objects=None, compile=True, safe_mode=True)
 
