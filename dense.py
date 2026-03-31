@@ -10,7 +10,7 @@ import tensorflow as tf
 import time
 
 batch_size = 128
-learning_rate = 0.000015 # 0.000005
+learning_rate = 0.000005 # 0.000005
 
 
 
@@ -68,31 +68,31 @@ def make_datasets():
     )    
 
 
-def build_model(dp_rate = 0.65):
+def build_model(dp_rate = 0.5):
     print("building model with dropout rate: "+str(dp_rate))
     inputs = keras.Input(shape=(375, 375, 3))
     x = keras.layers.Rescaling(1./255, -1)(inputs)
     x = keras.layers.Reshape((375, 375, 3, 1))(x)
-    x = keras.layers.Conv3D(16, 3, (2,2,1), activation='swish')(x)
+    x = keras.layers.Conv3D(16, 3, (2,2,1), activation='linear')(x)
     x = keras.layers.Reshape((187, 187, 16, 1))(x)
 
     x0 = keras.layers.Conv3D(16, (3,3,2), (5,5,16), activation='swish')(x)
     x0 = keras.layers.MaxPooling3D((7,7,1))(x0)
-    x0 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='swish')(x0)
+    x0 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='linear')(x0)
     x0 = keras.layers.Flatten()(x0)
 
     x = keras.layers.MaxPooling3D((2,2,1))(x)
     x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='swish')(x)
 
-    x1 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,3), activation='linear')(x)
+    x1 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,3), activation='swish')(x)
     x1 = keras.layers.MaxPooling3D((3, 3, 2))(x1)
     x1 = keras.layers.Conv3D(16, (3, 3, 1), (1,1,1), activation='linear')(x1)
     x1 = keras.layers.Flatten()(x1)
 
     x = keras.layers.Conv3D(16, (3, 3, 3), (2,2,2), activation='swish')(x)
 
-    x2 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,2), activation='linear')(x)
-    x2 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='swish')(x2)
+    x2 = keras.layers.Conv3D(16, (3, 3, 2), (4,4,2), activation='swish')(x)
+    x2 = keras.layers.Conv3D(16, (5, 5, 1), (1,1,1), activation='linear')(x2)
     x2 = keras.layers.Flatten()(x2)
 
     x = keras.layers.Conv3D(16, (3, 3, 2), (2,2,1), activation='swish')(x)
@@ -101,28 +101,28 @@ def build_model(dp_rate = 0.65):
 
     x = keras.layers.Conv3D(64, (5, 5, 2), (5,5,1), activation="linear")(x)
     x = keras.layers.Flatten()(x)
-    x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    x = keras.layers.Dense(256, activation="swish")(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
     x = keras.layers.Concatenate()([x, x0, x1])
-    x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    x = keras.layers.Dense(256, activation="softplus")(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
     x = keras.layers.Concatenate()([x, x2, x3])
-    x = keras.layers.Dense(256, activation="leaky_relu")(x)
+    x = keras.layers.Dense(256, activation="softplus")(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(64, activation="leaky_relu")(x)
+    x = keras.layers.Dense(64, activation="softplus")(x)
     x = keras.layers.Dropout(rate=dp_rate)(x)
-    x = keras.layers.Dense(16, activation="leaky_relu")(x)
+    x = keras.layers.Dense(16, activation="softplus")(x)
     # x = keras.layers.LayerNormalization()(x)
     outputs = keras.layers.Dense(6)(x) #(5 values, fifth for nothing, or either of the previous ones checked)
     return keras.Model(inputs, outputs)
 
-model = build_model(0.0)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights())
 
-model.summary()
+# model.summary()
 
 model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate/2.0),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
@@ -142,15 +142,15 @@ model.save("model1_2.keras")
 
 
 
-model = build_model(0.125)
+model = build_model(.5)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
-model.summary()
+# model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2.0),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate/3.0),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -169,20 +169,20 @@ model.save("model1_3.keras")
 
 
 
-model = build_model(0.25)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
-model.summary()
+# model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate/2),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
 make_datasets()
-model.fit(train_ds, validation_data=validation_ds,epochs=10, batch_size=batch_size,
+model.fit(train_ds, validation_data=validation_ds,epochs=5, batch_size=batch_size,
            # callbacks=..., 
            # validation_data=...
            )
@@ -195,15 +195,15 @@ model.save("model1_4.keras")
 
 
 
-model = build_model(0.35)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
-model.summary()
+# model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -223,13 +223,13 @@ model.save("model1_5.keras")
 
 
 
-model = build_model(0.45)
+model = build_model(0.5)
 
 old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compile=True, safe_mode=True)
 
 model.set_weights(old_model.get_weights()) 
 
-model.summary()
+# model.summary()
 
 model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*3),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
@@ -257,9 +257,9 @@ old_model = keras.saving.load_model("model1_1.keras", custom_objects=None, compi
 
 model.set_weights(old_model.get_weights()) 
 
-model.summary()
+# model.summary()
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
@@ -287,7 +287,7 @@ model.save("model1_01.keras")
 
 
 
-model = build_model(.5)
+model = build_model(.4)
 
 
 
@@ -299,7 +299,7 @@ model.set_weights(old_model.get_weights())
 
 
 
-model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate*2),
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
               loss=keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=["accuracy"])
 
