@@ -281,6 +281,8 @@ def fish_for_own_cards(im = None):
 def red_own_cards(im = None):
     if im == None:
         im = game_screenshot()
+    im.show()
+    time.sleep(0.75)
     ovl = np.array(own_value_left(im, save = False))
     osl = np.array(own_suit_left(im, save = False))
     ovr = np.array(own_value_right(im, save = False))
@@ -324,7 +326,7 @@ def red_own_cards(im = None):
                 result[1]=own_card_right_filenames[i][:2]
                 break
         i+=1
-    print("read own cards result: "+str(result))
+    # print("read own cards result: "+str(result))
     
     return result
 
@@ -504,14 +506,14 @@ def red_deck_cards(im = None):
     for current in deck_cards:
         if np.array_equal(dc4, current):
             if deck_card_filenames[i][1]=="_":
-                print("read deck cards result: "+str(result))
+                # print("read deck cards result: "+str(result))
                 return result
             else:
                 result[3]=deck_card_filenames[i][:2]
                 break
         elif compare_num(dc4, current):
             if deck_card_filenames[i][1]=="_":
-                print("read deck cards result: "+str(result))
+                # print("read deck cards result: "+str(result))
                 return result
             else:
                 result[3]=deck_card_filenames[i][:2]
@@ -521,21 +523,21 @@ def red_deck_cards(im = None):
     for current in deck_cards:
         if np.array_equal(dc5, current):
             if deck_card_filenames[i][1]=="_":
-                print("read deck cards result: "+str(result))
+                # print("read deck cards result: "+str(result))
                 return result
             else:
                 result[4]=deck_card_filenames[i][:2]
                 break
         elif compare_num(dc5, current):
             if deck_card_filenames[i][1]=="_":
-                print("read deck cards result: "+str(result))
+                # print("read deck cards result: "+str(result))
                 return result
             else:
                 result[4]=deck_card_filenames[i][:2]
                 break
         i+=1
     
-    print("read deck cards result: "+str(result))
+    # print("read deck cards result: "+str(result))
     return result
 # fish_for_own_cards()
 

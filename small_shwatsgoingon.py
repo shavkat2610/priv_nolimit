@@ -313,35 +313,6 @@ def read_player_info(im):
     except Exception as e:
         return False
 
-
-
-def read_own_cards(im=None): # may not be ready to read yet, may need to retake screenshot
-    if im == None:
-        im = game_screenshot()
-    result = red_own_cards(im=im)
-    if result[0] == "nn" or result[1] == "nn":
-        raise Exception("Sorry, no hand cards could be read")
-    return result
-
-
-
-
-def read_deck_cards(game_stage="flop", im=None):
-    if im == None:
-        im = game_screenshot()
-    print("reading deck cards")
-    result = red_deck_cards(im=im)
-    print("red_deck_cards result: "+str(result))
-    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn": # assert first three cards generally
-        raise Exception("Sorry, no deck cards could be read") 
-    if (game_stage == "river" or game_stage == "turn") and (result[3] == "nn"): # assert fourth card in turn and river
-        raise Exception("Sorry, no")
-    if game_stage == "turn" and (result[4] == "nn"): # assert fifth card in turn
-        raise Exception("Sorry, no 2")
-    if game_stage == "river" and (result[4] != "nn"): # assert no fifth card in river
-        raise Exception("Sorry, no 3")
-    print("returning out of read_deack_cards")   
-    return result
     
 
 
@@ -1158,6 +1129,56 @@ def general_whats_going_on_model(im = None, debug = False):
 
 
 
+def read_own_cards(im=None): # may not be ready to read yet, may need to retake screenshot
+    if im == None:
+        im = game_screenshot()
+    result = red_own_cards(im=im)
+    if result[0] == "nn" or result[1] == "nn":
+        raise Exception("Sorry, no hand cards could be read")
+    return result
+
+
+
+
+def read_deck_cards(game_stage="flop", im=None):
+    if im == None:
+        im = game_screenshot()
+    # print("reading deck cards")
+    result = red_deck_cards(im=im)
+    # print("red_deck_cards result: "+str(result))
+    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn": # assert first three cards generally
+        raise Exception("Sorry, no deck cards could be read") 
+    if (game_stage == "river" or game_stage == "turn") and (result[3] == "nn"): # assert fourth card in turn and river
+        raise Exception("Sorry, no")
+    if game_stage == "turn" and (result[4] == "nn"): # assert fifth card in turn
+        raise Exception("Sorry, no 2")
+    if game_stage == "river" and (result[4] != "nn"): # assert no fifth card in river
+        raise Exception("Sorry, no 3")
+    # print("returning out of read_deack_cards")   
+    return result
+
+
+
+
+
+def general_whats_going_on_model_manual(im = None):
+    if im == None:
+        im = game_screenshot()
+    try:
+        own_cards = read_own_cards(im=im)
+    except Exception as e:
+        return "no_decision_to_be_made", None, None
+    
+    result = red_deck_cards(im=im)
+    # print("red_deck_cards result: "+str(result))
+    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn": # assert first three cards generally
+        return "preflop", own_cards, None
+    if result[3] == "nn": 
+        return "flop", own_cards, result
+    if result[4] == "nn": 
+        return "river", own_cards, result
+    return "turn", own_cards, result
+    
 
 
 
@@ -1362,7 +1383,7 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
 
 def simulate_gss(im=None):
     if im == None:
-        im = Image.open('temp_screenshot/plyerdata/game_screenshot1764975781.png') #should be a screenshot
+        im = Image.open('shmol_new_data/turn_1774945349.png') #should be a screenshot
 
     # handle_all_in(im=im):
 
@@ -1380,7 +1401,7 @@ def simulate_gss(im=None):
     # if is_red(pix): 
     #     how_much(im=im)
 
-    print(general_whats_going_on_model(im=im, debug=True))
+    print(general_whats_going_on_model_manual(im=im))
 
     # print(check_if_we_holdin_yet(im))
 
@@ -1445,25 +1466,25 @@ filenames = []
 import glob
 
 if __name__ == "__main__":
-    # prepare_fishing_own_cards()
-    # prepare_fishing_deck_cards()
-    load_smol_watsgoingon_model()
+    prepare_fishing_own_cards()
+    prepare_fishing_deck_cards()
+    # load_smol_watsgoingon_model()
     # prepare_pot_digits()
     path = glob.glob("datasets/shmol_watgoinon/*/*.png", recursive=True) # todo : look at all-in's, print filenames, reclassify
     # path = glob.glob("screenshots/*.png", recursive=True)
     # path = glob.glob("tesseract_training/ground_truth_flies/*.png", recursive=True)
-    for pth in path :
-        if pth.endswith(".png"):
-            im = Image.open(pth)
-            # tess_read(im=im)
-            # im = Image.open("gsss/game_screenshot1764690404.png")
-            if simulate_gss(im=im):
-                print("found one ! "+str(pth))
+    # for pth in path :
+    #     if pth.endswith(".png"):
+    #         im = Image.open(pth)
+    #         # tess_read(im=im)
+    #         # im = Image.open("gsss/game_screenshot1764690404.png")
+    #         if simulate_gss(im=im):
+    #             print("found one ! "+str(pth))
     #         # time.sleep(0.1)
     # print("done with all images !")
-    print("filenames with bad bois: \n"+str('\n'.join(filenames)))
+    # print("filenames with bad bois: \n"+str('\n'.join(filenames)))
     # print(path)
-    # simulate_gss()
+    simulate_gss()
 
     # load_flop_equity_model()
     # print("start")

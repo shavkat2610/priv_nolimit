@@ -2188,8 +2188,8 @@ class AppDelegate(NSObject):
                     self.time_to_act = False
                     return
             
-
-            game_stage, gms_confidence, sec_max, sec_prob = general_whats_going_on_model(im=current_im) # check if we are holding cards and such 
+            # "turn", own_cards, result
+            game_stage, gms_confidence,  = general_whats_going_on_model_manual(im=current_im) # check if we are holding cards and such 
             if sec_prob < 1.0 :
                 saving = True
             if game_stage == "no_decision_to_be_made" and is_red(pix):
@@ -2228,14 +2228,7 @@ class AppDelegate(NSObject):
                             with self.acting_lock:
                                 self.time_to_act = False                                                                                                 
                                 current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
-                                exit()                
-                    if current_game_stage != "preflop" and current_game_stage != "connectivity_issues":
-                        print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
-                        print("exiting")
-                        exit()
-
-
+                                exit()        
 
                     with self.potheight_lock:
                         self.potheight_after_preflop = self.potheight
