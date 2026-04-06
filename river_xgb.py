@@ -8,9 +8,10 @@ from joblib import dump, load
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
+# probability_1_1;pdata_average_1;pdata_average_2;pdata_average_3;pdata_average_4;pdata_before_me_1;pdata_before_me_2;pdata_before_me_3;pdata_before_me_4;i_call_preflop;i_bet_preflop;i_call_flop;i_bet_flop;i_call_river;i_bet_river;potheight;potheight_after_preflop;potheight_after_flop;to_call;decision;num_active_players;num_active_players_before_me;feat_1;feat_2;feat_3;feat_4;feat_5;feat_6;feat_7;feat_8;feat_9;feat_10;feat_11;feat_12;feat_13;feat_14;label
 
 
-inputs = ['probability_1_1','potheight','potheight_after_preflop','potheight_after_flop','to_call','equity_flop','decision','num_active_players','num_active_players_before_me','feat_1','feat_2','feat_3','feat_4','feat_5','feat_6','feat_7','feat_8','feat_9','feat_10','feat_11','feat_12','feat_13','feat_14']
+inputs = ["probability_1_1","pdata_average_1","pdata_average_2","pdata_average_3","pdata_average_4","pdata_before_me_1","pdata_before_me_2","pdata_before_me_3","pdata_before_me_4","i_call_preflop","i_bet_preflop","i_call_flop","i_bet_flop","i_call_river","i_bet_river","potheight","potheight_after_preflop","potheight_after_flop","to_call","decision","num_active_players","num_active_players_before_me","feat_1","feat_2","feat_3","feat_4","feat_5","feat_6","feat_7","feat_8","feat_9","feat_10","feat_11","feat_12","feat_13","feat_14"]
 # Load data
 df = pd.read_csv('csv_s/riverModel.csv', sep=';')
 X = df[inputs].values

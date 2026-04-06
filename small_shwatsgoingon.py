@@ -256,7 +256,7 @@ def check_if_w8_for_blinds(im):
 def read_player_info(im):
     # im.show()
     # save screenshot
-    im1 = crop_wh(im, 380, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 380, 47, 30, 21) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
     data = tess_read_playerinfo(im1)
     try:
         value_1 = float(data) / 100.
@@ -269,7 +269,7 @@ def read_player_info(im):
         print()
         print(e)
         exit()   
-    im1 = crop_wh(im, 438, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 438, 47, 30, 21) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
     data = tess_read_playerinfo(im1)
     try:
         value_2 = float(data) / 100.
@@ -282,7 +282,7 @@ def read_player_info(im):
         print()
         print(e)
         exit()    
-    im1 = crop_wh(im, 496, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 496, 47, 30, 21) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
     data = tess_read_playerinfo(im1)
     try:
         value_3 = float(data) / 100.
@@ -295,7 +295,7 @@ def read_player_info(im):
         print()
         print(e)
         exit()  
-    im1 = crop_wh(im, 554, 47, 30, 23) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 554, 47, 30, 21) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
     data = tess_read_playerinfo(im1)
     try:
         value_4 = float(data) / 100.
@@ -397,7 +397,7 @@ def tess_read_playerinfo(im1):
             text = text.strip()
             whole_text += text + "_"
             if conf < 91:
-                print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
+                # print("tess_read_playerinfo data: "+text+" conf: "+str(conf))
                 saving = True
             if text[0].isdigit():
                 if text[-1] == "%":
@@ -939,7 +939,7 @@ def read_own_money_valid(im = None, should_be = 0.0):
 def read_own_money(im = None):
     if im == None:
         im = game_screenshot()
-    im1 = crop_wh(im, 378, 495, 95, 25) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
+    im1 = crop_wh(im, 378, 495, 95, 25) 
     # im2 = im1
     # im1.show()
     # exit()
@@ -950,11 +950,13 @@ def read_own_money(im = None):
             if pixels[i, j][1] >= 140: # 140 initially 
                 pixels[i, j] = (0, 0, 0, 255)
             else:
-                if pixels[i,j][0] >= 120:
+                if pixels[i,j][0] >= 90 or pixels[i,j][1] >= 90 or pixels[i,j][2] >= 90:
                     pixels[i, j] = (0, 0, 0, 255)
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     read_3 = tess_read(im1)
+    if read_3 == 0.001:
+        im.save(f"own_money_no_read_{str(time.time())[:10]}.png")
     print("read_own_money tess_read result: "+str(read_3))
     # if read_3 == -1:
     #     global filenames

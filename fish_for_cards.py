@@ -281,8 +281,6 @@ def fish_for_own_cards(im = None):
 def red_own_cards(im = None):
     if im == None:
         im = game_screenshot()
-    im.show()
-    time.sleep(0.75)
     ovl = np.array(own_value_left(im, save = False))
     osl = np.array(own_suit_left(im, save = False))
     ovr = np.array(own_value_right(im, save = False))

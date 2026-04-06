@@ -11,10 +11,10 @@ from fish_for_cards import crop_wh
 
 
 
-im = Image.open('datasets/shmol_watgoinon/no_decision_to_be_made/game_screenshot1764672122.png')
+im = Image.open('big_screenshot.png')
 
 
-im1 = crop_wh(im, 595, 0, 200, 200)
+im1 = crop_wh(im, 20, 250, 200, 200)
 
 pixels = im1.load()
 

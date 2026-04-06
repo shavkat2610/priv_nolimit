@@ -796,6 +796,7 @@ def click_ok(debug = False):
             button_pos = imagesearch(image_path, precision=0.95, debug = False, calling_function="click_one_times_please")
             if button_pos == [-1, -1]:
                 return True
+            print('looking for ok ...')
         i += 1
             
     # return False
@@ -1051,19 +1052,26 @@ def read_game_rules(big_blind = "200"):
                 if see_if_there_is_l_info():
                     click_one_times_please('images/join_again.png', debug=False)
     
-    time.sleep(1)
+    time.sleep(2.5)
 
     im = screenshot_area(point = (0, 0), size = [1000, 540], file_name=None)
 
     pixels = im.load()
-    if pixels[904, 267] == (92, 92, 92, 255): #receive chips
-        print("receiving chips ...")
-        click(904, 267, im = im, calling_function="read_game_rules", debug=True)
-        return run_it_up(big_blind=big_blind)
 
+    # im.save("big_screenshot.png")
+
+    if pixels[20, 250][0] > 110 and pixels[20, 250][1] < 40 and pixels[20, 250][2] < 40: #receive chips
+        print("receiving chips ...")
+        # time.sleep(1.5)
+        click(904, 297, im = im, calling_function="read_game_rules", debug=True)
+        return run_it_up(big_blind=big_blind)
+    else:
+        print("not receiving chips")
     
 
     click_ok(debug = False)  
+
+
 
     time.sleep(1.0)
 
@@ -1170,15 +1178,16 @@ def check_if_sitting(im=None): # pass image screenshot
 
 
 
-def unwait_4blinds(im = None, debug = False):
-    if debug:
-        if im == None:
-            im = game_screenshot()
+def unwait_4blinds(im = None):
+    print("unwait_4blinds ... ")
+    if im == None:
+        im = game_screenshot()
+
     if check_if_w8_for_blinds(im):
         # pyautogui.click(531, 602)
         time.sleep(0.15)
         pyautogui.moveTo(531, 602, duration=0.25)
-        click(531, 602, im = im, calling_function="unwait_4blinds", debug=debug)
+        click(531, 602)
         time.sleep(0.25)
         pyautogui.click(x=1183, y=759)
     return im
@@ -1237,6 +1246,7 @@ def get_up_stand_up(im = None): # pass image screenshot here
     print("get_up_stand_up ...")
     if im == None:
         im = game_screenshot()
+    print("should have im now")
     if check_if_sitting(im):
         click(25, 576, im = im, calling_function="get_up_stand_up", debug=False)
     else: 

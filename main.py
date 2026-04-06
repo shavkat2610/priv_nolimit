@@ -19,7 +19,7 @@ from Foundation import NSObject, NSTimer, NSRunLoop, NSDate, NSThread
 from playsound3 import playsound
 import pytesseract
 from fish_for_cards import crop_wh, fish_for_own_cards, fish_for_deck_cards, prepare_fishing_own_cards, prepare_fishing_deck_cards, own_suits_right, own_suits_left, own_values_left, own_values_right, own_suit_left, own_value_left, own_suits_right, own_value_right, own_card_right_filenames, own_card_left_filenames
-from small_shwatsgoingon import check_if_we_holdin_yet, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
+from small_shwatsgoingon import check_if_we_holdin_yet, general_whats_going_on_model_manual, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
                                                                     read_old_pot_money, read_own_money, load_smol_watsgoingon_model, general_whats_going_on_model, handle_all_in,\
                                                                           load_flop_equity_model, flop_equity_model_predict, extract_flop_features, load_turn_model, \
                                                                           turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple, \
@@ -321,6 +321,19 @@ class AppDelegate(NSObject):
                     if not self.values_set:
                         self.values_set = True                    
                 return True
+            if own_money_current == 0.001:
+                print("open last card probably ...")
+                pixels = current_im.load()
+                if pixels[576, 320][1] > 250:
+                    print("YES ! open last card ...")
+                    pyautogui.moveTo(576, 420, duration=0.3)
+                    time.sleep(0.25)
+                    pyautogui.click(576, 420) # hehe :D
+                    print("\nclick open fifth ...")
+                    current_im.save(f"shmol_new_data/no_dec_open_fifth_{str(time.time()).split('.')[0]}.png")
+                    return False
+                return False
+            
             return False
         except Exception as e:
             print("read own money failed")
@@ -362,7 +375,7 @@ class AppDelegate(NSObject):
 
 
     def updatePDbyNumber(self): # needs testing
-        print("updatePDbyNumber ...")
+        print("updatePDbyNumber self.readAllPD : "+str(self.readAllPD))
         with self.valset_lock:
             self.readAllPD -= 1
         with self.player_data_lock:
@@ -373,7 +386,11 @@ class AppDelegate(NSObject):
         player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
         if number <= len(player_positions):
             pp = player_positions[number-1]
-            player_info = self.updateOnePlayerData_(pp)
+            try:
+                player_info = self.updateOnePlayerData_(pp)
+            except Exception as e:
+                print(f"Error occurred while updating player data for position {number}: {e}")
+                exit()
             if player_info != False:
                 with self.player_data_lock:
                     self.player_data[number-1] = player_info
@@ -422,26 +439,6 @@ class AppDelegate(NSObject):
         return player_info
 
 
-    def updatePlayerData(self): # 6 ppl
-        pyautogui.click(x=1183, y=759)
-        print("AppDelegate.updatePlayerData ... ")
-        # pyautogui.moveTo(25, 25)
-        # print("updating player data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! finally")
-        # NSLog("updating player data")
-        
-        player_positions = [[760, 436], [731, 192], [422, 130], [111, 190], [89, 441]]
-        # close_player_info_window_position = [596, 70]
-        i = 0
-        for pp in player_positions:
-            numba = self.updateOnePlayerData_(pp)
-            if numba != False:
-                self.player_data[i] = self.updateOnePlayerData_(pp)
-            i += 1
-        print("self.player_data : "+str(self.player_data))
-        if get_up_stand_up():
-            time.sleep(3)
-            unwait_4blinds() # remove later maybe ?
-        # return
 
 
     def set_munna_initially(self):
@@ -501,9 +498,6 @@ class AppDelegate(NSObject):
         if not yes:
             print("run it up did not work")
             exit() # is this the right way to exit the app?
-        # todo: read player data here
-        if yes == "yes":
-            self.updatePlayerData() # remove when debugging other stuff here I guess
 
 
 
@@ -705,17 +699,21 @@ class AppDelegate(NSObject):
                 with self.our_turn_lock: 
                     for decision_temp in decs:
                         # print("self.equity_flop at model-input formation: "+str(self.equity_flop))
-                        flop_model_input = [self.equity_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
+                        flop_model_input = [self.equity_flop, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                            self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, # 51 = 1 + 8 + 3 + 5 + 2 + 32
+                                                self.i_bet_flop, self.potheight, self.potheight_after_preflop, self.to_call, decision_temp, 
                                                 self.num_active_players, self.num_active_players_before_me,
-                                                self.flop_features[0], 
-                                            self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
-                                            self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
-                                            self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
-                                            self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
-                                            self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
-                                            self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
-                                            self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
-                                            self.flop_features[29], self.flop_features[30], self.flop_features[31]]
+                                                self.flop_features[0],
+                                                self.flop_features[1], self.flop_features[2], self.flop_features[3], self.flop_features[4],
+                                                self.flop_features[5], self.flop_features[6], self.flop_features[7], self.flop_features[8],
+                                                self.flop_features[9], self.flop_features[10], self.flop_features[11], self.flop_features[12],
+                                                self.flop_features[13], self.flop_features[14], self.flop_features[15], self.flop_features[16],
+                                                self.flop_features[17], self.flop_features[18], self.flop_features[19], self.flop_features[20],
+                                                self.flop_features[21], self.flop_features[22], self.flop_features[23], self.flop_features[24],
+                                                self.flop_features[25], self.flop_features[26], self.flop_features[27], self.flop_features[28],
+                                                self.flop_features[29], self.flop_features[30], self.flop_features[31]]
+                        self.flop_model_inputs.append(flop_model_input)
                         flop_model_inputs.append(flop_model_input)
                 return flop_model_inputs # different "inputs" for decision making
 
@@ -771,11 +769,15 @@ class AppDelegate(NSObject):
         with self.mk_comte_carlo_decision_lock:
             with self.potheight_lock:
                 for decision_temp in decs:
-                    river_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop,
-                                            self.to_call, self.equity_flop, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                    river_model_input = [self.probability_1_1, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                            self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
+                                         self.i_bet_river,self.potheight, self.potheight_after_preflop, self.potheight_after_flop,
+                                         self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
                                             self.river_features[0], self.river_features[1], self.river_features[2], self.river_features[3], self.river_features[4],
                                             self.river_features[5], self.river_features[6], self.river_features[7], self.river_features[8], self.river_features[9], 
-                                            self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]]
+                                            self.river_features[10], self.river_features[11], self.river_features[12], self.river_features[13]
+                                            ]
                     river_model_inputs.append(river_model_input)
                 return river_model_inputs
 
@@ -833,12 +835,16 @@ class AppDelegate(NSObject):
             with self.mk_comte_carlo_decision_lock:
                 with self.potheight_lock:
                     for decision_temp in decs:
-                        turn_model_input = [self.probability_1_1, self.potheight, self.potheight_after_preflop, self.potheight_after_flop, self.potheight_after_river,
-                                                self.to_call, self.equity_flop, self.equity_river, decision_temp, self.num_active_players, self.num_active_players_before_me,
-                                                self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
-                                                self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
-                                                self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
-                                                ]
+                        turn_model_input = [self.probability_1_1, self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                            self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                        self.i_call_preflop, self.i_bet_preflop, self.i_call_flop, self.i_bet_flop, self.i_call_river, 
+                                            self.i_bet_river, self.i_call_turn, self.i_bet_turn, self.potheight, self.potheight_after_preflop, 
+                                            self.potheight_after_flop, self.potheight_after_river,
+                                            self.to_call, decision_temp, self.num_active_players, self.num_active_players_before_me,
+                                            self.turn_features[0], self.turn_features[1], self.turn_features[2], self.turn_features[3], self.turn_features[4],
+                                            self.turn_features[5], self.turn_features[6], self.turn_features[7], self.turn_features[8], self.turn_features[9], 
+                                            self.turn_features[10], self.turn_features[11], self.turn_features[12], self.turn_features[13], self.turn_features[14]
+                                            ]
                         turn_model_inputs.append(turn_model_input)
                     return turn_model_inputs
 
@@ -2127,10 +2133,7 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
-
         try:
-
-
             with self.acting_lock:
                 if self.time_to_act:
                     print("time_to_act active during game screenshot 24")
@@ -2144,8 +2147,8 @@ class AppDelegate(NSObject):
             #         return # already in tick, reading player info
 
             self.mutex_screenshot.acquire()
-            self.im = game_screenshot(save=False)
-            current_im = self.im
+            current_im = game_screenshot(save=False)
+            self.im = current_im
             self.mutex_screenshot.release()
             pix = current_im.getpixel((530, 500)) 
             saving = False
@@ -2153,7 +2156,7 @@ class AppDelegate(NSObject):
 
             with self.lock:
                 own_money = self.own_money
-            if own_money == -1: # todo: save images when clicking for debugging
+            if own_money == -1: 
                 print("\n all in ... \n")
                 with self.valset_lock: # reset own money please
                     self.values_set = False
@@ -2188,100 +2191,36 @@ class AppDelegate(NSObject):
                     self.time_to_act = False
                     return
             
-            # "turn", own_cards, result
-            game_stage, gms_confidence,  = general_whats_going_on_model_manual(im=current_im) # check if we are holding cards and such 
-            if sec_prob < 1.0 :
-                saving = True
-            if game_stage == "no_decision_to_be_made" and is_red(pix):
-                print("\n!!!\ngame_stage == \"no_decision_to_be_made\" and is_red(pix) \n \n")
-                # save screenshot for model training, probably take second choice, if above threshold here
-                saving = True
-                if sec_prob > 1.5:
-                    game_stage = sec_max
-                else:
-                    print("exiting 7132864537 - false class")
-                    exit()
+            game_stage, own_cards, deck_cards  = general_whats_going_on_model_manual(im=current_im) # check if we are holding cards and such 
+
+            print("game stage gss 21 : "+str(game_stage))
 
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
 
-
-
-
             if game_stage == "flop":
                 print("flop")
-                if self.number_of_the_universe%52==0:
-                    if gms_confidence > glob_gms_confidence:
-                        current_im.save(f"shmol_new_data/flop_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                    else:
-                        current_im.save(f"shmol_model_not_sure/flop_{str(time.time()).split('.')[0]}.png")
-                        saving = False
                 with self.cards_lock:
                     self.cards_open = False
-                if current_game_stage != "flop":
-                    with self.own_cards_lock:
-                        if self.own_card_left == "nn" or self.own_card_right == "nn":
-                            print("model said flop, but own cards not read, exiting out of gameScreenshot_")
-                            with self.game_stage_lock:
-                                self.game_stage_current = "no_decision_to_be_made" 
-                            with self.acting_lock:
-                                self.time_to_act = False                                                                                                 
-                                current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")                                                                        
-                                exit()        
-
+                if current_game_stage != "flop":    
                     with self.potheight_lock:
                         self.potheight_after_preflop = self.potheight
                     with self.game_stage_lock:
                         self.game_stage_current = "flop"
-                    secs = time.time()
+                    # secs = time.time()
                     # current_im.save(f"shmol_new_data/flop_{str(secs).split(".")[0]}.png")     
                     try:
                         with self.cards_lock:
-                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
+                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
                     except Exception as e:
                         print(e)
-                        time.sleep(0.75)
-                        try:
-                            with self.cards_lock:
-                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
-                        except Exception as e:
-                            print(e)
-                            time.sleep(0.75)                    
-                            try:
-                                with self.cards_lock:
-                                    [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards()
-                            except Exception as e:
-                                print(e) 
-                                print("model said flop, but no cards could be read , exiting ... 24")
-                                with self.game_stage_lock:
-                                    self.game_stage_current = "no_decision_to_be_made" 
-                                with self.acting_lock:
-                                    self.time_to_act = False                                                                                                 
-                                    current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
-                                    exit()
-                    if self.deck_card_4 != "nn":
-                        print("model said flop, but found at least four cards, exiting out of gameScreenshot_")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/flop_{str(time.time()).split('.')[0]}.png")
+                        print("exit flop 213455")
                         exit()
-                        with self.game_stage_lock:
-                            self.game_stage_current = "no_decision_to_be_made" 
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                             
-                            return   
                     self.calculateFlopEquity()     
                     print("flop equity: "+str(self.equity_flop))             
 
                     
             elif game_stage == "no_decision_to_be_made":
-                if self.number_of_the_universe%33==0:
-                    if gms_confidence > glob_gms_confidence:
-                        current_im.save(f"shmol_new_data/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                    else:
-                        current_im.save(f"shmol_model_not_sure/no_decision_to_be_made_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-
                 with self.cards_lock:
                     self.cards_open = False
                 secs = time.time()
@@ -2292,7 +2231,7 @@ class AppDelegate(NSObject):
                     print("no decision to be made")
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
-                    if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn":
+                    if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn": # trynna show cards
                         pixels = current_im.load()
                         if pixels[782, 527][0] > 250:
                             if pixels[782, 527][1] > 250:
@@ -2318,14 +2257,6 @@ class AppDelegate(NSObject):
                     
             
             elif game_stage == "river":
-                if self.number_of_the_universe%13==0:
-                    if gms_confidence > glob_gms_confidence:
-                        current_im.save(f"shmol_new_data/river_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                    else:
-                        current_im.save(f"shmol_model_not_sure/river_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-
                 print("river")
                 if current_game_stage != "river":
                     with self.own_cards_lock:
@@ -2337,11 +2268,6 @@ class AppDelegate(NSObject):
                                 self.time_to_act = False  
                                 current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")                                                                         
                                 exit()
-                    if current_game_stage != "flop" and current_game_stage != "connectivity_issues":
-                        print("\n \n!!! \nmodel said flop, but game stage was not preflop, probably a wrong classification happened\n!!!\n \n")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                        print("exiting")
-                        exit()  
                     with self.potheight_lock:
                         self.potheight_after_flop = self.potheight                          
                     self.changeStateMonteCaro()
@@ -2354,28 +2280,10 @@ class AppDelegate(NSObject):
                     saving = False
                     try:
                         with self.cards_lock:
-                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
+                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
                     except Exception as e:
                         print(e)
                         time.sleep(0.25)
-                        try:
-                            with self.cards_lock:
-                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
-                        except Exception as e:
-                            print(e)
-                            time.sleep(0.25)                    
-                            try:
-                                with self.cards_lock:
-                                    [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="river")
-                            except Exception as e:
-                                print(e) 
-                                print("model said river, but no cards could be read , exiting ... 24")
-                                current_im.save(f"shmol_model_not_sure/exiting_images/river_{str(time.time()).split('.')[0]}.png")
-                                with self.game_stage_lock:
-                                    self.game_stage_current = "no_decision_to_be_made" 
-                                with self.acting_lock:
-                                    self.time_to_act = False                                                                           
-                                    exit()
                     with self.cards_lock:
                         if self.deck_card_4 == "nn":
                             print("model said river, but found no four cards, exiting out of gameScreenshot_")
@@ -2395,17 +2303,10 @@ class AppDelegate(NSObject):
                                 with self.acting_lock:
                                     self.time_to_act = False                                                                           
                                     exit()
-                        self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
+                        self.startCalculationsOtherThread_(deck_cards)
 
 
             elif game_stage == "turn":
-                if self.number_of_the_universe%3==0:
-                    if gms_confidence > glob_gms_confidence:
-                        current_im.save(f"shmol_new_data/turn_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                    else:
-                        current_im.save(f"shmol_model_not_sure/turn_{str(time.time()).split('.')[0]}.png")
-                        saving = False
 
                 if current_game_stage != "turn":
                     with self.own_cards_lock:
@@ -2417,11 +2318,6 @@ class AppDelegate(NSObject):
                                 self.time_to_act = False                                                                           
                                 current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
                                 exit()
-                    if current_game_stage != "river" and current_game_stage != "connectivity_issues":
-                        print("\n \n!!! \nmodel said turn, but game stage was not river before, probably a wrong classification happened\n!!!\n \n")
-                        current_im.save(f"shmol_model_not_sure/exiting_images/turn_after_{current_game_stage}_{str(time.time()).split('.')[0]}.png")
-                        print("exiting")
-                        exit()
                     with self.potheight_lock:
                         self.potheight_after_river = self.potheight
                     with self.game_stage_lock:
@@ -2435,23 +2331,11 @@ class AppDelegate(NSObject):
                     saving = False  
                     try:
                         with self.cards_lock:
-                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
+                            [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
                     except Exception as e:
                         print(e)
                         time.sleep(0.75)
-                        try:
-                            with self.cards_lock:
-                                [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = read_deck_cards(game_stage="turn")
-                        except Exception as e:
-                            print(e) 
-                            print("model said turn, but no cards could be read , exiting out of gameScreenshot_ ... 24")
-                            current_im.save(f"shmol_model_not_sure/exiting_images/turn_{str(time.time()).split('.')[0]}.png")
-                                                
-                            with self.game_stage_lock:
-                                self.game_stage_current = "no_decision_to_be_made" 
-                            with self.acting_lock:
-                                self.time_to_act = False
-                                exit()
+                        exit()
                     with self.cards_lock:
                         if self.deck_card_4 == "nn":
                             print("model said turn, but found no four cards, exiting out of gameScreenshot_")
@@ -2472,7 +2356,7 @@ class AppDelegate(NSObject):
                             with self.acting_lock:
                                 self.time_to_act = False                                                                           
                                 exit()
-                        self.startCalculationsOtherThread_([self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5])
+                        self.startCalculationsOtherThread_(deck_cards)
 
             
             elif game_stage == "preflop":
@@ -2483,19 +2367,7 @@ class AppDelegate(NSObject):
                             self.misred = True
                         else:
                             self.misred = False
-                if self.number_of_the_universe%50==0:
-                    if gms_confidence > glob_gms_confidence:
-                        current_im.save(f"shmol_new_data/preflop_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                    else:
-                        current_im.save(f"shmol_model_not_sure/preflop_{str(time.time()).split('.')[0]}.png")
-                        saving = False
-                if current_game_stage != "preflop":
-                    if self.d_position > 3:
-                        self.updatePDbyNumber()
-                        with self.acting_lock:
-                            self.time_to_act = False                                                                           
-                            return                    
+                if current_game_stage != "preflop":               
                     with self.game_stage_lock:
                         self.game_stage_current = "preflop"                
                     with self.d_lock: # only once after turn or once every preflop
@@ -2510,72 +2382,12 @@ class AppDelegate(NSObject):
                         if self.cards_open == False:
                             secs = time.time()
                             # current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
-                            if check_if_we_holdin_yet(current_im):
-                                print("I was here 9")
-                                try:
-                                    [self.own_card_left, self.own_card_right] = read_own_cards()
-                                    self.cards_open = True
-                                except Exception as e:
-                                    # print(e)
-                                    time.sleep(0.25)
-                                    try:
-                                        [self.own_card_left, self.own_card_right] = read_own_cards()
-                                        self.cards_open = True
-                                    except Exception as e:
-                                        # print(e)
-                                        time.sleep(0.25)                                
-                                        try:
-                                            [self.own_card_left, self.own_card_right] = read_own_cards()
-                                            self.cards_open = True
-                                        except Exception as e:
-                                            # print(e)
-                                            time.sleep(0.25)
-                                            try:
-                                                [self.own_card_left, self.own_card_right] = read_own_cards()
-                                                self.cards_open = True
-                                            except Exception as e:
-                                                print(e)
-                                                print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ...")  
-                                                fish_for_own_cards()   
-                                                with self.game_stage_lock:
-                                                    self.game_stage_current = "no_decision_to_be_made" 
-                                                with self.acting_lock:
-                                                    self.time_to_act = False                                                                           
-                                                    return
-                            else:
-                                print("check_if_we_holdin_yet failed, model said preflop ...")
-                                time.sleep(1)
-                                if check_if_we_holdin_yet(current_im):
-                                    try:
-                                        [self.own_card_left, self.own_card_right] = read_own_cards()
-                                        self.cards_open = True
-                                    except Exception as e:
-                                        # print(e)
-                                        time.sleep(0.25)
-                                        try:
-                                            [self.own_card_left, self.own_card_right] = read_own_cards()
-                                            self.cards_open = True
-                                        except Exception as e:
-                                            # print(e)
-                                            time.sleep(0.25)
-                                            try:
-                                                [self.own_card_left, self.own_card_right] = read_own_cards()
-                                                self.cards_open = True
-                                            except Exception as e:
-                                                print(e)
-                                                print("cards could not be read, although they are supposed to be there : returning out of gameScreenshot_ ... 222222222222222222") # maybe save screenshot for reclassification purposes
-                                                fish_for_own_cards()                                      
-                                                with self.game_stage_lock:
-                                                    self.game_stage_current = "no_decision_to_be_made"  
-                                                with self.acting_lock:
-                                                    self.time_to_act =False                                                                              
-                                                    return
-                                else:
-                                    with self.game_stage_lock:
-                                        self.game_stage_current = "no_decision_to_be_made"  
-                                    with self.acting_lock:
-                                        self.time_to_act = False                                                                              
-                                        return                                
+                            try:
+                                [self.own_card_left, self.own_card_right] = own_cards
+                                self.cards_open = True
+                            except Exception as e:
+                                print(e)
+                                exit()                   
 
                     with self.cards_lock:   
                         if not self.cards_open:
@@ -2611,8 +2423,6 @@ class AppDelegate(NSObject):
                     return
 
 
-            if saving:
-                self.saveScreenshot_one_two_(current_im, game_stage, gms_confidence)
 
             # print("pix (where red button might be): "+ str(pix))
             if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
@@ -2960,7 +2770,6 @@ class AppDelegate(NSObject):
                                 if not self.updateOwnMoney_(current_im=None):
                                     print("\nread own money failed gss ... \n")            
                 else:
-
                     if game_stage == "no_decision_to_be_made":
                         if self.own_money < 50.0:
                             with self.lock:
@@ -2971,7 +2780,8 @@ class AppDelegate(NSObject):
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 3:
-                                    unwait_4blinds(debug=False) 
+                                    print("self.readAllPD == 3")
+                                    unwait_4blinds(current_im) 
                                     with self.valset_lock:
                                         self.readAllPD -= 1    
                                 else:
@@ -2986,13 +2796,9 @@ class AppDelegate(NSObject):
                                 elif self.readAllPD % 7 == 0:
                                     self.updatePDbyNumber()                         
 
-
                     else:
-                        if self.readAllPD > 2:
+                        if self.readAllPD > 3: # 6 ppl
                             self.updatePDbyNumber()
-
-
-
 
             with self.valset_lock:
                 self.number_of_the_universe += 1
