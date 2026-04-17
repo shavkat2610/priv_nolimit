@@ -1166,10 +1166,30 @@ def read_deck_cards(game_stage="flop", im=None):
 def general_whats_going_on_model_manual(im = None):
     if im == None:
         im = game_screenshot()
+
+    pixels = im.load()
+    if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
+        return "connectivity_issues", None, None
+    
     try:
         own_cards = read_own_cards(im=im)
     except Exception as e:
         return "no_decision_to_be_made", None, None
+    
+    if pixels[627, 475][1] >= 80:
+        print("RUN THREE TIMES ?! ?! ?! YES OR NO ?")
+        click(x=627, y=570, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
+        return "no_decision_to_be_made", None, None # testing this (run three times)
+
+
+    if pixels[576, 320][1] > 250:
+        pyautogui.moveTo(576, 420, duration=0.25)
+        time.sleep(0.25)
+        click(x=576, y=420, im = im, debug = True, calling_function = "general_open_fifth_card_or_no")
+        print("\nclick open fifth ...")
+        im.save(f"shmol_new_data/no_dec_open_fifth_or_no_{str(time.time()).split('.')[0]}.png")
+        return "no_decision_to_be_made", None, None
+
     
     result = red_deck_cards(im=im)
     # print("red_deck_cards result: "+str(result))
@@ -1208,7 +1228,7 @@ def flop_equity_model_predict(features):
 
 
 def handle_all_in(im = None):
-    print("handle all in ...")
+    print("handle_all_in ...")
     if im == None:
         im = game_screenshot()
     # print(im.size)

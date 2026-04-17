@@ -135,18 +135,12 @@ def count_before_me(dealer_pos, holders_pos):
 
 
 class AppDelegate(NSObject):
-
-    
     
     evaluator = Evaluator()
     
     confidence_lock = Lock()
     confidence = 3.0
     big_blind = "200"
-
-
-
-
 
     # modelling
 
@@ -253,6 +247,7 @@ class AppDelegate(NSObject):
 
 
     def setValuesOurTurn_(self, current_im):
+        print("setValuesOurTurn_ ...")
         with self.our_turn_lock:
             h_pos_current = check_holders(current_im)
             if self.holders_pos != h_pos_current:
@@ -303,14 +298,17 @@ class AppDelegate(NSObject):
         # print("done with setValuesOurTurn .")
 
     def changeStateMonteCaro(self):
+        print("changeStateMonteCaro ...")
         with self.mk_comte_carlo_decision_lock:
             if self.probability_1_1 != -1:
                 self.probability_1_1 = -1
             return
 
     def updateOwnMoney_(self, current_im = None): # runs when it is our turn to move # cards are already set  # write to csv for poker model 
-        # print("setting own money ...")
+        print("updateOwnMoney_ ...")
         try:
+            if current_im is None:
+                current_im = game_screenshot()
             own_money_current = read_own_money(im=current_im)
             print("own money read: "+str(own_money_current))
             if own_money_current != -10 and own_money_current != None and own_money_current != 0.001:
@@ -407,6 +405,7 @@ class AppDelegate(NSObject):
     def updateOnePlayerData_(self, pp): # pp = player position # needs testing
         # pyautogui.click(x=25, y=100)
         # time.sleep(0.1)
+        print("updateOnePlayerData_ ...")
         pyautogui.moveTo(pp[0], pp[1], duration=0.25)
         time.sleep(0.15)
         pyautogui.click(pp[0], pp[1])
@@ -439,8 +438,6 @@ class AppDelegate(NSObject):
         return player_info
 
 
-
-
     def set_munna_initially(self):
         munna = read_own_money()
         if munna != -10 and munna != None:
@@ -450,7 +447,6 @@ class AppDelegate(NSObject):
                 return True
         else:
             return False
-
 
 
     def closeGame_(self, sender):
@@ -941,6 +937,7 @@ class AppDelegate(NSObject):
 
 
     def foldErase(self): # when folding, erase model inputs for that hand, since they are not useful for training 
+        print("foldErase ...")
         with self.mod_writing_lock:
             if self.made_turn_model_input:
                 self.made_turn_model_input = False 
@@ -1739,7 +1736,10 @@ class AppDelegate(NSObject):
                             self.i_bet_turn += 1.0
                 else:
                     if to_call > 0.0:
-                        self.i_call_turn += to_call       
+                        self.i_call_turn += to_call     
+        if set_1_1 > 90.0 and decision == "fold": # for now
+            print("make decision turn needs some help ...")
+            decision = "call"
         return decision
     
 
@@ -2044,8 +2044,8 @@ class AppDelegate(NSObject):
         # time.sleep(0.05)
 
 
-
     def roundswap_(self, current_im=None):
+        print("roundswap_ ...")
         if not self.updateOwnMoney_(current_im=current_im):
             time.sleep(0.35)
             if not self.updateOwnMoney_(current_im=None):
@@ -2075,7 +2075,6 @@ class AppDelegate(NSObject):
         self.resetValues()
 
 
-
     def hideButtons(self):
         self.foldB.setHidden_(True)
         self.callB.setHidden_(True)
@@ -2098,10 +2097,8 @@ class AppDelegate(NSObject):
             self.gg_poker_button.setHidden_(False)
 
 
-
-
     def addChips(self):
-        print("clicking add chips")
+        print("addChips ...")
         pyautogui.click(795, 90)
         time.sleep(2.4)
         current_im = game_screenshot()
@@ -2113,7 +2110,7 @@ class AppDelegate(NSObject):
             # 556 - 160 = 396
             # 284 + 270 = 554
             pyautogui.moveTo(554, 396, duration=0.25)
-            click(554, 396, current_im, debug=True, calling_function="delegate_addChips_maxing_out")
+            click(554, 396, current_im, debug=False, calling_function="delegate_addChips_maxing_out")
             time.sleep(.5)
             # secs = time.time()
             # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
@@ -2124,11 +2121,11 @@ class AppDelegate(NSObject):
 
 
     def saveScreenshot_one_two_(self, image, gamestage, confidence):
+        print("saveScreenshot_one_two_ ...")
         if confidence > glob_gms_confidence:
             image.save(f"shmol_new_data/{gamestage}_{str(time.time()).split('.')[0]}.png")
         else:
             image.save(f"shmol_model_not_sure/{gamestage}_{str(time.time()).split('.')[0]}.png")
-
 
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
@@ -2232,16 +2229,16 @@ class AppDelegate(NSObject):
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
                     if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn": # trynna show cards
+                        print("see if show cards ...")
                         pixels = current_im.load()
-                        if pixels[782, 527][0] > 250:
-                            if pixels[782, 527][1] > 250:
-                                if pixels[782, 527][2] > 250:
-                                    if pixels[749, 527][1] > 190:
-                                        print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
-                                        current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
-                                        saving = False
-                                        if self.probability_1_1 > 0.95:
-                                            click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
+                        if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
+                            print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
+                            current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+                            saving = False
+                            if self.probability_1_1 > 0.92:
+                                click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
+                        else:
+                            print("show not possible | pixels[749, 527] : "+str(pixels[749, 527]))
                 else:
                     if self.can_update_PD == True:
                         self.updatePDbyNumber()
@@ -2754,7 +2751,8 @@ class AppDelegate(NSObject):
                         with self.potheight_lock: # regularly 
                             self.potheight = result["result"]
                             print("debug potheight set to: "+str(self.potheight))
-            elif game_stage != "connectivity_issues": 
+            # elif game_stage != "connectivity_issues": 
+            else:
                 time.sleep(0.375)
                 with self.valset_lock:
                     need_set = False
@@ -2779,8 +2777,8 @@ class AppDelegate(NSObject):
                                     self.need_replenishment = 5
                         else:
                             if self.readAllPD > -5: # 6 ppl
-                                if self.readAllPD == 3:
-                                    print("self.readAllPD == 3")
+                                if self.readAllPD == 4:
+                                    print("self.readAllPD == 4, unwaiting for blinds")
                                     unwait_4blinds(current_im) 
                                     with self.valset_lock:
                                         self.readAllPD -= 1    

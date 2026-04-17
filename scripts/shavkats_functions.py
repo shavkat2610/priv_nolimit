@@ -759,15 +759,16 @@ def scroll_to_bottom():
     pyautogui.scroll(-5)
 
 
-def click2(x, y):
+def click2(x, y, debug = False):
     pyautogui.moveTo(x, y)
-    im = pyautogui.screenshot(region=(x-100, y-100, 200, 200))
-    pixels= im.load()
-    pixels[99, 99] = (255, 0, 0, 255)
-    pixels[99, 100] = (255, 0, 0, 255)
-    pixels[100, 99] = (255, 0, 0, 255)
-    pixels[100, 100] = (255, 0, 0, 255)
-    im.save("clicking_images/click2_"+str(time.time())[:10]+".png")
+    if debug:
+        im = pyautogui.screenshot(region=(x-100, y-100, 200, 200))
+        pixels= im.load()
+        pixels[99, 99] = (255, 0, 0, 255)
+        pixels[99, 100] = (255, 0, 0, 255)
+        pixels[100, 99] = (255, 0, 0, 255)
+        pixels[100, 100] = (255, 0, 0, 255)
+        im.save("clicking_images/click2_"+str(time.time())[:10]+".png")
     pyautogui.click(x, y)
 
 
@@ -931,7 +932,7 @@ def position_the_game():
 
 def close_game():
     print('closing game')
-    game_rules_pos = imagesearch('images/poker_rules_new.png', precision=0.85, calling_function="read_game_rules")
+    game_rules_pos = imagesearch('images/poker_rules_new.png', precision=0.85, calling_function="close_game")
     time.sleep(.53)
     if game_rules_pos == [-1, -1]:
         print("close_game faled to locate poker_rules")
@@ -999,7 +1000,7 @@ def read_game_rules(big_blind = "200"):
             image_path = 'images/100_200.png'
             if not click_two_times_please(image_path, precision=.8, debug = False):
                 print("Could not find selection once ...")
-                if not click_two_times_please(image_path, precision=8, debug = False):
+                if not click_two_times_please(image_path, precision=.8, debug = False):
                     print("Could not find selection, retry 25...")
                     result = read_game_rules(big_blind)
                     return result
@@ -1063,7 +1064,7 @@ def read_game_rules(big_blind = "200"):
     if pixels[20, 250][0] > 110 and pixels[20, 250][1] < 40 and pixels[20, 250][2] < 40: #receive chips
         print("receiving chips ...")
         # time.sleep(1.5)
-        click(904, 297, im = im, calling_function="read_game_rules", debug=True)
+        click(904, 350, im = im, calling_function="read_game_rules_2", debug=True)
         return run_it_up(big_blind=big_blind)
     else:
         print("not receiving chips")
