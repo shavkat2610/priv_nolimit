@@ -3,7 +3,7 @@ import pyautogui
 import time
 import numpy as np
 from chatGPT_XGBRegressor import river_features, turn_features
-from scripts.shavkats_functions import check_if_really_seated, click, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
+from scripts.shavkats_functions import check_if_really_seated, click, click2, click_ok,  game_screenshot, global_cash_game_sit_out, imagesearch, check_if_client_running, find_login_button_and_click, imagesearcharea, \
                                         login, make_screenshot_of_area, read_game_rules, run_it_up, screenshot_area, see_if_there_is_l_info, push_holdem, scroll_to_bottom, click_two_times_please, \
                                             click_one_times_please, start_client_and_login, remove_debug_imgs, read_D, open_cards, is_red, play_shape_of_my_heart, close_game, \
                                             check_if_w8_for_blinds, get_up_stand_up, unwait_4blinds, check_if_playerinfo
@@ -320,7 +320,7 @@ class AppDelegate(NSObject):
                         self.values_set = True                    
                 return True
             if own_money_current == 0.001:
-                print("open last card probably ...")
+                # print("open last card probably ...")
                 pixels = current_im.load()
                 if pixels[576, 320][1] > 250:
                     print("YES ! open last card ...")
@@ -330,6 +330,19 @@ class AppDelegate(NSObject):
                     print("\nclick open fifth ...")
                     current_im.save(f"shmol_new_data/no_dec_open_fifth_{str(time.time()).split('.')[0]}.png")
                     return False
+                
+                if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
+                    print("\nimma try clicking ok here")
+                    time.sleep(0.75)
+                    # 461 +95 =  556
+                    # 556 - 160 = 396
+                    # 284 + 270 = 554
+                    click2(554, 396, debug=True)
+                    time.sleep(0.75)
+                    # secs = time.time()
+                    # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
+                    pyautogui.click(340, 560)
+                    return True
                 return False
             
             return False
