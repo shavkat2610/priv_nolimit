@@ -1190,6 +1190,11 @@ def general_whats_going_on_model_manual(im = None):
         im.save(f"shmol_new_data/no_dec_open_fifth_or_no_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", None, None
 
+
+    if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
+        print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
+        im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+        return "no_decision_to_be_made", None, None
     
     result = red_deck_cards(im=im)
     # print("red_deck_cards result: "+str(result))

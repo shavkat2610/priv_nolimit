@@ -2414,7 +2414,7 @@ class AppDelegate(NSObject):
             elif game_stage == "connectivity_issues":
                 print("connectivity_issues") 
                 secs = time.time()
-                current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
+                # current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
                 saving = False
                 time.sleep(1)
                 if handle_all_in(current_im):
