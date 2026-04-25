@@ -1167,6 +1167,7 @@ def read_deck_cards(game_stage="flop", im=None):
 
 
 def general_whats_going_on_model_manual(im = None):
+    print("general_whats_going_on_model_manual ...")
     if im == None:
         im = game_screenshot()
 
@@ -1174,22 +1175,18 @@ def general_whats_going_on_model_manual(im = None):
     if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
         return "connectivity_issues", None, None
     
-    try:
-        own_cards = read_own_cards(im=im)
-    except Exception as e:
-        return "no_decision_to_be_made", None, None
-    
+
     if pixels[627, 475][1] >= 80:
-        print("RUN THREE TIMES ?! ?! ?! YES OR NO ?")
+        print("\nRUN THREE TIMES ?! ?! ?! YES OR NO ?\n")
         click(x=627, y=570, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
         return "no_decision_to_be_made", None, None # testing this (run three times)
 
 
     if pixels[576, 320][1] > 250:
+        print("\nclick open fifth ...\n")
         pyautogui.moveTo(576, 420, duration=0.25)
         time.sleep(0.25)
         click(x=576, y=420, im = im, debug = True, calling_function = "general_open_fifth_card_or_no")
-        print("\nclick open fifth ...")
         im.save(f"shmol_new_data/no_dec_open_fifth_or_no_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", None, None
 
@@ -1198,16 +1195,23 @@ def general_whats_going_on_model_manual(im = None):
         print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
         im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", None, None
+
+
+    try:
+        own_cards = read_own_cards(im=im)
+    except Exception as e:
+        print("no cards could be read - no_dec")
+        return "no_decision_to_be_made", None, None
     
-    result = red_deck_cards(im=im)
-    # print("red_deck_cards result: "+str(result))
-    if result[0] == "nn" or result[1] == "nn" or result[2] == "nn": # assert first three cards generally
+    deck_cards = red_deck_cards(im=im)
+    # print("red_deck_cards result: "+str(deck_cards))
+    if deck_cards[0] == "nn" or deck_cards[1] == "nn" or deck_cards[2] == "nn": # assert first three cards generally
         return "preflop", own_cards, None
-    if result[3] == "nn": 
-        return "flop", own_cards, result
-    if result[4] == "nn": 
-        return "river", own_cards, result
-    return "turn", own_cards, result
+    if deck_cards[3] == "nn": 
+        return "flop", own_cards, deck_cards
+    if deck_cards[4] == "nn": 
+        return "river", own_cards, deck_cards
+    return "turn", own_cards, deck_cards
     
 
 
