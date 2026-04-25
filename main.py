@@ -2167,6 +2167,9 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
+        print("\n \n ____________________________________________________")
+        print(" ---------------------------------------------------- \n \n ")
+
         try:
             with self.acting_lock:
                 if self.time_to_act:
