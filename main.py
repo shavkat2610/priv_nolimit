@@ -193,7 +193,7 @@ class AppDelegate(NSObject):
     lock = Lock() #
     own_money = 0.0
     own_money_before_last_preflop = 30.0
-    need_replenishment = 7
+    need_replenishment = 2
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -934,18 +934,24 @@ class AppDelegate(NSObject):
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to turn csv RIGHT NOW !!!!!!!!!!!!\n")
                             writer.writerow([str(turn_model_input[0]), str(turn_model_input[1]), str(turn_model_input[2]), str(turn_model_input[3]), str(turn_model_input[4]), str(turn_model_input[5]), str(turn_model_input[6]), str(turn_model_input[7]), str(turn_model_input[8]), str(turn_model_input[9]), str(turn_model_input[10]), str(turn_model_input[11]), str(turn_model_input[12]), str(turn_model_input[13]), str(turn_model_input[14]), str(turn_model_input[15]), str(turn_model_input[16]), str(turn_model_input[17]),str(turn_model_input[18]),str(turn_model_input[19]),str(turn_model_input[20]),str(turn_model_input[21]),str(turn_model_input[22]),str(turn_model_input[23]),str(turn_model_input[24]),str(turn_model_input[25]),str(turn_model_input[26]),str(turn_model_input[27]),str(turn_model_input[28]),str(turn_model_input[29]),str(turn_model_input[30]),str(turn_model_input[31]), str(turn_model_input[32]), str(turn_model_input[33]), str(turn_model_input[34]), str(turn_model_input[35]), str(turn_model_input[36]), str(turn_model_input[37]), str(turn_model_input[38]), str(turn_model_input[39]),self.model_output])                 
+                else:
+                    print("no turn model input made, not writing to turn csv ...")
                 if self.made_river_model_input:
                     for river_model_input in self.river_model_inputs:    
                         with open('csv_s/riverModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to river csv RIGHT NOW !!!!!!!!!!!!\n")
                             writer.writerow([str(river_model_input[0]), str(river_model_input[1]), str(river_model_input[2]), str(river_model_input[3]), str(river_model_input[4]), str(river_model_input[5]), str(river_model_input[6]), str(river_model_input[7]), str(river_model_input[8]), str(river_model_input[9]), str(river_model_input[10]), str(river_model_input[11]), str(river_model_input[12]), str(river_model_input[13]), str(river_model_input[14]), str(river_model_input[15]), str(river_model_input[16]),str(river_model_input[17]),str(river_model_input[18]),str(river_model_input[19]),str(river_model_input[20]),str(river_model_input[21]),str(river_model_input[22]), str(river_model_input[23]), str(river_model_input[24]), str(river_model_input[25]), str(river_model_input[26]), str(river_model_input[27]), str(river_model_input[28]), str(river_model_input[29]), str(river_model_input[30]), str(river_model_input[31]), str(river_model_input[32]), str(river_model_input[33]), str(river_model_input[34]), str(river_model_input[35]),self.model_output])                 
+                else:
+                    print("no river model input made, not writing to river csv ...")
                 if self.made_flop_model_input:
                     for flop_model_input in self.flop_model_inputs:
                         with open('csv_s/flopModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to flop csv RIGHT NOW !!!!!!!!!!!!\n")
                             writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), str(flop_model_input[43]), str(flop_model_input[44]), str(flop_model_input[45]), str(flop_model_input[46]), str(flop_model_input[47]), str(flop_model_input[48]), str(flop_model_input[49]), str(flop_model_input[50]), self.model_output])                 
+                else:
+                    print("no flop model input made, not writing to flop csv ...")
             return
 
 
@@ -2285,9 +2291,9 @@ class AppDelegate(NSObject):
                         self.game_stage_current = "river"
                     with self.cards_lock:
                         self.cards_open = False
-                    secs = time.time()
-                    current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
-                    saving = False
+                    # secs = time.time()
+                    # current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
+                    # saving = False
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
@@ -2336,9 +2342,9 @@ class AppDelegate(NSObject):
                     print("turn")
                     with self.cards_lock:
                         self.cards_open = False
-                    secs = time.time()
-                    current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")   
-                    saving = False  
+                    # secs = time.time()
+                    # current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")   
+                    # saving = False  
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
@@ -2390,7 +2396,7 @@ class AppDelegate(NSObject):
                     print("preflop")
                     with self.cards_lock:
                         if self.cards_open == False:
-                            secs = time.time()
+                            # secs = time.time()
                             # current_im.save(f"shmol_new_data/preflop_{str(secs).split(".")[0]}.png")  
                             try:
                                 [self.own_card_left, self.own_card_right] = own_cards
@@ -2782,12 +2788,12 @@ class AppDelegate(NSObject):
                                     print("\nread own money failed gss ... \n")            
                 else:
                     if game_stage == "no_decision_to_be_made":
-                        if self.own_money < 50.0:
+                        if self.own_money < 70.0:
                             with self.lock:
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
                                     self.addChips()
-                                    self.need_replenishment = 5
+                                    self.need_replenishment = 3
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 4:

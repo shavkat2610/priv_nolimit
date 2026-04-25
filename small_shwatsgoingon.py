@@ -490,14 +490,15 @@ def tess_read(im): #input is preprocessed image of the number, output is the num
 def check_if_included(new_img_array, existing_arrays, debug = False):
     for arr in existing_arrays:
         if np.array_equal(new_img_array, arr):
-            print("check_if_included found an exact match")
+            # print("check_if_included found an exact match")
             return True
         elif compare_num(new_img_array, arr, debug=debug):
-            print("check_if_included found a match by compare_num")
+            # print("check_if_included found a match by compare_num")
             return True
     return False            
 
 def read_total_pot_money_manually(im = None):
+    print("read_total_pot_money_manually ... ")
     if im == None:
         im = game_screenshot()
     im1 = crop_wh(im, 280, 154, 290, 40) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
@@ -821,9 +822,11 @@ def read_total_pot_money_manually(im = None):
 
 
 def read_total_pot_money(im = None): # read with tesseract , save sample if low confidence score
+    print("read_total_pot_money ... ")
     if im == None:
         im = game_screenshot()
     (i_i, result) = read_total_pot_money_manually(im=im)
+    # print(f"read_total_pot_money_manually result: {result}")
     if result > 0.1:
         # return {"result": result, "im": im}
         pass
@@ -841,7 +844,7 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
                     pixels[i,j] = (255, 255, 255, 255)
     im2 = crop_wh(im1, i_i+67, 12, 70, 18) 
     read_3 = tess_read(im2)   
-    # print("\n\ncomparing manual vs tesseract 0: "+str(result)+" vs "+str(read_3)+"\n \n")
+    print("\n\ncomparing manual vs tesseract 0: "+str(result)+" vs "+str(read_3)+"\n \n")
     # compare the two results
     if abs(result - read_3) < 0.2:
         # print("both methods agree enough, returning tesseract result")
@@ -1392,12 +1395,12 @@ def check_if_we_holdin_yet(im = None): # im = game-screenshot, works I think
     # im0.show()
     data1 = np.asarray(im0)
     # print(data1.shape)
-    print("data1[4,16,0]: "+str(data1[4,16,0]))
-    print("data1[4,17,0]: "+str(data1[4,17,0]))
-    print("data1[4,18,0]: "+str(data1[4,18,0]))
-    print("data1[4,19,0]: "+str(data1[4,19,0]))
-    print("data1[4,20,0]: "+str(data1[4,20,0]))
-    print("data1[4,21,0]: "+str(data1[4,21,0]))
+    # print("data1[4,16,0]: "+str(data1[4,16,0]))
+    # print("data1[4,17,0]: "+str(data1[4,17,0]))
+    # print("data1[4,18,0]: "+str(data1[4,18,0]))
+    # print("data1[4,19,0]: "+str(data1[4,19,0]))
+    # print("data1[4,20,0]: "+str(data1[4,20,0]))
+    # print("data1[4,21,0]: "+str(data1[4,21,0]))
     if data1[4,17,0] > 62 and data1[4,17,0]<70:
         if data1[4,18,0] > 140 and data1[4,21,0]<42:
             print("we are not")
