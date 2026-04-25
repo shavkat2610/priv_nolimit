@@ -2573,8 +2573,7 @@ class AppDelegate(NSObject):
                             with self.potheight_lock: 
                                 self.to_call = 0.0    
                             with self.valset_lock:
-                                self.values_set = False # own money value only in this     
-                                           
+                                self.values_set = False # own money value only in this                                              
                     elif self_dec.startswith("2"):
                         if to_call < 1:
                             pyautogui.moveTo(730, 557, duration=0.1)
@@ -2870,12 +2869,12 @@ class AppDelegate(NSObject):
                                     print("\nread own money failed gss ... \n")            
                 else:
                     if game_stage == "no_decision_to_be_made":
-                        if self.own_money < 70.0:
+                        if self.own_money < 75.0:
                             with self.lock:
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
                                     self.addChips()
-                                    self.need_replenishment = 2
+                                    self.need_replenishment = 7
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 4:
