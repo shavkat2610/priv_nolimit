@@ -1484,6 +1484,7 @@ class AppDelegate(NSObject):
                             
         with self.potheight_lock:
             to_call = self.to_call      
+
         if to_call > 0.0:
             temp_Inputs = self.mkFlopModelInputs_([1.0, 2.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
@@ -1492,71 +1493,76 @@ class AppDelegate(NSObject):
             temp_Inputs = self.mkFlopModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0])
             # print("debug - flop model inputs: "+str(temp_Inputs))
             outputs = flop_model_predict_multiple(temp_Inputs)
-        with self.mk_comte_carlo_decision_lock:   
-            print("self.equity_flop: "+str(self.equity_flop))  
-            if self.equity_flop > 0.40: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.37                
-            if self.equity_flop > 0.45: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.47                 
-            if self.equity_flop > 0.5: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.7                
-            if self.equity_flop > 0.6: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.7                 
-            if self.equity_flop > 0.7: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.7                          
-            if self.equity_flop > 0.8: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.7    
-            if self.equity_flop > 0.825: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.7                              
-            if self.equity_flop > 0.85: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.725               
-            if self.equity_flop > 0.86: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.8             
-            if self.equity_flop > 0.875: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.8                                                    
-            if self.equity_flop > 0.9: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.8    
-            if self.equity_flop > 0.91: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.8                       
-            if self.equity_flop > 0.92: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 0.9                       
-            if self.equity_flop > 0.93: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.0                       
-            if self.equity_flop > 0.94: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.1                               
-            if self.equity_flop > 0.95: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.2                                      
-            if self.equity_flop > 0.96: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.3             
-            if self.equity_flop > 0.97: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.7                  
-            if self.equity_flop > 0.98: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 1.7      
-            if self.equity_flop > 0.99: # need to adjust confidence, while still learning ...
-                with self.confidence_lock:
-                    self.confidence += 7.0                                                                                        
+
+        with self.mk_comte_carlo_decision_lock:
+            set_1_1 = self.equity_flop
+        
+        print("self.equity_flop: "+str(set_1_1))  
+        if set_1_1 > 0.40: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.37                
+        if set_1_1 > 0.45: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.47                 
+        if set_1_1 > 0.5: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.7                
+        if set_1_1 > 0.6: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.7                 
+        if set_1_1> 0.7: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.7                          
+        if set_1_1 > 0.8: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.7    
+        if set_1_1 > 0.825: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.7                              
+        if set_1_1 > 0.85: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.725               
+        if set_1_1 > 0.86: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.8             
+        if set_1_1 > 0.875: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.8                                                    
+        if set_1_1 > 0.9: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.8    
+        if set_1_1 > 0.91: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.8                       
+        if set_1_1 > 0.92: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 0.9                       
+        if set_1_1 > 0.93: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.0                       
+        if set_1_1 > 0.94: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.1                               
+        if set_1_1 > 0.95: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.2                                      
+        if set_1_1 > 0.96: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.3             
+        if set_1_1 > 0.97: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.7                  
+        if set_1_1 > 0.98: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 1.7      
+        if set_1_1 > 0.99: # need to adjust confidence, while still learning ...
+            with self.confidence_lock:
+                self.confidence += 7.0     
+                                                                                           
         decision = self.makeAIDecision_(outputs)
-        # with self.mk_comte_carlo_decision_lock:
-        #     set_1_1 = self.equity_flop
+        if set_1_1 > 0.8 and decision == "fold" and to_call <= 14.0: # for now
+            print("equity high but decision is fold, changing to call")
+            decision = "call"
         # with self.potheight_lock:
         #     pot_height = self.potheight
 
@@ -1573,6 +1579,7 @@ class AppDelegate(NSObject):
                     self.confidence += 4.5
                 elif decision.startswith("raise1"):
                     self.confidence += 2.5    
+
         with self.potheight_lock:
             if decision != "fold":   
                 if decision != "call":
@@ -1660,8 +1667,8 @@ class AppDelegate(NSObject):
         with self.mk_comte_carlo_decision_lock:
             set_1_1 = self.probability_1_1
         print("set_1_1 at river-time: "+str(set_1_1))
-        with self.potheight_lock:
-            pot_height = self.potheight            
+        # with self.potheight_lock:
+        #     pot_height = self.potheight            
         with self.potheight_lock:
             to_call = self.to_call    
         if set_1_1 > 0.6: # need to adjust confidence, while still learning ...
@@ -1684,11 +1691,22 @@ class AppDelegate(NSObject):
         else:
             outputs = river_model_predict_multiple(self.mkRiverModelInputs_([0.0, 0.25, 0.5, 0.75, 1.0, 2.0, 4.0]))        
         decision = self.makeAIDecision_(outputs)
-        # with self.mk_comte_carlo_decision_lock:
-        #     set_1_1 = self.equity_flop
-        # with self.potheight_lock:
-        #     pot_height = self.potheight
-            
+
+
+
+        if set_1_1 > 0.9 and decision == "fold" and to_call <= 20.0: # for now
+            print("equity high but decision is fold, changing to call")
+            decision = "call"
+
+        elif set_1_1 > 0.85 and decision == "fold" and to_call <= 17.0: # for now
+            print("equity high but decision is fold, changing to call")
+            decision = "call"
+
+        elif set_1_1 > 0.80 and decision == "fold" and to_call <= 14.0: # for now
+            print("equity high but decision is fold, changing to call")
+            decision = "call"
+
+
         if decision != "fold" and to_call > 0.0: # this part increases confidenc after we bet something , remove this later
             with self.confidence_lock:
                 self.confidence += 2.6
