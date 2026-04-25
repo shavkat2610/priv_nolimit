@@ -2230,13 +2230,12 @@ class AppDelegate(NSObject):
             
             game_stage, own_cards, deck_cards  = general_whats_going_on_model_manual(im=current_im) # check if we are holding cards and such 
 
-            print("game stage gss 21 : "+str(game_stage))
+            print("game stage : "+str(game_stage))
 
             with self.game_stage_lock:
                 current_game_stage = self.game_stage_current
 
             if game_stage == "flop":
-                print("flop")
                 with self.cards_lock:
                     self.cards_open = False
                 if current_game_stage != "flop":    
@@ -2294,7 +2293,6 @@ class AppDelegate(NSObject):
                     
             
             elif game_stage == "river":
-                print("river")
                 if current_game_stage != "river":
                     with self.own_cards_lock:
                         if self.own_card_left == "nn" or self.own_card_right == "nn":
@@ -2360,7 +2358,6 @@ class AppDelegate(NSObject):
                     with self.game_stage_lock:
                         self.game_stage_current = "turn"
                     self.changeStateMonteCaro()
-                    print("turn")
                     with self.cards_lock:
                         self.cards_open = False
                     # secs = time.time()
