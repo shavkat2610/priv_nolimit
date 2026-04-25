@@ -193,7 +193,7 @@ class AppDelegate(NSObject):
     lock = Lock() #
     own_money = 0.0
     own_money_before_last_preflop = 30.0
-    need_replenishment = 2
+    need_replenishment = 1
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -334,13 +334,8 @@ class AppDelegate(NSObject):
                 if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
                     print("\nimma try clicking ok here")
                     time.sleep(0.75)
-                    # 461 +95 =  556
-                    # 556 - 160 = 396
-                    # 284 + 270 = 554
                     click2(554, 396, debug=True)
                     time.sleep(0.75)
-                    # secs = time.time()
-                    # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
                     pyautogui.click(340, 560)
                     return True
                 return False
@@ -2410,7 +2405,7 @@ class AppDelegate(NSObject):
                             self.misred = True
                         else:
                             self.misred = False
-                    self.roundswap_(current_im)
+                    # self.roundswap_(current_im)
                     print("preflop")
                     with self.cards_lock:
                         if self.cards_open == False:
@@ -2564,23 +2559,22 @@ class AppDelegate(NSObject):
                                 if self.user_decision != "None_yet":
                                     self.user_decision = "call"  
                             with self.valset_lock:
-                                self.values_set = False # own money value only in this        
-                        else: # simply clicking the raise button
-                            pyautogui.moveTo(800, 610, duration=0.1)
-                            time.sleep(0.1)                  
-                            pyautogui.click(800, 610)
-                            pyautogui.moveTo(670, 610)
-                            time.sleep(0.1)            
-                            pyautogui.click(670, 610) # call click
-                            pyautogui.click(x=1183, y=759)
-                            with self.potheight_lock:
-                                self.to_call = 0.0
+                                self.values_set = False # own money value only in this    
+                        elif to_call >= 1.0:    
                             with self.dec_lock:
                                 self.decision = "None_yet"
                                 if self.user_decision != "None_yet":
-                                    self.user_decision = "call"  
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
                             with self.valset_lock:
-                                self.values_set = False # own money value only in this                                              
+                                self.values_set = False # own money value only in this     
+                                           
                     elif self_dec.startswith("2"):
                         if to_call < 1:
                             pyautogui.moveTo(730, 557, duration=0.1)
@@ -2600,6 +2594,20 @@ class AppDelegate(NSObject):
                                 self.decision = "None_yet"
                                 if self.user_decision != "None_yet":
                                     self.user_decision = "call"  
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
+                        elif to_call >= 2.0:    
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this    
                         else: # simply clicking the raise button
@@ -2640,6 +2648,20 @@ class AppDelegate(NSObject):
                                 self.to_call = 0.0
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
+                        elif to_call >= 4.0:    
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
                         else: # simply clicking the raise button
                             pyautogui.moveTo(800, 610, duration=0.1)
                             time.sleep(0.1)                  
@@ -2677,6 +2699,20 @@ class AppDelegate(NSObject):
                                 self.decision = "None_yet"
                                 if self.user_decision != "None_yet":
                                     self.user_decision = "call"  
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
+                        elif to_call >= 8.0:    
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
                         else: # simply clicking the raise button
@@ -2718,6 +2754,20 @@ class AppDelegate(NSObject):
                                     self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
+                        elif to_call >= 16.0:    
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
                         else: # simply clicking the raise button
                             pyautogui.moveTo(800, 610, duration=0.1)
                             time.sleep(0.1)                  
@@ -2764,6 +2814,20 @@ class AppDelegate(NSObject):
                                     self.user_decision = "call"  
                             with self.valset_lock:
                                 self.values_set = False # own money value only in this     
+                        elif to_call >= 32.0:    
+                            with self.dec_lock:
+                                self.decision = "None_yet"
+                                if self.user_decision != "None_yet":
+                                    self.user_decision = "None_yet"  
+                            pyautogui.moveTo(670, 610, duration=0.1)
+                            time.sleep(0.1)                     
+                            pyautogui.click(670, 610)
+                            pyautogui.click(x=1183, y=759)
+                            print("call was clicked")
+                            with self.potheight_lock: 
+                                self.to_call = 0.0    
+                            with self.valset_lock:
+                                self.values_set = False # own money value only in this    
                         else: # simply clicking the raise button
                             pyautogui.moveTo(800, 610, duration=0.1)
                             time.sleep(0.1)                  
@@ -2811,7 +2875,7 @@ class AppDelegate(NSObject):
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
                                     self.addChips()
-                                    self.need_replenishment = 3
+                                    self.need_replenishment = 2
                         else:
                             if self.readAllPD > -5: # 6 ppl
                                 if self.readAllPD == 4:
