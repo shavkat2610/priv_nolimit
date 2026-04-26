@@ -1068,14 +1068,14 @@ def read_own_money(im = None):
             except Exception as e:
                 print("reading own money failed")
                 print(e)
-                exit            
+                exit()      
 
         try:
             return float(data)
         except Exception as e:
             print("reading own money failed")
             print(e)
-            exit
+            exit()
 
 
 
