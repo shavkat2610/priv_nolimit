@@ -1193,7 +1193,8 @@ def general_whats_going_on_model_manual(im = None):
 
 
     if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
-        print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
+        # print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
+        print("\nshow possible ...\n")
         # im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", "show", None
 

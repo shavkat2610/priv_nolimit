@@ -381,7 +381,7 @@ class AppDelegate(NSObject):
 
 
     def updatePDbyNumber(self): # needs testing
-        print("updatePDbyNumber self.readAllPD : "+str(self.readAllPD))
+        print("\nupdatePDbyNumber self.readAllPD : "+str(self.readAllPD))
         with self.valset_lock:
             self.readAllPD -= 1
         with self.player_data_lock:
