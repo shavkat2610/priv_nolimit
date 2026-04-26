@@ -193,7 +193,7 @@ class AppDelegate(NSObject):
     lock = Lock() #
     own_money = 0.0
     own_money_before_last_preflop = 30.0
-    need_replenishment = 1
+    need_replenishment = 5
 
     d_lock = Lock() # for setting dealer position
     d_position = -1 # where is the D
@@ -2078,23 +2078,23 @@ class AppDelegate(NSObject):
 
     def roundswap_(self, current_im=None):
         print("roundswap_ ...")
-        if not self.updateOwnMoney_(current_im=current_im):
-            time.sleep(0.35)
-            if not self.updateOwnMoney_(current_im=None):
-                time.sleep(0.75)
-                print("retrying reading own money at preflop")
-                if not self.updateOwnMoney_(current_im=None):
-                    time.sleep(0.35)
-                    print("retrying reading own money at preflop")
-                    if not self.updateOwnMoney_(current_im=None):
-                        time.sleep(0.75)
-                        print("retrying reading own money at preflop")
-                        if not self.updateOwnMoney_(current_im=None):
-                            time.sleep(0.35)
-                            print("retrying reading own money at preflop")
-                            if not self.updateOwnMoney_(current_im=None):
-                                print("\nread own money failed at preflop - bad ! - !!!\n")                                  
-                                exit()
+        # if not self.updateOwnMoney_(current_im=current_im):
+        #     time.sleep(0.35)
+        #     if not self.updateOwnMoney_(current_im=None):
+        #         time.sleep(0.75)
+        #         print("retrying reading own money at preflop")
+        #         if not self.updateOwnMoney_(current_im=None):
+        #             time.sleep(0.35)
+        #             print("retrying reading own money at preflop")
+        #             if not self.updateOwnMoney_(current_im=None):
+        #                 time.sleep(0.75)
+        #                 print("retrying reading own money at preflop")
+        #                 if not self.updateOwnMoney_(current_im=None):
+        #                     time.sleep(0.35)
+        #                     print("retrying reading own money at preflop")
+        #                     if not self.updateOwnMoney_(current_im=None):
+        #                         print("\nread own money failed at preflop - bad ! - !!!\n")                                  
+        #                         exit()
 
         # model training
         with self.mod_writing_lock:
@@ -2148,8 +2148,9 @@ class AppDelegate(NSObject):
             # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
             pyautogui.moveTo(340, 560, duration=0.25)
             pyautogui.click(340, 560)
+            with self.lock:
+                self.own_money = 100.0
             return True
-        pass
 
 
     def saveScreenshot_one_two_(self, image, gamestage, confidence):
@@ -2162,9 +2163,6 @@ class AppDelegate(NSObject):
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
-        print("\n \n ____________________________________________________")
-        print(" ---------------------------------------------------- \n \n ")
-
         try:
             with self.acting_lock:
                 if self.time_to_act:
@@ -2172,6 +2170,11 @@ class AppDelegate(NSObject):
                     return
                 else:
                     self.time_to_act = True
+
+            
+
+            print("\n \n ____________________________________________________")
+            print(" ---------------------------------------------------- \n \n ")
 
             # with self.lock2:
             #     if self.busy_ticking:
@@ -2183,7 +2186,6 @@ class AppDelegate(NSObject):
             self.im = current_im
             self.mutex_screenshot.release()
             pix = current_im.getpixel((530, 500)) 
-            saving = False
             
 
             with self.lock:
@@ -2268,7 +2270,6 @@ class AppDelegate(NSObject):
                         if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
                             print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
                             current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
-                            saving = False
                             if self.probability_1_1 > 0.92:
                                 click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                         else:
@@ -2307,7 +2308,6 @@ class AppDelegate(NSObject):
                         self.cards_open = False
                     # secs = time.time()
                     # current_im.save(f"shmol_new_data/river_{str(secs).split(".")[0]}.png")   
-                    # saving = False
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
@@ -2337,7 +2337,6 @@ class AppDelegate(NSObject):
 
 
             elif game_stage == "turn":
-
                 if current_game_stage != "turn":
                     with self.own_cards_lock:
                         if self.own_card_left == "nn" or self.own_card_right == "nn":
@@ -2357,7 +2356,6 @@ class AppDelegate(NSObject):
                         self.cards_open = False
                     # secs = time.time()
                     # current_im.save(f"shmol_new_data/turn_{str(secs).split(".")[0]}.png")   
-                    # saving = False  
                     try:
                         with self.cards_lock:
                             [self.deck_card_1, self.deck_card_2, self.deck_card_3, self.deck_card_4, self.deck_card_5] = deck_cards
@@ -2405,7 +2403,7 @@ class AppDelegate(NSObject):
                             self.misred = True
                         else:
                             self.misred = False
-                    # self.roundswap_(current_im)
+                    self.roundswap_(current_im)
                     print("preflop")
                     with self.cards_lock:
                         if self.cards_open == False:
@@ -2434,7 +2432,6 @@ class AppDelegate(NSObject):
                 print("connectivity_issues") 
                 secs = time.time()
                 # current_im.save(f"shmol_new_data/connectivity_issues_{str(secs).split(".")[0]}.png")
-                saving = False
                 time.sleep(1)
                 if handle_all_in(current_im):
                     print("ALL IN HANDLED NICELY")
@@ -2858,7 +2855,7 @@ class AppDelegate(NSObject):
                     need_set = False
                     if not self.values_set: # own money value not set after it changed 
                         need_set = True
-                if need_set:
+                if need_set and own_cards!="show":
                     if not self.updateOwnMoney_(current_im=None):
                         time.sleep(0.74)
                         if not self.updateOwnMoney_(current_im=None):
@@ -2873,7 +2870,11 @@ class AppDelegate(NSObject):
                             with self.lock:
                                 self.need_replenishment -= 1
                                 if self.need_replenishment <= 0:
-                                    self.addChips()
+                                    try:
+                                        self.addChips()
+                                    except Exception as e:
+                                        print(f"Exception occurred while adding chips: {e}")
+                                        exit()
                                     self.need_replenishment = 7
                         else:
                             if self.readAllPD > -5: # 6 ppl
