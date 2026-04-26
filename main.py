@@ -2132,15 +2132,16 @@ class AppDelegate(NSObject):
     def addChips(self):
         print("addChips ...")
         pyautogui.click(795, 90)
-        time.sleep(2.4)
+        time.sleep(0.4)
         current_im = game_screenshot()
         pixels = current_im.load()
+        while not (pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200):
+            time.sleep(0.4)
+            current_im = game_screenshot()
+            pixels = current_im.load()
+            
         if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
             print("\nimma try clicking ok here 22222")
-            # time.sleep(0.75)
-            # 461 +95 =  556
-            # 556 - 160 = 396
-            # 284 + 270 = 554
             pyautogui.moveTo(554, 396, duration=0.25)
             click(554, 396, current_im, debug=False, calling_function="delegate_addChips_maxing_out")
             time.sleep(.5)
@@ -2450,7 +2451,6 @@ class AppDelegate(NSObject):
 
 
 
-            # print("pix (where red button might be): "+ str(pix))
             if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
                 
                 if is_red(pix):
@@ -2842,14 +2842,20 @@ class AppDelegate(NSObject):
                                 self.values_set = False # own money value only in this                             
                 else: # no red button to push
                     
-                    result = read_total_pot_money(current_im)
+                    if self.readAllPD > 3: # 6 ppl
+                        self.updatePDbyNumber()
+
+                    else:
+                        result = read_total_pot_money(current_im)
                 
-                    if result["result"] > 0.1:
-                        with self.potheight_lock: # regularly 
-                            self.potheight = result["result"]
-                            print("debug potheight set to: "+str(self.potheight))
-            # elif game_stage != "connectivity_issues": 
-            else:
+                        if result["result"] > 0.1:
+                            with self.potheight_lock: # regularly 
+                                self.potheight = result["result"]
+                                print("debug potheight set to: "+str(self.potheight))
+
+
+                    
+            elif game_stage == "no_decision_to_be_made":
                 time.sleep(0.375)
                 with self.valset_lock:
                     need_set = False
@@ -2865,39 +2871,35 @@ class AppDelegate(NSObject):
                                 if not self.updateOwnMoney_(current_im=None):
                                     print("\nread own money failed gss ... \n")            
                 else:
-                    if game_stage == "no_decision_to_be_made":
-                        if self.own_money < 75.0:
-                            with self.lock:
-                                self.need_replenishment -= 1
-                                if self.need_replenishment <= 0:
-                                    try:
-                                        self.addChips()
-                                    except Exception as e:
-                                        print(f"Exception occurred while adding chips: {e}")
-                                        exit()
-                                    self.need_replenishment = 7
-                        else:
-                            if self.readAllPD > -5: # 6 ppl
-                                if self.readAllPD == 4:
-                                    print("self.readAllPD == 4, unwaiting for blinds")
-                                    unwait_4blinds(current_im) 
-                                    with self.valset_lock:
-                                        self.readAllPD -= 1    
-                                else:
-                                    self.updatePDbyNumber()
-
-                            else:
-                                with self.valset_lock:
-                                    self.readAllPD -= 1
-                                if self.readAllPD < -25:
-                                    with self.valset_lock:
-                                        self.readAllPD = 1
-                                elif self.readAllPD % 7 == 0:
-                                    self.updatePDbyNumber()                         
-
+                    if self.own_money < 75.0:
+                        with self.lock:
+                            self.need_replenishment -= 1
+                            if self.need_replenishment <= 0:
+                                try:
+                                    self.addChips()
+                                except Exception as e:
+                                    print(f"Exception occurred while adding chips: {e}")
+                                    exit()
+                                self.need_replenishment = 7
                     else:
-                        if self.readAllPD > 3: # 6 ppl
-                            self.updatePDbyNumber()
+                        if self.readAllPD > -5: # 6 ppl
+                            if self.readAllPD == 4:
+                                print("self.readAllPD == 4, unwaiting for blinds")
+                                unwait_4blinds(current_im) 
+                                with self.valset_lock:
+                                    self.readAllPD -= 1    
+                            else:
+                                self.updatePDbyNumber()
+
+                        else:
+                            with self.valset_lock:
+                                self.readAllPD -= 1
+                            if self.readAllPD < -25:
+                                with self.valset_lock:
+                                    self.readAllPD = 1
+                            elif self.readAllPD % 7 == 0:
+                                self.updatePDbyNumber()                         
+
 
             with self.valset_lock:
                 self.number_of_the_universe += 1
