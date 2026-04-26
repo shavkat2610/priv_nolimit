@@ -2139,19 +2139,19 @@ class AppDelegate(NSObject):
             time.sleep(0.4)
             current_im = game_screenshot()
             pixels = current_im.load()
-            
-        if pixels[340, 460][1]> 100 and pixels[342, 460][0] > 200:
-            print("\nimma try clicking ok here 22222")
-            pyautogui.moveTo(554, 396, duration=0.25)
-            click(554, 396, current_im, debug=False, calling_function="delegate_addChips_maxing_out")
-            time.sleep(.5)
-            # secs = time.time()
-            # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
-            pyautogui.moveTo(340, 560, duration=0.25)
-            pyautogui.click(340, 560)
-            with self.lock:
-                self.own_money = 100.0
-            return True
+        print("\nimma try clicking ok here 22222")
+        pyautogui.moveTo(554, 396, duration=0.25)
+        click(554, 396, current_im, debug=False, calling_function="delegate_addChips_maxing_out")
+        time.sleep(.5)
+        # secs = time.time()
+        # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
+        pyautogui.moveTo(340, 560, duration=0.25)
+        pyautogui.click(340, 560)
+        print("before money lock")
+        with self.lock:
+            self.own_money = 100.0
+        print("after money lock")
+        return True
 
 
     def saveScreenshot_one_two_(self, image, gamestage, confidence):
