@@ -2147,10 +2147,7 @@ class AppDelegate(NSObject):
         # im.save(f"shmol_model_not_sure/all_in/connectivity_issues_{str(secs).split(".")[0]}.png")
         pyautogui.moveTo(340, 560, duration=0.25)
         pyautogui.click(340, 560)
-        print("before money lock")
-        with self.lock:
-            self.own_money = 100.0
-        print("after money lock")
+        self.own_money = 100.0
         return True
 
 
