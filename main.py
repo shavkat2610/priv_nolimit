@@ -3153,6 +3153,7 @@ def GUI():
     bye.setBezelStyle_(4)
     bye.setTarget_(app)
     bye.setAction_("stop:")
+    raiseB6.setKeyEquivalent_("q")
     bye.setEnabled_(1)
     bye.setTitle_("Goodbye!")
 
