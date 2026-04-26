@@ -1178,7 +1178,7 @@ def general_whats_going_on_model_manual(im = None):
 
     if pixels[627, 475][1] >= 80:
         print("\nRUN THREE TIMES ?! ?! ?! YES OR NO ?\n")
-        click(x=627, y=570, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
+        click(x=727, y=570, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
         im.save(f"shmol_new_data/run_three_times_or_no_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", None, None # testing this (run three times)
 
@@ -1194,7 +1194,7 @@ def general_whats_going_on_model_manual(im = None):
 
     if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
         print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
-        im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+        # im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
         return "no_decision_to_be_made", "show", None
 
 
