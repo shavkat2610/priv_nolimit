@@ -2204,6 +2204,8 @@ class AppDelegate(NSObject):
                     with self.lock:
                         self.own_money=100.0
                     time.sleep(3)
+                    get_up_stand_up()
+                    time.sleep(0.35)
                     unwait_4blinds() 
                 with self.cards_lock:
                     if self.cards_open:
@@ -2447,6 +2449,8 @@ class AppDelegate(NSObject):
                     with self.lock:
                         self.own_money=100.0
                     time.sleep(3)
+                    get_up_stand_up()
+                    time.sleep(0.35)
                     unwait_4blinds() 
                 with self.acting_lock:
                     self.time_to_act = False            
