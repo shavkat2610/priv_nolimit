@@ -958,8 +958,8 @@ def read_own_money(im = None):
                 else:
                     pixels[i,j] = (255, 255, 255, 255)
     read_3 = tess_read(im1)
-    if read_3 == 0.001:
-        im.save(f"own_money_no_read_{str(time.time())[:10]}.png")
+    # if read_3 == 0.001:
+        # im.save(f"own_money_no_read_{str(time.time())[:10]}.png")
     print("read_own_money tess_read result: "+str(read_3))
     # if read_3 == -1:
     #     global filenames
