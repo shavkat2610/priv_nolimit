@@ -423,7 +423,9 @@ class AppDelegate(NSObject):
                 break
             else:
                 if i == 4:
+                    pyautogui.click(x=1183, y=759)
                     return [0, 0, 0, 0]
+                
                 if i == 2 or i == 3:
                     time.sleep(0.25)
                     if not check_if_playerinfo(desperate=True):
@@ -2201,6 +2203,8 @@ class AppDelegate(NSObject):
                     pyautogui.click(x=1183, y=759)
                     with self.lock:
                         self.own_money=100.0
+                    time.sleep(3)
+                    unwait_4blinds() 
                 with self.cards_lock:
                     if self.cards_open:
                         self.cards_open = False
@@ -2442,6 +2446,8 @@ class AppDelegate(NSObject):
                         self.values_set = False
                     with self.lock:
                         self.own_money=100.0
+                    time.sleep(3)
+                    unwait_4blinds() 
                 with self.acting_lock:
                     self.time_to_act = False            
                     return
