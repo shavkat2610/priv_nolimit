@@ -2271,10 +2271,9 @@ class AppDelegate(NSObject):
                     if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn": # trynna show cards
                         print("see if show cards ...")
                         pixels = current_im.load()
-                        if pixels[782, 527][0] > 250 and pixels[782, 527][1] > 250 and pixels[782, 527][2] > 250 and pixels[749, 527][1] > 190:
-                            print("show possible | pixels[749, 527] : "+str(pixels[749, 527]))
-                            current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
-                            if self.probability_1_1 > 0.92:
+                        if own_cards == "show":
+                            # current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
+                            if self.probability_1_1 > 0.99:
                                 click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                         else:
                             print("show not possible | pixels[749, 527] : "+str(pixels[749, 527]))

@@ -515,8 +515,6 @@ def read_total_pot_money_manually(im = None):
         im2.save(f"tesseract_training/raw_data/over_100_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
-
-    
     im2 = crop_wh(im1, i_i+69, 16, 6, 10) # first digit
     pixels = im2.load() # create the pixel map
     for i in range(im2.size[0]): # width
@@ -532,7 +530,7 @@ def read_total_pot_money_manually(im = None):
   
     dig1 = np.array(im2)
     if not check_if_included(dig1, pot_digits):
-        im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
+        # im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
 
     result = ""
@@ -552,8 +550,8 @@ def read_total_pot_money_manually(im = None):
     
     if result == "m" or result == "":
         print("could not read total pot money first digit")
-        if result == "":
-            im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
+        # if result == "":
+        #     im2.save(f"tesseract_training/digits/no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
 
@@ -581,7 +579,7 @@ def read_total_pot_money_manually(im = None):
                     pixels[i,j] = (255, 255, 255, 255)
         dig2 = np.array(im4)
         if not check_if_included(dig2, pot_digits):
-            im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
+            # im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
             return (i_1, 0.001)
         i = 0
         for current in pot_digits:
@@ -599,7 +597,7 @@ def read_total_pot_money_manually(im = None):
     # no dot found yet
     dig1 = np.array(im3)
     if not check_if_included(dig1, pot_digits):
-        im3.save(f"tesseract_training/digits/second_digit_no_read_{str(time.time())[:12]}.png")    
+        # im3.save(f"tesseract_training/digits/second_digit_no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
     i = 0
@@ -645,7 +643,7 @@ def read_total_pot_money_manually(im = None):
         # im4.save("debug_third_digit_after_dot.png")
         dig2 = np.array(im4)
         if not check_if_included(dig2, pot_digits):
-            im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
+            # im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
             return (i_1, 0.001)
         i = 0
         for current in pot_digits:
@@ -662,7 +660,7 @@ def read_total_pot_money_manually(im = None):
 
     dig1 = np.array(im3)
     if not check_if_included(dig1, pot_digits):
-        im3.save(f"tesseract_training/digits/third_digit_no_read_{str(time.time())[:12]}.png")    
+        # im3.save(f"tesseract_training/digits/third_digit_no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
     i = 0
@@ -712,7 +710,7 @@ def read_total_pot_money_manually(im = None):
                     pixels[i,j] = (255, 255, 255, 255)
         dig2 = np.array(im4)
         if not check_if_included(dig2, pot_digits):
-            im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
+            # im4.save(f"tesseract_training/digits/after_dot_no_read_{str(time.time())[:12]}.png")    
             return (i_1, 0.001)
         i = 0
         for current in pot_digits:
@@ -728,7 +726,7 @@ def read_total_pot_money_manually(im = None):
     
     dig1 = np.array(im3)
     if not check_if_included(dig1, pot_digits):
-        im3.save(f"tesseract_training/digits/fourth_digit_no_read_{str(time.time())[:12]}.png")    
+        # im3.save(f"tesseract_training/digits/fourth_digit_no_read_{str(time.time())[:12]}.png")    
         return (i_1, 0.001)
     
     i = 0
