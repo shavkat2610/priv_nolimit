@@ -10,7 +10,6 @@ import time
 import cv2
 from joblib import dump, load
 from chatGPT_XGBRegressor import extract_flop_features
-import pickle
 
 
 

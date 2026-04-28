@@ -580,10 +580,6 @@ class AppDelegate(NSObject):
             if self.user_decision != "6raise6":
                 self.user_decision = "6raise6"
             return
-        
-    def standUp_(self, sender):
-        get_up_stand_up()
-        return
 
 
     def startCalculationsOtherThread_(self, boardCards): # only at river- or turn-time

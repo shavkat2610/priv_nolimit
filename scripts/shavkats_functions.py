@@ -371,6 +371,13 @@ def reset_client_window(debug = False):
 
 
 def find_login_button_and_click():
+    pyautogui.moveTo(1110+60, 410+random.randrange(26), duration=random.uniform(0.15, 0.25))
+    pyautogui.click()
+    time.sleep(random.uniform(0.15, 0.25))
+    return True
+
+
+
     img2 = Image.open('images/login_button_2.png')
     if compare_img_screenshot(img2,(1114, 352)):
         pyautogui.click(1177 + random.randrange(1,20), 377 + random.randrange(1,20))
@@ -415,7 +422,7 @@ def find_cashier(cshrimg="images/cashier_xmas.png"):
 def login(debug = False):
 
 
-    if find_cashier('images/cashier_insted.png'): # when it is not december
+    if find_cashier('images/cashier_insted.png'): # when it is not december or january
         return False
 
     if find_cashier(): # when it is december
@@ -427,18 +434,20 @@ def login(debug = False):
     find_login_button_and_click()
     time.sleep(.3)
     #putting in credentials
-    upper_corner = Image.open('images/login_popup_upper_corner.png')
-    if compare_img_screenshot(upper_corner,(420, 167)):
-        upper_corner_pos = (420, 167)
-    else: 
-        upper_corner_pos = [-1, -1]
-        while upper_corner_pos == [-1, -1]:
-            time.sleep(.2)
-            upper_corner_pos = imagesearch('images/login_popup_upper_corner.png', precision=0.85, debug=debug, calling_function= 'login')
-            time.sleep(.5)
+    # upper_corner = Image.open('images/gg_pass_sign_in.png')
+    # if compare_img_screenshot(upper_corner,(420, 167)):
+    #     upper_corner_pos = (420, 167)
+    # else: 
+    upper_corner_pos = [-1, -1]
+    while upper_corner_pos == [-1, -1]:
+        time.sleep(2+random.randrange(2,4))
+        upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
+        if upper_corner_pos == [-1, -1]:
+            time.sleep(2+random.randrange(2,4))
+            upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
             if upper_corner_pos == [-1, -1]:
                 find_login_button_and_click()
-    time.sleep(1)
+    time.sleep(0.5+random.randrange(0,2)) # done until here < -----------------------
     #credentials
     pyautogui.doubleClick(upper_corner_pos[0] + 236 , upper_corner_pos[1] + 120)
     mails = email.split('-at-')
@@ -521,7 +530,7 @@ def start_client_and_login():
     
     time.sleep(1)
 
-    # login()
+    login()
 
     return False
 
@@ -1267,7 +1276,7 @@ def run_it_up(big_blind = "200"):
         start_client_and_login() # always True (see comment on login)
     else:
         reset_client_window()
-        # login() 
+        login() 
     time.sleep(1)
     reset_client_window()
     if not l_info_read:
