@@ -2273,7 +2273,7 @@ class AppDelegate(NSObject):
                         pixels = current_im.load()
                         if own_cards == "show":
                             # current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
-                            if self.probability_1_1 > 0.99:
+                            if self.probability_1_1 >= 0.98:
                                 click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                         else:
                             print("show not possible | pixels[749, 527] : "+str(pixels[749, 527]))
