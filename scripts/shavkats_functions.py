@@ -1082,8 +1082,24 @@ def read_game_rules(big_blind = "200"):
     reset_client_window()
 
     while True:
-        if click_one_times_please('images/join_again.png', debug=True): # get chips at 861 / 422 ?
+        if click_one_times_please('images/join_again.png', debug=False): # get chips at 861 / 422 ?
             break
+    
+    time.sleep(1)
+
+    if login_check_agane():
+            if not l_info_read:
+                if see_if_there_is_l_info():
+                    click_selection_or_exit(big_blind)
+            if not l_info_read:
+                if see_if_there_is_l_info():
+                    click_selection_or_exit(big_blind)
+            if not l_info_read:
+                if see_if_there_is_l_info():
+                    click_one_times_please('images/join_table.png', debug=False)
+            if not l_info_read:
+                if see_if_there_is_l_info():
+                    click_one_times_please('images/join_again.png', debug=True)
     
     time.sleep(2.5)
 
