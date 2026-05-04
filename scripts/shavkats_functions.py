@@ -682,7 +682,7 @@ def click_two_times_please(image_path, precision = 0.95, debug = False):
 
 def click_one_times_please(image_path, precision=0.95,  debug = False):
     for _ in range(3):
-        button_pos = imagesearch(image_path, precision=precision, debug = False, debug_2 = debug, calling_function="click_one_times_please")
+        button_pos = imagesearch(image_path, precision=precision, debug = debug, debug_2 = debug, calling_function="click_one_times_please")
         time.sleep(.53)
         # print(f"{image_path} position: ", button_pos)
         if button_pos != [-1, -1]:
@@ -1082,49 +1082,33 @@ def read_game_rules(big_blind = "200"):
     reset_client_window()
 
     while True:
-        if click_one_times_please('images/join_again.png', debug=False):
+        if click_one_times_please('images/join_again.png', debug=True): # get chips at 861 / 422 ?
             break
-    
-    time.sleep(1)
-
-    if login_check_agane():
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_one_times_please('images/join_table.png', debug=False)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_one_times_please('images/join_again.png', debug=False)
     
     time.sleep(2.5)
 
-    im = screenshot_area(point = (0, 0), size = [1000, 740], file_name=None)
+    # im = screenshot_area(point = (0, 0), size = [1000, 740], file_name=None)
 
-    pixels = im.load()
+    # pixels = im.load()
 
-    im.save("big_screenshot.png")
+    # im.save("big_screenshot.png")
 
-    if pixels[20, 250][0] > 110 and pixels[20, 250][1] < 40 and pixels[20, 250][2] < 40: #receive chips
-        print("receiving chips ...")
-        # time.sleep(1.5)
-        click(904, 350, im = im, calling_function="read_game_rules_2_", debug=True)
-        return run_it_up(big_blind=big_blind)
-    else:
-        print("not receiving chips")
+    # if pixels[20, 250][0] > 110 and pixels[20, 250][1] < 40 and pixels[20, 250][2] < 40: #receive chips
+    #     print("receiving chips ...")
+    #     # time.sleep(1.5)
+    #     click(904, 350, im = im, calling_function="read_game_rules_2_", debug=True)
+    #     return run_it_up(big_blind=big_blind)
+    # else:
+    #     print("not receiving chips")
     
 
 
-    print("Imma click ok")
-    click_ok(debug = True)  
-    print("ok should be clicked now")
+    # print("Imma click ok")
+    # click_ok(debug = True)  
+    # print("ok should be clicked now")
 
 
-    time.sleep(1.0)
+    # time.sleep(1.0)
 
     minimize_client()
 
@@ -1132,7 +1116,8 @@ def read_game_rules(big_blind = "200"):
     time.sleep(2)
     # print("positioning the game")
     if position_the_game():
-        
+        print("game positioned")
+        exit()
         pyautogui.moveTo(25, 25)
         time.sleep(0.25)
         if not check_if_we_holdin_yet():
@@ -1147,13 +1132,13 @@ def read_game_rules(big_blind = "200"):
         else:
             print("#already big blind and holding cards")
             return True #already big blind and holding cards
-    print("closing the game")
     if close_game(): # close game brings client back up 
         time.sleep(4)
         reset_client_window()
         # maximize_client()
         time.sleep(3)
         return read_game_rules(big_blind=big_blind) 
+    
     return False
 
 def crop_wh(img, left, top, width, height):
