@@ -2265,7 +2265,6 @@ class AppDelegate(NSObject):
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
                     if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn": # trynna show cards
-                        print("see if show cards ...")
                         pixels = current_im.load()
                         if own_cards == "show":
                             # current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")

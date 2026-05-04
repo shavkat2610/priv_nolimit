@@ -440,16 +440,21 @@ def login(debug = False):
     # else: 
     upper_corner_pos = [-1, -1]
     while upper_corner_pos == [-1, -1]:
-        time.sleep(2+random.randrange(2,4))
+        time.sleep(2+random.uniform(2,4))
         upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
         if upper_corner_pos == [-1, -1]:
-            time.sleep(2+random.randrange(2,4))
+            time.sleep(2+random.uniform(2,4))
             upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
             if upper_corner_pos == [-1, -1]:
                 find_login_button_and_click()
-    time.sleep(0.5+random.randrange(0,2)) # done until here < -----------------------
+    time.sleep(0.5+random.uniform(0,2)) 
+
     #credentials
-    pyautogui.doubleClick(upper_corner_pos[0] + 236 , upper_corner_pos[1] + 120)
+
+    pyautogui.moveTo(409 + random.randrange(180) , 387 + random.randrange(30), duration=random.uniform(0.15, 0.25))
+    pyautogui.moveTo(409, 387 , duration=random.uniform(0.15, 0.25))
+    # print("clicking on email field")
+    pyautogui.doubleClick() # clicking on email field
     mails = email.split('-at-')
     pyautogui.typewrite(mails[0], interval=0.01)
     # pyautogui.hotkey('altright','q') # typing @
@@ -458,9 +463,38 @@ def login(debug = False):
     elif os.name == 'nt':  # Windows
         pyautogui.hotkey('altright','q') # typing @
     pyautogui.typewrite(mails[1], interval=0.01)
-    pyautogui.doubleClick(upper_corner_pos[0] + 236, upper_corner_pos[1] + 160)
+    # print("clicking on ready button")
+    pyautogui.moveTo(408+ random.randrange(360), 465+random.randrange(30), duration=random.uniform(0.15, 0.25))
+    pyautogui.click()
+
+
+
+    upper_corner_pos = [-1, -1]
+    while upper_corner_pos == [-1, -1]:
+        time.sleep(2+random.uniform(2,4))
+        upper_corner_pos = imagesearch('images/next.png', precision=0.95, debug=debug, calling_function= 'login')
+        if upper_corner_pos == [-1, -1]:
+            time.sleep(2+random.uniform(2,4))
+            upper_corner_pos = imagesearch('images/next.png', precision=0.95, debug=debug, calling_function= 'login')
+            if upper_corner_pos == [-1, -1]:
+                pass
+    time.sleep(0.25+random.uniform(0,1)) 
+
+    pyautogui.moveTo(409 + random.randrange(180) , 387 + random.randrange(30), duration=random.uniform(0.15, 0.25))
+    pyautogui.doubleClick() # clicking on password field
+    time.sleep(0.25+random.uniform(0,1)) 
     pyautogui.typewrite(password, interval=0.01)
+    time.sleep(0.25+random.uniform(0,1)) 
+    pyautogui.moveTo(408+ random.randrange(360), 504+random.randrange(30), duration=random.uniform(0.15, 0.25))
+    pyautogui.click()
+
+    time.sleep(5) # waiting for login to process
+
+    return False
+
     logging_in_button = Image.open('images/logging_in_button.png')
+
+
     if compare_img_screenshot(logging_in_button,(569, 455)):
         pyautogui.click(569 + random.randrange(1,100), 455 + random.randrange(1,10))
         time.sleep(.3)
@@ -521,6 +555,11 @@ def start_client_and_login():
         os.system("start C:/Users/shavk/AppData/Roaming/GGPCOM/bin/launcher.exe")
 
     time.sleep(3)  # wait for the client to start
+
+    for _ in range(3):
+        time.sleep(2)
+        if not check_if_client_running():
+            pass
 
     if not check_if_client_running():
         print("Client is not running!")
@@ -701,7 +740,7 @@ def push_holdem():
         if not l_info_read:
             see_if_there_is_l_info()
         push_holdem_pos = imagesearch('images/holdem.png', precision=.83, debug = False, debug_2 = False, calling_function="push_holdem")
-        print("push_holdem_pos: "+str(push_holdem_pos))
+        # print("push_holdem_pos: "+str(push_holdem_pos))
         if push_holdem_pos != [-1, -1]:
             pyautogui.click(push_holdem_pos[0] +3, push_holdem_pos[1] +3)
             # print("Holdem clicked. 2")
@@ -1003,7 +1042,7 @@ def maximize_client(): # dont even use that I don't think ...
 
 
 def read_game_rules(big_blind = "200"):
-    print("reading game rules, big blind: "+str(big_blind))
+    # print("reading game rules, big blind: "+str(big_blind))
     def click_selection_or_exit(big_blind="200"): # development game
         if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
             image_path = 'images/100_200.png'
@@ -1064,23 +1103,25 @@ def read_game_rules(big_blind = "200"):
     
     time.sleep(2.5)
 
-    im = screenshot_area(point = (0, 0), size = [1000, 540], file_name=None)
+    im = screenshot_area(point = (0, 0), size = [1000, 740], file_name=None)
 
     pixels = im.load()
 
-    # im.save("big_screenshot.png")
+    im.save("big_screenshot.png")
 
     if pixels[20, 250][0] > 110 and pixels[20, 250][1] < 40 and pixels[20, 250][2] < 40: #receive chips
         print("receiving chips ...")
         # time.sleep(1.5)
-        click(904, 350, im = im, calling_function="read_game_rules_2", debug=True)
+        click(904, 350, im = im, calling_function="read_game_rules_2_", debug=True)
         return run_it_up(big_blind=big_blind)
     else:
         print("not receiving chips")
     
 
-    click_ok(debug = False)  
 
+    print("Imma click ok")
+    click_ok(debug = True)  
+    print("ok should be clicked now")
 
 
     time.sleep(1.0)
@@ -1270,7 +1311,7 @@ def get_up_stand_up(im = None): # pass image screenshot here
 
 
 def run_it_up(big_blind = "200"):
-    print("run it up with bb: "+big_blind)
+    # print("run it up with bb: "+big_blind)
     if not check_if_client_running(waiting=False):
         print("starting up client and logging in...")
         start_client_and_login() # always True (see comment on login)

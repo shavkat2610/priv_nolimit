@@ -11,7 +11,7 @@ from scripts.shavkats_functions import imagesearch, reset_client_window, def_cli
 
 
 
-def screenshot_area(point = (550, 170), size = [100, 100]):
+def screenshot_area(point = (408, 395), size = [360, 30]):
     # reset_client_window(debug=False)
     im = pyautogui.screenshot(region=(point[0], point[1], size[0], size[1]))
     # secs = time.time()

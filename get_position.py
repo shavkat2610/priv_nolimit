@@ -11,10 +11,10 @@ time.sleep(2.5)
 # print(pyautogui.position())
 position = pyautogui.position()
 print(position)
-im = pyautogui.screenshot(region=(position[0], position[1], 100, 50))
+im = pyautogui.screenshot(region=(position[0], position[1], 250, 50))
 # pixels = im.load()
 # print(pixels[904, 362])
-im.save("temp_screenshot.png")
+im.save("get_position_screenshot.png")
 
 
 
