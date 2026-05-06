@@ -76,7 +76,7 @@ from PIL import Image
 
 
 # preflop table
-# wait for user-input (waiting switch)
+# wait for user-input (waiting switch) # needs testing
 # try 0.7 gamescreenshot-timer
 # no-read # handle all-in (no decision to be made, click ok or run two times)
 # save instances with text for tesseract training, especially playerinfo
@@ -89,6 +89,7 @@ from PIL import Image
 # handle all-in situations ... - in works or maybe done ?
 # all-in logic : check if it still says so, wait, repeat until its over -> see if we need to buy more chips or global cash game sit out and reread player info ... 
 # read played info - redo with finetuned model maybe
+# preflop decision making
 ########## buttons to add:
 # emoji-button
 
@@ -526,7 +527,7 @@ class AppDelegate(NSObject):
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
         start_time = NSDate.date() #todo: every 2 secs switch between 1. make screenshot 2. use existing screenshot to evaluate
-        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 2.2, self, 'gameScreenshot:', None, True)
+        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 0.7, self, 'gameScreenshot:', None, True)
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
         print("game screenshot timer started")
@@ -2188,8 +2189,7 @@ class AppDelegate(NSObject):
 
             
 
-            print("\n \n ____________________________________________________")
-            print(" ---------------------------------------------------- \n \n ")
+            print("\n _______________________ \n")
 
             # with self.lock2:
             #     if self.busy_ticking:

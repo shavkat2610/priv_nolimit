@@ -945,7 +945,7 @@ def position_the_game():
         return True
     
     time.sleep(.4)
-    for _ in range(4):
+    for _ in range(12):
         time.sleep(.4)
         game_rules_pos = imagesearch('images/poker_rules_new.png', precision=0.9, calling_function="read_game_rules", debug=False) # may need to adjust to a lower precision 
         if game_rules_pos == [759, 39]:
