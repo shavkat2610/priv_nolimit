@@ -649,10 +649,8 @@ class AppDelegate(NSObject):
 
     def mkFlopModelInput(self):
         print("mkFlopModelInput called ...")
-        with self.dec_lock:
-            decision = self.decision
-        with self.potheight_lock:     
-            to_call = self.to_call   
+        decision = self.decision
+        to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
                 decision_temp = -1.0
@@ -726,10 +724,8 @@ class AppDelegate(NSObject):
 
     def mkRiverModelInput(self):
         print("mkRiverModelInput called ...")
-        with self.dec_lock:
-            decision = self.decision
-        with self.potheight_lock:     
-            to_call = self.to_call   
+        decision = self.decision
+        to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
                 decision_temp = -1.0
@@ -790,10 +786,8 @@ class AppDelegate(NSObject):
 
     def mkTurnModelInput(self):
         print("mkTurnModelInput called ...")
-        with self.dec_lock:
-            decision = self.decision
-        with self.potheight_lock:     
-            to_call = self.to_call   
+        decision = self.decision
+        to_call = self.to_call
         if decision == "fold":
             if to_call > 0.0:
                 decision_temp = -1.0 
@@ -1051,34 +1045,26 @@ class AppDelegate(NSObject):
         
 
     def waitForUserInput(self):
-        with self.dec_lock:
-            decision = self.user_decision
         if waiting:
             pass
         else:
-            return decision
-        if decision == "None_yet":
+            return self.user_decision
+        if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return decision
-        with self.dec_lock:
-            decision = self.user_decision
-        if decision == "None_yet":
+            return self.user_decision
+        if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return decision
-        with self.dec_lock:
-            decision = self.user_decision
-        if decision == "None_yet":
+            return self.user_decision
+        if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return decision
-        with self.dec_lock:
-            decision = self.user_decision
-        if decision == "None_yet":
+            return self.user_decision
+        if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return decision
+            return self.user_decision
 
 
     def makeAIDecision_(self, outputs): # make decision based on model outputs
