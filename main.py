@@ -65,23 +65,25 @@ from PIL import Image
 # read player info 
  # # keep list of players to read next, read single ones after folding early - later proably because its not much effort and other stuff needs to happen first
 # playerinfo: average of all active holders AND the one before me
-# adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data)
-# raise32 button (32x big blind) - needs testing
+# adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data) - done
+# raise32 button (32x big blind) - done
+# show cards sometimes - done
 
 
 
 
 # todo:
 
+
+# preflop table
+# wait for user-input (waiting switch)
+# try 0.7 gamescreenshot-timer
 # no-read # handle all-in (no decision to be made, click ok or run two times)
-# some problem with handle-all-in I think
-# show cards sometimes
 # save instances with text for tesseract training, especially playerinfo
 # regain chips (when lower 20 maybe automatically)
 # check all inputs for correctness
 # clicking_images everywhere and work from there
 # run it three times, accept opponents request
-# run it three times ... # not always done yet ...
 # retrain tesseract # get more training samples - in works
 # the features we get for flop-equity-model, get most important ones, save them for later model-adjustment
 # handle all-in situations ... - in works or maybe done ?
@@ -109,6 +111,7 @@ prepare_pot_digits()
 glob_gms_confidence = 9.0
 prod = False # play soundtrack or no
 max_num_hands = 150 # todo: mave tables or restart client after this many ahnds maybe?
+waiting = True
 
 
 
@@ -1046,6 +1049,37 @@ class AppDelegate(NSObject):
             return
         
 
+    def waitForUserInput(self):
+        with self.dec_lock:
+            decision = self.user_decision
+        if waiting:
+            pass
+        else:
+            return decision
+        if decision == "None_yet":
+            time.sleep(0.5)
+        else:
+            return decision
+        with self.dec_lock:
+            decision = self.user_decision
+        if decision == "None_yet":
+            time.sleep(0.5)
+        else:
+            return decision
+        with self.dec_lock:
+            decision = self.user_decision
+        if decision == "None_yet":
+            time.sleep(0.5)
+        else:
+            return decision
+        with self.dec_lock:
+            decision = self.user_decision
+        if decision == "None_yet":
+            time.sleep(0.5)
+        else:
+            return decision
+
+
     def makeAIDecision_(self, outputs): # make decision based on model outputs
 
         # outputs from model prediction
@@ -1792,8 +1826,7 @@ class AppDelegate(NSObject):
                 exit()
             if self.deck_card_4 == "nn": # that means flop      
                 print("# that means flop    ")
-                with self.dec_lock:
-                    decision = self.user_decision
+                decision = self.waitForUserInput()
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
                     with self.dec_lock:
@@ -1816,8 +1849,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1833,8 +1865,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1850,8 +1881,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1867,8 +1897,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1884,8 +1913,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1901,8 +1929,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1918,8 +1945,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1935,8 +1961,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1952,8 +1977,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
                         with self.dec_lock:
@@ -1981,8 +2005,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
@@ -1998,8 +2021,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
@@ -2015,8 +2037,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
@@ -2032,8 +2053,7 @@ class AppDelegate(NSObject):
                 if set_1_1 == -1:
                     pass
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:
@@ -2050,8 +2070,7 @@ class AppDelegate(NSObject):
                     print("!!!!!!!!!!!!!!!!!!!!!! exit turn no-time")
                     exit()
                 else:
-                    with self.dec_lock:
-                        decision = self.user_decision
+                    decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
                         with self.dec_lock:

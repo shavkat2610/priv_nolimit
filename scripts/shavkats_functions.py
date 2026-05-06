@@ -1079,27 +1079,29 @@ def read_game_rules(big_blind = "200"):
         if click_one_times_please('images/join_table.png', debug=False):
             break
     time.sleep(1)
-    reset_client_window()
+    # reset_client_window()
+
+    # todo: max up chips here
 
     while True:
         if click_one_times_please('images/join_again.png', debug=False): # get chips at 861 / 422 ?
             break
     
-    time.sleep(1)
+    # time.sleep(1)
 
-    if login_check_agane():
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_selection_or_exit(big_blind)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_one_times_please('images/join_table.png', debug=False)
-            if not l_info_read:
-                if see_if_there_is_l_info():
-                    click_one_times_please('images/join_again.png', debug=True)
+    # if login_check_agane(): ##
+    #         if not l_info_read:
+    #             if see_if_there_is_l_info():
+    #                 click_selection_or_exit(big_blind)
+    #         if not l_info_read:
+    #             if see_if_there_is_l_info():
+    #                 click_selection_or_exit(big_blind)
+    #         if not l_info_read:
+    #             if see_if_there_is_l_info():
+    #                 click_one_times_please('images/join_table.png', debug=False)
+    #         if not l_info_read:
+    #             if see_if_there_is_l_info():
+    #                 click_one_times_please('images/join_again.png', debug=True)
     
     time.sleep(2.5)
 
@@ -1133,7 +1135,6 @@ def read_game_rules(big_blind = "200"):
     # print("positioning the game")
     if position_the_game():
         print("game positioned")
-        exit()
         pyautogui.moveTo(25, 25)
         time.sleep(0.25)
         if not check_if_we_holdin_yet():
