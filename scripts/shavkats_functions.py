@@ -444,7 +444,7 @@ def login(debug = False):
         upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
         if upper_corner_pos == [-1, -1]:
             time.sleep(2+random.uniform(2,4))
-            upper_corner_pos = imagesearch('images/gg_pass_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
+            upper_corner_pos = imagesearch('images/gg_poker_sign_in.png', precision=0.85, debug=debug, calling_function= 'login')
             if upper_corner_pos == [-1, -1]:
                 find_login_button_and_click()
     time.sleep(0.5+random.uniform(0,2)) 
@@ -1042,50 +1042,50 @@ def maximize_client(): # dont even use that I don't think ...
 
 
 def read_game_rules(big_blind = "200"):
-    # print("reading game rules, big blind: "+str(big_blind))
-    def click_selection_or_exit(big_blind="200"): # development game
-        if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
-            image_path = 'images/100_200.png'
-            if not click_two_times_please(image_path, precision=.8, debug = False):
-                print("Could not find selection once ...")
-                if not click_two_times_please(image_path, precision=.8, debug = False):
-                    print("Could not find selection, retry 25...")
-                    result = read_game_rules(big_blind)
-                    return result
-        elif big_blind == "500":
-            print("trying to click selection ... ")
-            try:
-                # image_path = 'images/200_500.png' # development game
+    # # print("reading game rules, big blind: "+str(big_blind))
+    # def click_selection_or_exit(big_blind="200"): # development game
+    #     if big_blind == "200": #todo : use tesseract to pick game from  big-blind and buy-in
+    #         image_path = 'images/100_200.png'
+    #         if not click_two_times_please(image_path, precision=.8, debug = False):
+    #             print("Could not find selection once ...")
+    #             if not click_two_times_please(image_path, precision=.8, debug = False):
+    #                 print("Could not find selection, retry 25...")
+    #                 result = read_game_rules(big_blind)
+    #                 return result
+    #     elif big_blind == "500":
+    #         print("trying to click selection ... ")
+    #         try:
+    #             # image_path = 'images/200_500.png' # development game
                 
-                image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
-                if not click_two_times_please(image_path, precision=.75, debug = True):
-                    print("Could not find selection, retry 24...")
-                    result = read_game_rules(big_blind)
-                    return result
-            except Exception as e:
-                print(e)
-                exit()
-            print("clicked selection")
-        else:
-            pass #todo
+    #             image_path = 'images/2c.png' # production game (big blind: 2c / 5c / ...)
+    #             if not click_two_times_please(image_path, precision=.75, debug = True):
+    #                 print("Could not find selection, retry 24...")
+    #                 result = read_game_rules(big_blind)
+    #                 return result
+    #         except Exception as e:
+    #             print(e)
+    #             exit()
+    #         print("clicked selection")
+    #     else:
+    #         pass #todo
     
-    click_selection_or_exit(big_blind)
+    # click_selection_or_exit(big_blind)
     reset_client_window()
-    if not l_info_read:
-        if see_if_there_is_l_info():
-            click_selection_or_exit(big_blind)
+    # if not l_info_read:
+    #     if see_if_there_is_l_info():
+    #         click_selection_or_exit(big_blind)
     
-    while True:
-        if click_one_times_please('images/join_table.png', debug=False):
-            break
-    time.sleep(1)
-    # reset_client_window()
+    # while True:
+    #     if click_one_times_please('images/join_table.png', debug=False):
+    #         break
+    # time.sleep(1)
+    # # reset_client_window()
 
-    # todo: max up chips here
+    # # todo: max up chips here
 
-    while True:
-        if click_one_times_please('images/join_again.png', debug=False): # get chips at 861 / 422 ?
-            break
+    # while True:
+    #     if click_one_times_please('images/join_again.png', debug=False): # get chips at 861 / 422 ?
+    #         break
     
     # time.sleep(1)
 
@@ -1314,22 +1314,22 @@ def get_up_stand_up(im = None): # pass image screenshot here
 
 def run_it_up(big_blind = "200"):
     # print("run it up with bb: "+big_blind)
-    if not check_if_client_running(waiting=False):
-        print("starting up client and logging in...")
-        start_client_and_login() # always True (see comment on login)
-    else:
-        reset_client_window()
-        login() 
-    time.sleep(1)
-    reset_client_window()
-    if not l_info_read:
-        see_if_there_is_l_info()
-    if push_holdem():
-        time.sleep(.2)
-        if not l_info_read:
-            see_if_there_is_l_info()
-        time.sleep(.2)
-        scroll_to_bottom()
+    # if not check_if_client_running(waiting=False):
+    #     print("starting up client and logging in...")
+    #     start_client_and_login() # always True (see comment on login)
+    # else:
+    #     reset_client_window()
+    #     login() 
+    # time.sleep(1)
+    # reset_client_window()
+    # if not l_info_read:
+    #     see_if_there_is_l_info()
+    # if push_holdem():
+    #     time.sleep(.2)
+    #     if not l_info_read:
+    #         see_if_there_is_l_info()
+    #     time.sleep(.2)
+    #     scroll_to_bottom()
     return read_game_rules(big_blind=big_blind)
 
 
