@@ -1103,7 +1103,7 @@ def read_game_rules(big_blind = "200"):
     #             if see_if_there_is_l_info():
     #                 click_one_times_please('images/join_again.png', debug=True)
     
-    time.sleep(2.5)
+    # time.sleep(1.5)
 
     # im = screenshot_area(point = (0, 0), size = [1000, 740], file_name=None)
 
