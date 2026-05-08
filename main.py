@@ -2166,12 +2166,11 @@ class AppDelegate(NSObject):
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
         try:
+            if self.time_to_act:
+                print("time_to_act active during game screenshot 24")
+                return
             with self.acting_lock:
-                if self.time_to_act:
-                    print("time_to_act active during game screenshot 24")
-                    return
-                else:
-                    self.time_to_act = True
+                self.time_to_act = True
 
             
 
