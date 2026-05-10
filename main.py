@@ -527,7 +527,7 @@ class AppDelegate(NSObject):
         # start_screenshots()
         #start a timer to make screenshots every 5 seconds
         start_time = NSDate.date() #todo: every 2 secs switch between 1. make screenshot 2. use existing screenshot to evaluate
-        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 1.75, self, 'gameScreenshot:', None, True)
+        self.timer2 = NSTimer.alloc().initWithFireDate_interval_target_selector_userInfo_repeats_(start_time, 3.75, self, 'gameScreenshot:', None, True)
         NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer2, NSDefaultRunLoopMode)
         self.timer2.fire()
         print("game screenshot timer started")
@@ -650,7 +650,7 @@ class AppDelegate(NSObject):
     def mkFlopModelInput(self):
         print("mkFlopModelInput called ...")
         decision = self.decision
-        to_call = self.to_call   
+        to_call = self.to_call 
         if decision == "fold":
             if to_call > 0.0:
                 decision_temp = -1.0
@@ -1608,71 +1608,6 @@ class AppDelegate(NSObject):
                     if to_call > 0.0:
                         self.i_call_flop += to_call                                
         return decision 
-        decision = "fold"
-        if set_1_1 > 0.89:
-            if pot_height <= 8.0:
-                decision = "raise1"
-            elif pot_height < 18.0:
-                decision = "3raise3"
-            else:
-                decision = "call"
-        elif set_1_1 > 0.73:
-            if to_call <= 5:
-                if pot_height <= 8.0:
-                    decision = "raise1"
-                elif pot_height < 18.0 :
-                    decision = "2raise2"
-                else:
-                    decision = "call"
-            else:
-                if to_call <= 15.0: #
-                    decision = "call"
-                # else:
-                #     decision = "fold"
-        elif set_1_1 > 0.7:   
-            if to_call <= 4:
-                if pot_height <= 9.0:
-                    decision = "raise1"
-                elif pot_height < 18.0 :
-                    decision = "2raise2"
-                else:
-                    decision = "call"
-            else:
-
-                if pot_height < 20.0:
-                    decision = "call"   
-                elif to_call <= 14.0: #
-                    decision = "call"                                   
-        elif set_1_1 > 0.65:
-            if to_call <= 3.5:
-                if pot_height <= 8.0:
-                    decision = "raise1"
-                elif pot_height < 24.0 :
-                    decision = "call"
-                    
-                else:
-                    decision = "fold"
-            else:
-                if to_call < 12.5:
-                    decision = "call"                 
-        elif set_1_1 > 0.61:
-            if to_call <= 6.7:
-                if pot_height < 8.5:
-                    decision = "raise1"
-                elif pot_height >= 6: #
-                    decision = "call"   
-        elif set_1_1 > 0.57:
-            if to_call <= 2.0:
-                decision = "raise1"
-            elif to_call <= 6.0:
-                decision = "call"        
-        elif set_1_1 > 0.47 and pot_height < 7 and to_call < 1.0:
-            decision = "raise1"                    
-        elif set_1_1 > 0.45 and pot_height >= 10 and to_call <= 3.5:
-            decision = "call"                 
-        elif set_1_1 > 0.37 and pot_height < 4 and to_call <= 2.1:
-            decision = "call"   # used to raise1 here and it worked until like 20 hands and they found out ... .
-        return decision   
 
 
     def makeDecisionRiver(self):
@@ -1816,18 +1751,16 @@ class AppDelegate(NSObject):
                 decision = self.waitForUserInput()
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
+                    print("model_decision at flop-time: "+str(model_dec))
                     with self.dec_lock:
                         self.decision = model_dec
+                        self.mkFlopModelInput()
+                        return
                 else:
                     with self.dec_lock:
                         self.decision = decision
-                try:
-                    self.mkFlopModelInput()
-                except Exception as e:
-                    print("error 104")
-                    print(e)
-                    exit()
-                return
+                        self.mkFlopModelInput()
+                        return
             if self.deck_card_5 == "nn": # that means river
                 print("# that means river    ")
                 with self.mk_comte_carlo_decision_lock:
@@ -1839,13 +1772,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1855,13 +1791,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1871,13 +1810,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return     
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1887,13 +1829,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1903,13 +1848,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return              
+                            self.mkRiverModelInput()
+                            return              
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1919,13 +1867,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return  
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1935,13 +1886,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return               
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1951,13 +1905,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return                          
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1967,13 +1924,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionRiver()
+                        print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkRiverModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkRiverModelInput()
-                    return
+                            self.mkRiverModelInput()
+                            return
                 time.sleep(0.35)                     
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -1995,13 +1955,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
+                        print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkTurnModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkTurnModelInput()
-                    return
+                            self.mkTurnModelInput()
+                            return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -2011,13 +1974,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
+                        print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkTurnModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkTurnModelInput()
-                    return
+                            self.mkTurnModelInput()
+                            return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -2027,13 +1993,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
+                        print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkTurnModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkTurnModelInput()
-                    return   
+                            self.mkTurnModelInput()
+                            return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -2043,13 +2012,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
+                        print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkTurnModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkTurnModelInput()
-                    return
+                            self.mkTurnModelInput()
+                            return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
                     set_1_1 = self.probability_1_1
@@ -2060,13 +2032,16 @@ class AppDelegate(NSObject):
                     decision = self.waitForUserInput()
                     if decision == "None_yet":
                         model_dec = self.makeDecisionTurn()
+                        print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
+                            self.mkTurnModelInput()
+                            return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                    self.mkTurnModelInput()
-                    return               
+                            self.mkTurnModelInput()
+                            return 
     
 
     def sliderChanged_(self, sender):
@@ -2269,13 +2244,12 @@ class AppDelegate(NSObject):
                     with self.game_stage_lock:    
                         self.game_stage_current = "no_decision_to_be_made"
                     if previous_game_stage == "flop" or previous_game_stage == "river" or previous_game_stage == "turn": # trynna show cards
-                        pixels = current_im.load()
                         if own_cards == "show":
                             # current_im.save(f"shmol_new_data/no_dec_show_{str(time.time()).split('.')[0]}.png")
                             if self.probability_1_1 >= 0.98:
                                 click(749, 622, im=None, debug=True, calling_function="mainLoopGss_no_dec_show_cards")
                         else:
-                            print("show not possible | pixels[749, 527] : "+str(pixels[749, 527]))
+                            print("show not possible")
                 else:
                     if self.can_update_PD == True:
                         self.updatePDbyNumber()
