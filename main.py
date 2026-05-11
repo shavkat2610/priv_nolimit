@@ -651,6 +651,7 @@ class AppDelegate(NSObject):
     def mkFlopModelInput_(self, dic):
         print("mkFlopModelInput called ...")
         decision = dic["decision"]
+        print("decision for mkFlopModelInput_: "+str(decision))
         to_call = self.to_call 
         if decision == "fold":
             if to_call > 0.0:
