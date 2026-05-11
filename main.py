@@ -75,6 +75,7 @@ from PIL import Image
 # todo:
 
 
+# pass decision to mk____ModelInput manually
 # preflop table
 # wait for user-input (waiting switch) # needs testing
 # try 0.7 gamescreenshot-timer
