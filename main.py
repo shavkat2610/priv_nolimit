@@ -648,9 +648,9 @@ class AppDelegate(NSObject):
             return True
 
 
-    def mkFlopModelInput(self):
+    def mkFlopModelInput_(self, dic):
         print("mkFlopModelInput called ...")
-        decision = self.decision
+        decision = dic["decision"]
         to_call = self.to_call 
         if decision == "fold":
             if to_call > 0.0:
@@ -723,9 +723,9 @@ class AppDelegate(NSObject):
                 return flop_model_inputs # different "inputs" for decision making
 
 
-    def mkRiverModelInput(self):
+    def mkRiverModelInput_(self, dic):
         print("mkRiverModelInput called ...")
-        decision = self.decision
+        decision = dic["decision"]
         to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
@@ -785,9 +785,9 @@ class AppDelegate(NSObject):
                 return river_model_inputs
 
 
-    def mkTurnModelInput(self):
+    def mkTurnModelInput_(self, dic):
         print("mkTurnModelInput called ...")
-        decision = self.decision
+        decision = dic["decision"]
         to_call = self.to_call
         if decision == "fold":
             if to_call > 0.0:
@@ -1755,12 +1755,12 @@ class AppDelegate(NSObject):
                     print("model_decision at flop-time: "+str(model_dec))
                     with self.dec_lock:
                         self.decision = model_dec
-                        self.mkFlopModelInput()
+                        self.mkFlopModelInput_({"decision": model_dec})
                         return
                 else:
                     with self.dec_lock:
                         self.decision = decision
-                        self.mkFlopModelInput()
+                        self.mkFlopModelInput_({"decision": decision})
                         return
             if self.deck_card_5 == "nn": # that means river
                 print("# that means river    ")
@@ -1776,12 +1776,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1795,12 +1795,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1814,12 +1814,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1833,12 +1833,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1852,12 +1852,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return              
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1871,12 +1871,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1890,12 +1890,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1909,12 +1909,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1928,12 +1928,12 @@ class AppDelegate(NSObject):
                         print("model_decision at river-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkRiverModelInput()
+                            self.mkRiverModelInput_({"decision": decision})
                             return
                 time.sleep(0.35)                     
                 with self.mk_comte_carlo_decision_lock:
@@ -1945,7 +1945,7 @@ class AppDelegate(NSObject):
                     with self.dec_lock:
                         if self.decision == "None_yet":
                             self.decision = self.makeDecisionRiver()  
-                        self.mkRiverModelInput()
+                        self.mkRiverModelInput_({"decision": self.decision})
                         return    
             if self.deck_card_5 != "nn": # that means turn
                 with self.mk_comte_carlo_decision_lock:
@@ -1959,12 +1959,12 @@ class AppDelegate(NSObject):
                         print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": decision})
                             return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1978,12 +1978,12 @@ class AppDelegate(NSObject):
                         print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": decision})
                             return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
@@ -1997,12 +1997,12 @@ class AppDelegate(NSObject):
                         print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": decision})
                             return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
@@ -2016,12 +2016,12 @@ class AppDelegate(NSObject):
                         print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": decision})
                             return
                 time.sleep(0.7) 
                 with self.mk_comte_carlo_decision_lock:
@@ -2036,12 +2036,12 @@ class AppDelegate(NSObject):
                         print("model_decision at turn-time: "+str(model_dec))
                         with self.dec_lock:
                             self.decision = model_dec
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": model_dec})
                             return
                     else:
                         with self.dec_lock:
                             self.decision = decision
-                            self.mkTurnModelInput()
+                            self.mkTurnModelInput_({"decision": decision})
                             return 
     
 
