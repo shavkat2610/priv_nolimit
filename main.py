@@ -648,9 +648,9 @@ class AppDelegate(NSObject):
             return True
 
 
-    def mkFlopModelInput_(self, dic):
+    def mkFlopModelInput_(self, obj):
         print("mkFlopModelInput called ...")
-        decision = dic["decision"]
+        decision = obj["decision"]
         print("decision for mkFlopModelInput_: "+str(decision))
         to_call = self.to_call 
         if decision == "fold":
@@ -724,9 +724,10 @@ class AppDelegate(NSObject):
                 return flop_model_inputs # different "inputs" for decision making
 
 
-    def mkRiverModelInput_(self, dic):
+    def mkRiverModelInput_(self, obj):
         print("mkRiverModelInput called ...")
-        decision = dic["decision"]
+        decision = obj["decision"]
+        print("decision for mkRiverModelInput_: "+str(decision))
         to_call = self.to_call   
         if decision == "fold":
             if to_call > 0.0:
@@ -786,9 +787,10 @@ class AppDelegate(NSObject):
                 return river_model_inputs
 
 
-    def mkTurnModelInput_(self, dic):
+    def mkTurnModelInput_(self, obj):
         print("mkTurnModelInput called ...")
-        decision = dic["decision"]
+        decision = obj["decision"]
+        print("decision for mkTurnModelInput_: "+str(decision))
         to_call = self.to_call
         if decision == "fold":
             if to_call > 0.0:
@@ -1047,6 +1049,7 @@ class AppDelegate(NSObject):
         
 
     def waitForUserInput(self):
+        print("waitForUserInput called ...")
         if waiting:
             pass
         else:
@@ -1750,6 +1753,7 @@ class AppDelegate(NSObject):
                 exit()
             if self.deck_card_4 == "nn": # that means flop      
                 print("# that means flop    ")
+                print("debug 8 self.user_decision: "+str(self.user_decision))
                 decision = self.waitForUserInput()
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
@@ -1759,8 +1763,10 @@ class AppDelegate(NSObject):
                         self.mkFlopModelInput_({"decision": model_dec})
                         return
                 else:
+                    return 
                     with self.dec_lock:
                         self.decision = decision
+                        print("user_decision at flop-time: "+str(decision))
                         self.mkFlopModelInput_({"decision": decision})
                         return
             if self.deck_card_5 == "nn": # that means river
@@ -2149,9 +2155,12 @@ class AppDelegate(NSObject):
             with self.acting_lock:
                 self.time_to_act = True
 
+
             
 
             print("\n _______________________ \n")
+
+            print("debug self.user_decision: "+str(self.user_decision))
 
             # with self.lock2:
             #     if self.busy_ticking:
@@ -2456,6 +2465,12 @@ class AppDelegate(NSObject):
                     except Exception as e:
                         print(f"Exception in makeDecision: {e}")
                         exit()
+                    
+                    if self.user_decision == "None":
+                        print("user decision is None, returning out of gameScreenshot_")
+                        with self.acting_lock:
+                            self.time_to_act = False            
+                            return
 
                     with self.dec_lock:
                         self_dec = self.decision
