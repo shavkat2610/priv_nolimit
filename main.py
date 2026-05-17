@@ -1053,23 +1053,23 @@ class AppDelegate(NSObject):
         if waiting:
             pass
         else:
-            return self.user_decision
+            return str(self.user_decision)
         if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return self.user_decision
+            return str(self.user_decision)
         if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return self.user_decision
+            return str(self.user_decision)
         if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return self.user_decision
+            return str(self.user_decision)
         if self.user_decision == "None_yet":
             time.sleep(0.5)
         else:
-            return self.user_decision
+            return str(self.user_decision)
 
 
     def makeAIDecision_(self, outputs): # make decision based on model outputs
@@ -1754,7 +1754,8 @@ class AppDelegate(NSObject):
             if self.deck_card_4 == "nn": # that means flop      
                 print("# that means flop    ")
                 print("debug 8 self.user_decision: "+str(self.user_decision))
-                decision = self.waitForUserInput()
+                if self.user_decision != "None_yet":
+                    decision = self.waitForUserInput()
                 if decision == "None_yet":
                     model_dec = self.makeDecisionFlop()
                     print("model_decision at flop-time: "+str(model_dec))
