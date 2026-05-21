@@ -649,10 +649,9 @@ class AppDelegate(NSObject):
             return True
 
 
-    def mkFlopModelInput_(self, obj):
+    def mkFlopModelInput(self):
         print("mkFlopModelInput called ...")
-        decision = obj["decision"]
-        print("decision for mkFlopModelInput_: "+str(decision))
+        decision = self.decision
         to_call = self.to_call 
         if decision == "fold":
             if to_call > 0.0:
@@ -725,9 +724,9 @@ class AppDelegate(NSObject):
                 return flop_model_inputs # different "inputs" for decision making
 
 
-    def mkRiverModelInput_(self, obj):
+    def mkRiverModelInput(self):
         print("mkRiverModelInput called ...")
-        decision = obj["decision"]
+        decision = self.decision
         print("decision for mkRiverModelInput_: "+str(decision))
         to_call = self.to_call   
         if decision == "fold":
@@ -788,10 +787,9 @@ class AppDelegate(NSObject):
                 return river_model_inputs
 
 
-    def mkTurnModelInput_(self, obj):
+    def mkTurnModelInput(self):
         print("mkTurnModelInput called ...")
-        decision = obj["decision"]
-        print("decision for mkTurnModelInput_: "+str(decision))
+        decision = self.decision
         to_call = self.to_call
         if decision == "fold":
             if to_call > 0.0:
