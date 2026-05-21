@@ -2388,19 +2388,20 @@ class AppDelegate(NSObject):
         if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
             
             if is_red(pix):
-                if waiting:
-                    if self.user_decision == "None_yet":
-                        if self.waiting == False:
-                            print("waiting ...")
-                            with self.valset_lock:
-                                self.waiting = True
-                            with self.acting_lock:
-                                self.time_to_act = False            
-                                return
-                        else:
-                            print("was waiting, but now not anymore ...")
-                            with self.valset_lock:
-                                self.waiting = False
+                if game_stage != "preflop":
+                    if waiting:
+                        if self.user_decision == "None_yet":
+                            if self.waiting == False:
+                                print("waiting ...")
+                                with self.valset_lock:
+                                    self.waiting = True
+                                with self.acting_lock:
+                                    self.time_to_act = False            
+                                    return
+                            else:
+                                print("was waiting, but now not anymore ...")
+                                with self.valset_lock:
+                                    self.waiting = False
                     
 
                 # pyautogui.moveTo(25, 45)
