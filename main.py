@@ -17,10 +17,9 @@ from threading import Thread, Lock
 import threading
 from Foundation import NSObject, NSTimer, NSRunLoop, NSDate, NSThread
 from playsound3 import playsound
-import pytesseract
-from fish_for_cards import crop_wh, fish_for_own_cards, fish_for_deck_cards, prepare_fishing_own_cards, prepare_fishing_deck_cards, own_suits_right, own_suits_left, own_values_left, own_values_right, own_suit_left, own_value_left, own_suits_right, own_value_right, own_card_right_filenames, own_card_left_filenames
+from fish_for_cards import prepare_fishing_own_cards, prepare_fishing_deck_cards
 from small_shwatsgoingon import check_if_we_holdin_yet, general_whats_going_on_model_manual, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
-                                                                    read_old_pot_money, read_own_money, load_smol_watsgoingon_model, handle_all_in,\
+                                                                    read_old_pot_money, read_own_money, handle_all_in,\
                                                                           load_flop_equity_model, flop_equity_model_predict, extract_flop_features, load_turn_model, \
                                                                           turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple, \
                                                                                 prepare_pot_digits
@@ -28,7 +27,8 @@ from monte_carlo_0 import exact_win_probability
 from treys import Card
 from treys import Evaluator
 from PIL import Image
-
+import os
+import datetime
 
 
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' # 3 initally
@@ -107,10 +107,12 @@ prepare_pot_digits()
 
 
 
+
 glob_gms_confidence = 9.0
 prod = False # play soundtrack or no
 max_num_hands = 150 # todo: mave tables or restart client after this many ahnds maybe?
 waiting = True
+saving = True
 
 
 
@@ -136,13 +138,23 @@ def count_before_me(dealer_pos, holders_pos):
     return result
 
 
+def make_directory_for_saving():
+    datetime_now = datetime.now()
+    datetime_now = str(datetime_now).split(".")[0].replace(" ", "_").replace(":", "").replace("-", "")
+    os.mkdir("datasets/data/" + datetime_now)
+    os.mkdir("datasets/data/" + datetime_now + "/0_preflop")
+    os.mkdir("datasets/data/" + datetime_now + "/1_flop")
+    os.mkdir("datasets/data/" + datetime_now + "/2_river")
+    os.mkdir("datasets/data/" + datetime_now + "/3_turn")
+    return datetime_now
+
 
 class AppDelegate(NSObject):
     
     evaluator = Evaluator()
     
     confidence_lock = Lock()
-    confidence = 3.0
+    confidence = 1.0
     big_blind = "200"
 
     # modelling
@@ -251,7 +263,7 @@ class AppDelegate(NSObject):
 
 
     def setValuesOurTurn_(self, current_im):
-        print("setValuesOurTurn_ ...")
+        # print("setValuesOurTurn_ ...")
         with self.our_turn_lock:
             h_pos_current = check_holders(current_im)
             if self.holders_pos != h_pos_current:
@@ -274,16 +286,16 @@ class AppDelegate(NSObject):
                         for i_1 in range(len(playerdata[i])):
                             pdata_summed[i_1]+=playerdata[i][i_1]
                 if count > 0:
-                    print()
-                    print("pdata summed: "+str(pdata_summed))
+                    # print()
+                    # print("pdata summed: "+str(pdata_summed))
                     i_1 = 0
                     pdata_average = [0, 0, 0, 0]
                     for pd in pdata_summed:
                         pdav = pd/count
                         pdata_average[i_1] = pdav
                         i_1 += 1
-                    print("pdata average: "+str(pdata_average))
-                    print()
+                    # print("pdata average: "+str(pdata_average))
+                    # print()
                     if not np.array_equal(self.pdata_average, pdata_average):
                         self.pdata_average = pdata_average
 
@@ -2083,13 +2095,6 @@ class AppDelegate(NSObject):
         return True
 
 
-    def saveScreenshot_one_two_(self, image, gamestage, confidence):
-        print("saveScreenshot_one_two_ ...")
-        if confidence > glob_gms_confidence:
-            image.save(f"shmol_new_data/{gamestage}_{str(time.time()).split('.')[0]}.png")
-        else:
-            image.save(f"shmol_model_not_sure/{gamestage}_{str(time.time()).split('.')[0]}.png")
-
 
     def gameScreenshot_(self, userInfo): # time to cat logic in here
 
@@ -2415,7 +2420,6 @@ class AppDelegate(NSObject):
                 with self.potheight_lock:
                     self.to_call = how_much(im=current_im)
                     to_call = self.to_call
-                    print(f"to_call is : {str(to_call)}")
                 self.setValuesOurTurn_(current_im=current_im)
                 # print("debug I was here 20")
                 try:

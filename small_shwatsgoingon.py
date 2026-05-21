@@ -497,7 +497,7 @@ def check_if_included(new_img_array, existing_arrays, debug = False):
     return False            
 
 def read_total_pot_money_manually(im = None):
-    print("read_total_pot_money_manually ... ")
+    # print("read_total_pot_money_manually ... ")
     if im == None:
         im = game_screenshot()
     im1 = crop_wh(im, 280, 154, 290, 40) # pytesseract, read all 5 values, transfor into 0-1 range and return array of 5
@@ -819,7 +819,7 @@ def read_total_pot_money_manually(im = None):
 
 
 def read_total_pot_money(im = None): # read with tesseract , save sample if low confidence score
-    print("read_total_pot_money ... ")
+    # print("read_total_pot_money ... ")
     if im == None:
         im = game_screenshot()
     (i_i, result) = read_total_pot_money_manually(im=im)
@@ -841,7 +841,7 @@ def read_total_pot_money(im = None): # read with tesseract , save sample if low 
                     pixels[i,j] = (255, 255, 255, 255)
     im2 = crop_wh(im1, i_i+67, 12, 70, 18) 
     read_3 = tess_read(im2)   
-    print("\n\ncomparing manual vs tesseract 0: "+str(result)+" vs "+str(read_3)+"\n \n")
+    print("comparing manual vs tesseract 0: "+str(result)+" vs "+str(read_3))
     # compare the two results
     if abs(result - read_3) < 0.2:
         # print("both methods agree enough, returning tesseract result")
