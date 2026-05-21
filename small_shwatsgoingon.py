@@ -1079,54 +1079,51 @@ def read_own_money(im = None):
 
         
 
-smol_watsgoingon_model = None
-import keras
+# smol_watsgoingon_model = None
+# import keras
 
 
-def load_smol_watsgoingon_model():
-    global smol_watsgoingon_model
-    if smol_watsgoingon_model == None:
-        smol_watsgoingon_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
-        return True
-    else:
-        print("model already loaded")
-        return False
+# def load_smol_watsgoingon_model():
+#     global smol_watsgoingon_model
+#     if smol_watsgoingon_model == None:
+#         smol_watsgoingon_model = keras.saving.load_model("model.keras", custom_objects=None, compile=True, safe_mode=True)
+#         return True
+#     else:
+#         print("model already loaded")
+#         return False
     
 
-
-
-
-def general_whats_going_on_model(im = None, debug = False):
-    if im == None:
-        im = game_screenshot()
-    nim = im.convert("RGB")
-    nim = np.array(nim)
-    nim = cv2.resize(nim, dsize=(375, 375), interpolation=cv2.INTER_NEAREST)
-    # print(im.shape)
-    # print(str(im))
-    # exit
-    model_output = smol_watsgoingon_model.predict(np.array([nim]))[0]
-    # print("model_output.argmax(): "+str(model_output.argmax()))
-    arg_max = model_output.argmax()
-    prob = model_output[arg_max]
-    class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"]
-    result = class_names[arg_max]
-    model_output[arg_max] = 0
-    sec_max = model_output.argmax()
-    sec_prob = model_output[sec_max]
-    # saving = False
-    second = class_names[sec_max]
-    if (prob/(sec_prob+0.01))<=8.3:
-        if debug:
-            global filenames
-            filenames.append(im.filename)
-        # print(str(model_output))
-        # saving = True
-        # print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01))[:4].replace(".","_"))
-        # secs = time.time()
-        # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
-        # im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
-    return result, prob, second, sec_prob
+# def general_whats_going_on_model(im = None, debug = False):
+#     if im == None:
+#         im = game_screenshot()
+#     nim = im.convert("RGB")
+#     nim = np.array(nim)
+#     nim = cv2.resize(nim, dsize=(375, 375), interpolation=cv2.INTER_NEAREST)
+#     # print(im.shape)
+#     # print(str(im))
+#     # exit
+#     model_output = smol_watsgoingon_model.predict(np.array([nim]))[0]
+#     # print("model_output.argmax(): "+str(model_output.argmax()))
+#     arg_max = model_output.argmax()
+#     prob = model_output[arg_max]
+#     class_names = ["preflop", "flop", "river", "turn", "no_decision_to_be_made", "connectivity_issues"]
+#     result = class_names[arg_max]
+#     model_output[arg_max] = 0
+#     sec_max = model_output.argmax()
+#     sec_prob = model_output[sec_max]
+#     # saving = False
+#     second = class_names[sec_max]
+#     if (prob/(sec_prob+0.01))<=8.3:
+#         if debug:
+#             global filenames
+#             filenames.append(im.filename)
+#         # print(str(model_output))
+#         # saving = True
+#         # print(f"saving example (general_whats_going_on_model : {result}) confidence-score: "+str(prob/(sec_prob+0.01))[:4].replace(".","_"))
+#         # secs = time.time()
+#         # im.save(f"shmol_model_not_sure/if_{result[:7]}_or_{second[:7]}_{str(im.filename[:-4].split('\\')[-1])}.png") # for testing, when we look through the data-set to check outliers
+#         # im.save(f"shmol_model_not_sure/if_{result[:6]}_or_{second[:6]}_{str(prob/(sec_prob+0.01))}.png")
+#     return result, prob, second, sec_prob
 
 
 
@@ -1174,7 +1171,7 @@ def general_whats_going_on_model_manual(im = None):
 
     if pixels[627, 475][1] >= 80:
         print("\nRUN THREE TIMES ?! ?! ?! YES OR NO ?\n")
-        click(x=727, y=570, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
+        click(x=627, y=575, im = im, debug = True, calling_function = "general_run_two_times_or_no_")
         return "no_decision_to_be_made", None, None # testing this (run three times)
 
 

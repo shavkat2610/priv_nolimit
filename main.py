@@ -20,7 +20,7 @@ from playsound3 import playsound
 import pytesseract
 from fish_for_cards import crop_wh, fish_for_own_cards, fish_for_deck_cards, prepare_fishing_own_cards, prepare_fishing_deck_cards, own_suits_right, own_suits_left, own_values_left, own_values_right, own_suit_left, own_value_left, own_suits_right, own_value_right, own_card_right_filenames, own_card_left_filenames
 from small_shwatsgoingon import check_if_we_holdin_yet, general_whats_going_on_model_manual, how_much , check_holders, read_own_cards, read_own_money_valid, read_player_info, read_total_pot_money, read_deck_cards, \
-                                                                    read_old_pot_money, read_own_money, load_smol_watsgoingon_model, general_whats_going_on_model, handle_all_in,\
+                                                                    read_old_pot_money, read_own_money, load_smol_watsgoingon_model, handle_all_in,\
                                                                           load_flop_equity_model, flop_equity_model_predict, extract_flop_features, load_turn_model, \
                                                                           turn_model_predict_multiple, load_river_model, river_model_predict_multiple, load_flop_model, flop_model_predict_multiple, \
                                                                                 prepare_pot_digits
@@ -68,6 +68,7 @@ from PIL import Image
 # adjust tesseract ocr : retrain model (with how_much-, total_pot- & to_call-data) - done
 # raise32 button (32x big blind) - done
 # show cards sometimes - done
+# wait for user-input (waiting switch) - done
 
 
 
@@ -75,10 +76,7 @@ from PIL import Image
 # todo:
 
 
-# pass decision to mk____ModelInput manually
 # preflop table
-# wait for user-input (waiting switch) # needs testing
-# try 0.7 gamescreenshot-timer
 # no-read # handle all-in (no decision to be made, click ok or run two times)
 # save instances with text for tesseract training, especially playerinfo
 # regain chips (when lower 20 maybe automatically)
@@ -101,7 +99,6 @@ from PIL import Image
 
 prepare_fishing_own_cards()
 prepare_fishing_deck_cards()
-load_smol_watsgoingon_model()
 load_flop_equity_model()
 load_flop_model()
 load_river_model()
@@ -137,6 +134,7 @@ def count_before_me(dealer_pos, holders_pos):
         if holders_pos[i]==True:
             result +=1
     return result
+
 
 
 class AppDelegate(NSObject):
