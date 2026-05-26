@@ -137,6 +137,62 @@ def count_before_me(dealer_pos, holders_pos):
             result +=1
     return result
 
+def make_own_cards_encoding(own_card_0, own_card_1):
+    cards = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    if own_card_0[0].startsWith("2"):
+        cards[0] += 0.5
+    if own_card_1[1].startsWith("2"):
+        cards[0] += 0.5
+    if own_card_0[0].startsWith("3"):
+        cards[1] += 0.5
+    if own_card_1[1].startsWith("3"):
+        cards[1] += 0.5
+    if own_card_0[0].startsWith("4"):
+        cards[2] += 0.5
+    if own_card_1[1].startsWith("4"):
+        cards[2] += 0.5
+    if own_card_0[0].startsWith("5"):
+        cards[3] += 0.5
+    if own_card_1[1].startsWith("5"):
+        cards[3] += 0.5
+    if own_card_0[0].startsWith("6"):
+        cards[4] += 0.5
+    if own_card_1[1].startsWith("6"):
+        cards[4] += 0.5
+    if own_card_0[0].startsWith("7"):
+        cards[5] += 0.5
+    if own_card_1[1].startsWith("7"):
+        cards[5] += 0.5
+    if own_card_0[0].startsWith("8"):
+        cards[6] += 0.5
+    if own_card_1[1].startsWith("8"):
+        cards[6] += 0.5
+    if own_card_0[0].startsWith("9"):
+        cards[7] += 0.5
+    if own_card_1[1].startsWith("9"):
+        cards[7] += 0.5
+    if own_card_0[0].startsWith("T"):
+        cards[8] += 0.5
+    if own_card_1[1].startsWith("T"):
+        cards[8] += 0.5
+    if own_card_0[0].startsWith("J"):
+        cards[9] += 0.5
+    if own_card_1[1].startsWith("J"):
+        cards[9] += 0.5
+    if own_card_0[0].startsWith("Q"):
+        cards[10] += 0.5
+    if own_card_1[1].startsWith("Q"):
+        cards[10] += 0.5
+    if own_card_0[0].startsWith("K"):
+        cards[11] += 0.5
+    if own_card_1[1].startsWith("K"):
+        cards[11] += 0.5
+    if own_card_0[0].startsWith("A"):
+        cards[12] += 0.5
+    if own_card_1[1].startsWith("A"):
+        cards[12] += 0.5
+    return cards
+
 
 def make_directory_for_saving():
     datetime_now = datetime.now()
@@ -180,6 +236,8 @@ class AppDelegate(NSObject):
     experts_say_fold = .0 # first model
     
     mod_writing_lock = Lock()
+    preflop_model_inputs = []
+    made_preflop_model_input = False
     flop_model_inputs = []
     made_flop_model_input = False
     river_model_inputs = []
@@ -676,6 +734,46 @@ class AppDelegate(NSObject):
             return True
 
 
+    def mkPreflopModelInput(self):
+        print("mkPreflopModelInput called ...")
+        decision = self.decision
+        to_call = self.to_call 
+        if decision == "fold":
+            if to_call > 0.0:
+                decision_temp = -1.0
+            else:
+                decision_temp = 0.0 # checking when there is nothing to call                                
+        elif decision == "call":
+            decision_temp = to_call/8.0                           
+        elif decision == "raise1":
+            decision_temp = max(to_call/4.0, 1.0/8.0)
+        elif decision == "2raise2":
+            decision_temp = max(to_call/4.0, 2.0/8.0)
+        elif decision == "3raise3":
+            decision_temp = max(to_call/4.0, 4.0/8.0)
+        elif decision == "4raise4":
+            decision_temp = max(to_call/4.0, 1.0) 
+        elif decision == "5raise5":
+            decision_temp = 2.0   
+        elif decision == "6raise6":
+            decision_temp = 4.0   
+        cards = make_own_cards_encoding(self.own_card_left, self.own_card_right)
+        with self.mod_writing_lock:
+            if not self.made_preflop_model_input:
+                self.made_preflop_model_input = True
+            with self.potheight_lock:    
+                with self.our_turn_lock:   
+                    preflop_model_input = [self.pdata_average[0], self.pdata_average[1], self.pdata_average[2], self.pdata_average[3], 
+                                        self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
+                                        self.i_call_preflop, self.i_bet_preflop,
+                                        self.potheight, self.to_call, decision_temp,
+                                        self.num_active_players, self.num_active_players_before_me,
+                                        cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7], cards[8], cards[9], 
+                                        cards[10], cards[11], cards[12], 1 if self.own_cards_left[1]==self.own_cards_left[1] else 0]
+                    self.preflop_model_inputs.append(preflop_model_input)
+                    return
+
+
     def mkFlopModelInput(self):
         print("mkFlopModelInput called ...")
         decision = self.decision
@@ -973,6 +1071,14 @@ class AppDelegate(NSObject):
                             writer.writerow([str(flop_model_input[0]), str(flop_model_input[1]), str(flop_model_input[2]), str(flop_model_input[3]), str(flop_model_input[4]), str(flop_model_input[5]), str(flop_model_input[6]), str(flop_model_input[7]), str(flop_model_input[8]), str(flop_model_input[9]), str(flop_model_input[10]), str(flop_model_input[11]), str(flop_model_input[12]), str(flop_model_input[13]), str(flop_model_input[14]), str(flop_model_input[15]), str(flop_model_input[16]), str(flop_model_input[17]), str(flop_model_input[18]), str(flop_model_input[19]), str(flop_model_input[20]), str(flop_model_input[21]), str(flop_model_input[22]), str(flop_model_input[23]), str(flop_model_input[24]), str(flop_model_input[25]), str(flop_model_input[26]), str(flop_model_input[27]), str(flop_model_input[28]), str(flop_model_input[29]), str(flop_model_input[30]), str(flop_model_input[31]), str(flop_model_input[32]), str(flop_model_input[33]), str(flop_model_input[34]), str(flop_model_input[35]), str(flop_model_input[36]), str(flop_model_input[37]), str(flop_model_input[38]), str(flop_model_input[39]), str(flop_model_input[40]), str(flop_model_input[41]), str(flop_model_input[42]), str(flop_model_input[43]), str(flop_model_input[44]), str(flop_model_input[45]), str(flop_model_input[46]), str(flop_model_input[47]), str(flop_model_input[48]), str(flop_model_input[49]), str(flop_model_input[50]), self.model_output])                 
                 else:
                     print("no flop model input made, not writing to flop csv ...")
+                if self.made_preflop_model_input:
+                    for preflop_model_input in self.preflop_model_inputs:
+                        with open('csv_s/preflopModel.csv','a', newline='') as fd:
+                            writer = csv.writer(fd, delimiter=";")
+                            print("\nliterally writing to preflop csv RIGHT NOW !!!!!!!!!!!!\n")
+                            writer.writerow([str(preflop_model_input[0]), str(preflop_model_input[1]), str(preflop_model_input[2]), str(preflop_model_input[3]), str(preflop_model_input[4]), str(preflop_model_input[5]), str(preflop_model_input[6]), str(preflop_model_input[7]), str(preflop_model_input[8]), str(preflop_model_input[9]), str(preflop_model_input[10]), str(preflop_model_input[11]), str(preflop_model_input[12]), str(preflop_model_input[13]), str(preflop_model_input[14]), str(preflop_model_input[15]), str(preflop_model_input[16]), str(preflop_model_input[17]), str(preflop_model_input[18]), str(preflop_model_input[19]), str(preflop_model_input[20]), str(preflop_model_input[21]), str(preflop_model_input[22]), str(preflop_model_input[23]), str(preflop_model_input[24]), str(preflop_model_input[25]), str(preflop_model_input[26]), str(preflop_model_input[27]), str(preflop_model_input[28]), str(preflop_model_input[29]), str(preflop_model_input[30]), str(preflop_model_input[31]), str(preflop_model_input[32]), str(preflop_model_input[33]), str(preflop_model_input[34]), self.model_output])                 
+                else:
+                    print("no preflop model input made, not writing to preflop csv ...")
             return
 
 
@@ -987,7 +1093,10 @@ class AppDelegate(NSObject):
                 self.river_model_inputs = []
             if self.made_flop_model_input:
                 self.made_flop_model_input = False 
-                self.flop_model_inputs = []                
+                self.flop_model_inputs = [] 
+            if self.made_preflop_model_input:
+                self.made_preflop_model_input = False 
+                self.preflop_model_inputs = []    
             # self.made_model_output = False   
             # self.wrote_to_csv_s = False
             return
@@ -1042,11 +1151,14 @@ class AppDelegate(NSObject):
                 self.made_turn_model_input = False 
                 self.turn_model_inputs = []
             if self.made_river_model_input:
-                self.made_turn_model_input = False 
+                self.made_river_model_input = False 
                 self.river_model_inputs = []
             if self.made_flop_model_input:
                 self.made_flop_model_input = False 
-                self.flop_model_inputs = []                
+                self.flop_model_inputs = []     
+            if self.made_preflop_model_input:
+                self.made_preflop_model_input = False 
+                self.preflop_model_inputs = []              
             if self.made_model_output:
                 self.made_model_output = False   
             if self.wrote_to_csv_s:
@@ -1742,11 +1854,21 @@ class AppDelegate(NSObject):
         if self.deck_card_1 == "nn":  # that means its preflop
             print("makeDecision: preflop detected")
             with self.dec_lock:
-                # if self.user_decision == "None_yet":
-                #     self.decision = self.makeDecisionPreflop()
-                # else:
-                #     self.decision = self.user_decision
-                self.decision = self.makeDecisionPreflop() # force bot decision in preflop
+                with self.dec_lock:
+                    decision = self.user_decision
+                if decision == "None_yet":
+                    model_dec = self.makeDecisionPreflop()
+                    with self.dec_lock:
+                        self.decision = model_dec
+                else:
+                    with self.dec_lock:
+                        self.decision = decision
+                try:
+                    self.mkPreflopModelInput() 
+                except Exception as e:
+                    print("error 104")
+                    print(e)
+                    exit()
                 return
         else:
             print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
@@ -2408,20 +2530,19 @@ class AppDelegate(NSObject):
         if game_stage != "no_decision_to_be_made" and  game_stage != "connectivity_issues" : 
             
             if is_red(pix):
-                if game_stage != "preflop":
-                    if waiting:
-                        if self.user_decision == "None_yet":
-                            if self.waiting == False:
-                                print("waiting ...")
-                                with self.valset_lock:
-                                    self.waiting = True
-                                with self.acting_lock:
-                                    self.time_to_act = False            
-                                    return
-                            else:
-                                print("was waiting, but now not anymore ...")
-                                with self.valset_lock:
-                                    self.waiting = False
+                if waiting:
+                    if self.user_decision == "None_yet":
+                        if self.waiting == False:
+                            print("waiting ...")
+                            with self.valset_lock:
+                                self.waiting = True
+                            with self.acting_lock:
+                                self.time_to_act = False            
+                                return
+                        else:
+                            print("was waiting, but now not anymore ...")
+                            with self.valset_lock:
+                                self.waiting = False
                     
 
                 # pyautogui.moveTo(25, 45)
