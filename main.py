@@ -767,7 +767,7 @@ class AppDelegate(NSObject):
                                         self.pdata_before_me[0], self.pdata_before_me[1], self.pdata_before_me[2], self.pdata_before_me[3], 
                                         self.i_call_preflop, self.i_bet_preflop,
                                         self.potheight, self.to_call, decision_temp,
-                                        self.num_active_players, self.num_active_players_before_me,
+                                        self.num_active_players, self.num_active_players_before_me, # 15 + 13 + 1
                                         cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7], cards[8], cards[9], 
                                         cards[10], cards[11], cards[12], 1 if self.own_cards_left[1]==self.own_cards_left[1] else 0]
                     self.preflop_model_inputs.append(preflop_model_input)
@@ -1076,7 +1076,7 @@ class AppDelegate(NSObject):
                         with open('csv_s/preflopModel.csv','a', newline='') as fd:
                             writer = csv.writer(fd, delimiter=";")
                             print("\nliterally writing to preflop csv RIGHT NOW !!!!!!!!!!!!\n")
-                            writer.writerow([str(preflop_model_input[0]), str(preflop_model_input[1]), str(preflop_model_input[2]), str(preflop_model_input[3]), str(preflop_model_input[4]), str(preflop_model_input[5]), str(preflop_model_input[6]), str(preflop_model_input[7]), str(preflop_model_input[8]), str(preflop_model_input[9]), str(preflop_model_input[10]), str(preflop_model_input[11]), str(preflop_model_input[12]), str(preflop_model_input[13]), str(preflop_model_input[14]), str(preflop_model_input[15]), str(preflop_model_input[16]), str(preflop_model_input[17]), str(preflop_model_input[18]), str(preflop_model_input[19]), str(preflop_model_input[20]), str(preflop_model_input[21]), str(preflop_model_input[22]), str(preflop_model_input[23]), str(preflop_model_input[24]), str(preflop_model_input[25]), str(preflop_model_input[26]), str(preflop_model_input[27]), str(preflop_model_input[28]), str(preflop_model_input[29]), str(preflop_model_input[30]), str(preflop_model_input[31]), str(preflop_model_input[32]), str(preflop_model_input[33]), str(preflop_model_input[34]), self.model_output])                 
+                            writer.writerow([str(preflop_model_input[0]), str(preflop_model_input[1]), str(preflop_model_input[2]), str(preflop_model_input[3]), str(preflop_model_input[4]), str(preflop_model_input[5]), str(preflop_model_input[6]), str(preflop_model_input[7]), str(preflop_model_input[8]), str(preflop_model_input[9]), str(preflop_model_input[10]), str(preflop_model_input[11]), str(preflop_model_input[12]), str(preflop_model_input[13]), str(preflop_model_input[14]), str(preflop_model_input[15]), str(preflop_model_input[16]), str(preflop_model_input[17]), str(preflop_model_input[18]), str(preflop_model_input[19]), str(preflop_model_input[20]), str(preflop_model_input[21]), str(preflop_model_input[22]), str(preflop_model_input[23]), str(preflop_model_input[24]), str(preflop_model_input[25]), str(preflop_model_input[26]), str(preflop_model_input[27]), str(preflop_model_input[28]), self.model_output])                 
                 else:
                     print("no preflop model input made, not writing to preflop csv ...")
             return
