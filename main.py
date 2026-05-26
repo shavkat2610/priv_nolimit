@@ -1853,7 +1853,7 @@ class AppDelegate(NSObject):
         set_1_1 = -1
         if self.deck_card_1 == "nn":  # that means its preflop
             print("makeDecision: preflop detected")
-            with self.dec_lock:
+            try:
                 with self.dec_lock:
                     decision = self.user_decision
                 if decision == "None_yet":
@@ -1863,13 +1863,17 @@ class AppDelegate(NSObject):
                 else:
                     with self.dec_lock:
                         self.decision = decision
-                try:
-                    self.mkPreflopModelInput() 
-                except Exception as e:
-                    print("error 104")
-                    print(e)
-                    exit()
-                return
+            except Exception as e:
+                print("error 103")
+                print(e)
+                exit()
+            try:
+                self.mkPreflopModelInput() 
+            except Exception as e:
+                print("error 104")
+                print(e)
+                exit()
+            return
         else:
             print("debug - deck cards read in makeDecision: "+self.deck_card_1+" "+self.deck_card_2+" "+self.deck_card_3+" "+self.deck_card_4+" "+self.deck_card_5)
             if self.deck_card_2 == "nn" or self.deck_card_3 == "nn":
