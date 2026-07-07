@@ -334,6 +334,7 @@ class AppDelegate(NSObject):
     can_update_PD = False
     readAllPD = 9
     waiting = False
+    datetime_now = ""
 
 
 
@@ -769,7 +770,7 @@ class AppDelegate(NSObject):
                                         self.potheight, self.to_call, decision_temp,
                                         self.num_active_players, self.num_active_players_before_me, # 15 + 13 + 1
                                         cards[0], cards[1], cards[2], cards[3], cards[4], cards[5], cards[6], cards[7], cards[8], cards[9], 
-                                        cards[10], cards[11], cards[12], 1 if self.own_cards_left[1]==self.own_cards_left[1] else 0]
+                                        cards[10], cards[11], cards[12], 1 if self.own_card_left[1]==self.own_card_right[1] else 0]
                     self.preflop_model_inputs.append(preflop_model_input)
                     return
 
@@ -2189,9 +2190,9 @@ class AppDelegate(NSObject):
         if not made_output_temp:
             self.mkModelOutput()
         # print("model output made")
-
         self.writeToCSVs()
         self.resetValues()
+        
 
 
     def hideButtons(self):
@@ -2481,6 +2482,8 @@ class AppDelegate(NSObject):
                     else:
                         self.misred = False
                 self.roundswap_(current_im)
+                # if saving:
+                #     self.datetime_now = make_directory_for_saving()
                 print("preflop")
                 with self.cards_lock:
                     if self.cards_open == False:
@@ -2951,7 +2954,6 @@ class AppDelegate(NSObject):
                     if result["result"] > 0.1:
                         with self.potheight_lock: # regularly 
                             self.potheight = result["result"]
-                            print("debug potheight set to: "+str(self.potheight))
 
 
                 
